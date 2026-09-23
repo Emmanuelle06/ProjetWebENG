@@ -1,0 +1,83 @@
+{% extends "modele.jinja" %}
+
+{% block contenu %}
+<div class="container-sm">
+    <header>
+        <h1>Création d'un compte vendeur</h1>
+    </header>
+
+    <main>
+        <form method="post" action="/inscription-vendeur" novalidate>
+
+            <div>
+                <label for="nom_restaurant">Nom du restaurant :</label>
+                <input type="text" name="nom_restaurant" id="nom_restaurant" value="{{ nom_restaurant }}"
+                    class="form-control {{ classe_nom_restaurant }}">
+
+                <div class="invalid-feedback">
+                    Veuillez saisir le nom du restaurant.
+                </div>
+            </div>
+
+
+            <div>
+                <label for="adresse">Adresse postale :</label>
+                <input type="text" name="adresse" id="adresse" value="{{ adresse }}"
+                    class="form-control {{ classe_adresse }}">
+
+                <div class="invalid-feedback">
+                    Veuillez saisir une adresse postale.
+                </div>
+            </div>
+
+
+            <div>
+                <label for="telephone">Téléphone :</label>
+                <input type="tel" name="telephone" id="telephone" value="{{ telephone }}"
+                    class="form-control {{ classe_telephone }}">
+
+                <div class="invalid-feedback">
+                    Veuillez saisir un numéro de téléphone valide.
+                </div>
+            </div>
+
+
+            <div>
+                <label for="mot_de_passe">Mot de passe :</label>
+                <input type="password" name="mot_de_passe" id="mot_de_passe"
+                    class="form-control {{ classe_mot_de_passe }}">
+
+                <div class="invalid-feedback">
+                    Veuillez saisir un mot de passe.
+                </div>
+            </div>
+
+
+            <div>
+                <label for="confirmation_mot_de_passe">
+                    Confirmation du mot de passe :
+                </label>
+
+                <input type="password" name="confirmation_mot_de_passe" id="confirmation_mot_de_passe"
+                    class="form-control {{ classe_confirmation_mot_de_passe }}">
+
+                <div class="invalid-feedback">
+                    Les mots de passe doivent être identiques.
+                </div>
+            </div>
+
+
+            <div>
+                <button type="submit">Créer un compte</button>
+            </div>
+
+        </form>
+
+        <p>
+            Déjà inscrit ? <a href="#">Se connecter</a>
+        </p>
+
+    </main>
+</div>
+
+{% endblock %}
