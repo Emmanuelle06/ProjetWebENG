@@ -2,7 +2,7 @@
 
 {% block contenu %}
 
-<form action="/vendeur/ajout-repas" method="POST" novalidate>
+<form action="/vendeur/ajout-repas" method="POST" enctype="multipart/form-data" novalidate>
     <div>
         <label for="titre">Nom repas :</label>
         <input type="text" name="titre" id="titre">

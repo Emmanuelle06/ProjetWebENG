@@ -22,3 +22,18 @@ CREATE TABLE acheteur
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
+create table vendeur(
+id_vendeur int primary key
+);
+
+CREATE TABLE repas
+(
+id_repas integer primary KEY, 
+nom TEXT Not null,
+prix INTEGER,
+description TEXT not null,
+disponibilite BOOLEAN,
+image BLOB,
+id_restaurant INTEGER,
+FOREIGN KEY (id_restaurant) REFERENCES restaurant(id) ON DELETE CASCADE
+);

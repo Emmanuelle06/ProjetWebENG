@@ -34,3 +34,18 @@ def init_db_command():
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
+def add_repas(repas):
+    db = get_db()
+    try:
+        db.execute(
+                "INSERT INTO REPAS (nom, prix, description, disponibilite, image)" \
+                "VALUES (:nom, :prix, :description, :disponibilite, :image )",
+                (repas)
+            )
+        db.commit()
+        return True
+    except:
+        return False
+    
+    

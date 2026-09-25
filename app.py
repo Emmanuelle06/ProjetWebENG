@@ -14,5 +14,5 @@ db.init_app(app)
 @app.route("/")
 def bonjour():
     """Page d'accueil"""
-    return render_template('ajout-repas.jinja')
+    return render_template('vendeur/ajout-repas.jinja')
 
