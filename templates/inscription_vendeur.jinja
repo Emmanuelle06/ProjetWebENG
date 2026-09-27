@@ -4,13 +4,13 @@
 <div class="container">
     <div class="col-md-6 mx-auto">
         <header>
-            <h1>Création d'un compte vendeur</h1>
+            <h2 class="text-center">Création d'un compte vendeur</h2>
         </header>
 
         <main>
             <form method="post" action="/inscription-vendeur" novalidate>
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="nom_restaurant">Nom du restaurant </label>
                     <input type="text" name="nom_restaurant" id="nom_restaurant" value="{{ nom_restaurant }}"
                         class="form-control {{ classe_nom_restaurant }}">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="nom_utilisateur">Nom d'utilisateur </label>
                     <input type="text" name="nom_utilisateur" id="nom_utilisateur" value="{{ nom_utilisateur }}"
                         class="form-control {{ classe_nom_utilisateur }}">
@@ -31,7 +31,7 @@
                 </div>
 
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="adresse">Adresse postale </label>
                     <input type="text" name="adresse" id="adresse" value="{{ adresse }}"
                         class="form-control {{ classe_adresse }}">
@@ -42,7 +42,7 @@
                 </div>
 
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="telephone">Téléphone </label>
                     <input type="tel" name="telephone" id="telephone" value="{{ telephone }}"
                         class="form-control {{ classe_telephone }}">
@@ -53,7 +53,7 @@
                 </div>
 
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="mot_de_passe">Mot de passe </label>
                     <input type="password" name="mot_de_passe" id="mot_de_passe"
                         class="form-control {{ classe_mot_de_passe }}">
@@ -64,7 +64,7 @@
                 </div>
 
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="confirmation_mot_de_passe">
                         Confirmation du mot de passe
                     </label>
@@ -77,7 +77,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <input type="checkbox" name="condition" id="condition"
                         class="form-check-input {{ classe_condition }}">
                     <label for="condition">J'accepte les conditions d'utilisation</label>
@@ -88,7 +88,7 @@
                 </div>
 
 
-                <div class="text-center mb-3">
+                <div class="text-center mb-2">
                     <button type="submit" class="btn-submit">Créer un compte</button>
                 </div>
 

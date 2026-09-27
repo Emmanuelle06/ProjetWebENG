@@ -1,10 +1,12 @@
+import os
 import hashlib
 from flask import Flask, render_template, request, redirect, flash
 from BD import db
 
+
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
-
+app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
 
 db.init_app(app)
 
@@ -110,13 +112,14 @@ def inscription_vendeur():
 
         base_de_donnees = db.get_db()
 
-        base_de_donnees.execute("""INSERT INTO utilisateur (:username, :mot_de_passe, :statut)VALUES (username, mot_de_passe, statut)""",
+        base_de_donnees.execute("""INSERT INTO utilisateur (username, mot_de_passe, statut)
+                                VALUES (:username, :mot_de_passe, :statut)""",
                                 {
-                                    "username":  nom_utilisateur,
+                                    "username": nom_utilisateur,
                                     "mot_de_passe": mot_de_passe_hache,
-                                    "statut":"vendeur"
+                                    "statut": "vendeur"
                                 }
-        )
+)
         id_utilisateur = base_de_donnees.execute("SELECT last_insert_rowid()").fetchone()[0]
 
         base_de_donnees.execute("""INSERT INTO vendeur (id,nom_restaurant, adresse_postale, telephone, condition)

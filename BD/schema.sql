@@ -33,3 +33,5 @@ CREATE TABLE vendeur
     condition BOOLEAN,
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
+
+
