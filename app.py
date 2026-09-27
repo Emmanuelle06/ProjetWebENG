@@ -1,5 +1,5 @@
 import hashlib
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, flash
 from BD import db
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
@@ -14,23 +14,19 @@ def bonjour():
     return render_template('accueil.jinja')
 
 
-import hashlib
-from flask import request, render_template
-
-
 @app.route('/inscription-vendeur', methods=["GET", "POST"])
 def inscription_vendeur():
     """Inscription vendeur"""
     if request.method == "GET":
         return render_template("inscription_vendeur.jinja")
 
-    nom_restaurant = request.form.get("nom_restaurant").strip()
+    nom_restaurant = request.form.get("nom_restaurant","").strip()
     nom_utilisateur = request.form.get("nom_utilisateur", "").strip()
-    adresse = request.form.get("adresse").strip()
-    telephone = request.form.get("telephone").strip()
-    mot_de_passe = request.form.get("mot_de_passe").strip()
-    confirmation_mot_de_passe = request.form.get("confirmation_mot_de_passe").strip()
-    condition = request.form.get("condition").strip()
+    adresse = request.form.get("adresse","").strip()
+    telephone = request.form.get("telephone","").strip()
+    mot_de_passe = request.form.get("mot_de_passe","").strip()
+    confirmation_mot_de_passe = request.form.get("confirmation_mot_de_passe","").strip()
+    condition = request.form.get("condition","").strip()
 
     classe_nom_restaurant = ""
     classe_nom_utilisateur = ""
@@ -39,6 +35,8 @@ def inscription_vendeur():
     classe_mot_de_passe = ""
     classe_confirmation_mot_de_passe = ""
     classe_condition = ""
+
+    message_nom_utilisateur = "Veuillez saisir un nom d'utilisateur."
 
     a_erreur = False
 
@@ -51,7 +49,8 @@ def inscription_vendeur():
 
     if nom_utilisateur == "":
         a_erreur = True
-        classe_nom_utilisateur = "Veuillez saisir un nom d'utilisateur."
+        classe_nom_utilisateur = "is-invalid"
+        message_nom_utilisateur = "Veuillez saisir un nom d'utilisateur."
     else:
         base_de_donnees = db.get_db()
         existe_deja = base_de_donnees.execute(
@@ -62,7 +61,7 @@ def inscription_vendeur():
             classe_nom_utilisateur = "is-invalid"
             message_nom_utilisateur = "Ce nom d'utilisateur existe déjà."
         else:
-            classe_nom_utilisateur = "Veuillez saisir un nom d'utilisateur."
+            classe_nom_utilisateur = "is-valid"
 
 
     if adresse == "":
@@ -111,24 +110,26 @@ def inscription_vendeur():
 
         base_de_donnees = db.get_db()
 
-        base_de_donnees.execute("""INSERT INTO utilisateur (username, mot_de_passe, statut)VALUES (username, mot_de_passe, statut)""",
+        base_de_donnees.execute("""INSERT INTO utilisateur (:username, :mot_de_passe, :statut)VALUES (username, mot_de_passe, statut)""",
                                 {
                                     "username":  nom_utilisateur,
                                     "mot_de_passe": mot_de_passe_hache,
-                                    "status":"vendeur"
+                                    "statut":"vendeur"
                                 }
         )
         id_utilisateur = base_de_donnees.execute("SELECT last_insert_rowid()").fetchone()[0]
 
-        base_de_donnees.execute("""INSERT INTO vendeur (nom_restaurant, adresse_postale, telephone, mot_de_passe)
-                                VALUES ( :nom_restaurant, :adresse, :telephone, :mot_de_passe)""",
+        base_de_donnees.execute("""INSERT INTO vendeur (id,nom_restaurant, adresse_postale, telephone, condition)
+                                VALUES (:id, :nom_restaurant, :adresse, :telephone, :condition)""",
                                 {
+                                    "id":id_utilisateur,
                                     "nom_restaurant": nom_restaurant,
                                     "adresse": adresse,
                                     "telephone": telephone,
-                                    "mot_de_passe": mot_de_passe_hache
+                                    "condition": True
                                 }
 )
         base_de_donnees.commit()
 
-        return "Compte vendeur crée avec succès"
+        flash("Compte vendeur crée avec succès")
+        return "Compte vendeur créé avec succès ! (redirection vers le menu à venir)"

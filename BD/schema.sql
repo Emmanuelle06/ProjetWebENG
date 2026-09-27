@@ -27,9 +27,9 @@ CREATE TABLE acheteur
 CREATE TABLE vendeur
 (
     id INTEGER PRIMARY KEY,
+    telephone VARCHAR(10) CHECK (length(telephone) = 10),
     nom_restaurant TEXT,
     adresse_postale TEXT,
-    telephone VARCHAR(10) CHECK (length(telephone) = 10),
     condition BOOLEAN,
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
