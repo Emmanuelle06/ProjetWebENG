@@ -1,8 +1,10 @@
+import hashlib
 from flask import Flask, render_template, request
 from BD import db
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
+
 
 db.init_app(app)
 
@@ -12,23 +14,31 @@ def bonjour():
     return render_template('accueil.jinja')
 
 
+import hashlib
+from flask import request, render_template
+
+
 @app.route('/inscription-vendeur', methods=["GET", "POST"])
 def inscription_vendeur():
     """Inscription vendeur"""
     if request.method == "GET":
         return render_template("inscription_vendeur.jinja")
 
-    nom_restaurant = request.form.get("nom_restaurant")
-    adresse = request.form.get("adresse")
-    telephone = request.form.get("telephone")
-    mot_de_passe = request.form.get("mot_de_passe")
-    confirmation_mot_de_passe = request.form.get("confirmation_mot_de_passe")
+    nom_restaurant = request.form.get("nom_restaurant").strip()
+    nom_utilisateur = request.form.get("nom_utilisateur", "").strip()
+    adresse = request.form.get("adresse").strip()
+    telephone = request.form.get("telephone").strip()
+    mot_de_passe = request.form.get("mot_de_passe").strip()
+    confirmation_mot_de_passe = request.form.get("confirmation_mot_de_passe").strip()
+    condition = request.form.get("condition").strip()
 
     classe_nom_restaurant = ""
+    classe_nom_utilisateur = ""
     classe_adresse = ""
     classe_telephone = ""
     classe_mot_de_passe = ""
     classe_confirmation_mot_de_passe = ""
+    classe_condition = ""
 
     a_erreur = False
 
@@ -37,6 +47,23 @@ def inscription_vendeur():
         classe_nom_restaurant = "is-invalid"
     else:
         classe_nom_restaurant = "is-valid"
+
+
+    if nom_utilisateur == "":
+        a_erreur = True
+        classe_nom_utilisateur = "Veuillez saisir un nom d'utilisateur."
+    else:
+        base_de_donnees = db.get_db()
+        existe_deja = base_de_donnees.execute(
+            "SELECT id FROM utilisateur WHERE username = ?", (nom_utilisateur,)
+        ).fetchone()
+        if existe_deja is not None:
+            a_erreur = True
+            classe_nom_utilisateur = "is-invalid"
+            message_nom_utilisateur = "Ce nom d'utilisateur existe déjà."
+        else:
+            classe_nom_utilisateur = "Veuillez saisir un nom d'utilisateur."
+
 
     if adresse == "":
         a_erreur = True
@@ -62,13 +89,46 @@ def inscription_vendeur():
         classe_confirmation_mot_de_passe = "is-invalid"
     else:
         classe_confirmation_mot_de_passe = "is-valid"
+    if condition != "on":
+        a_erreur = True
+        classe_condition = "is-invalid"
+    else:
+        classe_condition = "is-valid"
 
     if a_erreur:
         return render_template("inscription_vendeur.jinja", nom_restaurant=nom_restaurant,
+                            nom_utilisateur=nom_utilisateur,
                             adresse=adresse, telephone=telephone,
                             classe_nom_restaurant=classe_nom_restaurant,
+                            classe_nom_utilisateur=classe_nom_utilisateur,
+                            message_nom_utilisateur=message_nom_utilisateur,
                             classe_adresse=classe_adresse, classe_telephone=classe_telephone,
                             classe_mot_de_passe=classe_mot_de_passe,
-                            classe_confirmation_mot_de_passe=classe_confirmation_mot_de_passe)
+                            classe_confirmation_mot_de_passe=classe_confirmation_mot_de_passe,
+                            classe_condition=classe_condition)
     else:
+        mot_de_passe_hache = hashlib.sha512(mot_de_passe.encode()).hexdigest()
+
+        base_de_donnees = db.get_db()
+
+        base_de_donnees.execute("""INSERT INTO utilisateur (username, mot_de_passe, statut)VALUES (username, mot_de_passe, statut)""",
+                                {
+                                    "username":  nom_utilisateur,
+                                    "mot_de_passe": mot_de_passe_hache,
+                                    "status":"vendeur"
+                                }
+        )
+        id_utilisateur = base_de_donnees.execute("SELECT last_insert_rowid()").fetchone()[0]
+
+        base_de_donnees.execute("""INSERT INTO vendeur (nom_restaurant, adresse_postale, telephone, mot_de_passe)
+                                VALUES ( :nom_restaurant, :adresse, :telephone, :mot_de_passe)""",
+                                {
+                                    "nom_restaurant": nom_restaurant,
+                                    "adresse": adresse,
+                                    "telephone": telephone,
+                                    "mot_de_passe": mot_de_passe_hache
+                                }
+)
+        base_de_donnees.commit()
+
         return "Compte vendeur crée avec succès"
