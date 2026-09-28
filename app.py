@@ -35,18 +35,25 @@ def index():
     session.clear()
     session["id_utilisateur"] = utilisateur["id"]
     session["statut"] = utilisateur["statut"]
-    return redirect(url_for("apres_connexion"))
+    if utilisateur["statut"] == "acheteur":
+        return redirect(url_for("menu"))
 
+    if utilisateur["statut"] == "vendeur":
+        return redirect(url_for("vendeur"))
 
-@app.route("/apres-connexion")
-def apres_connexion():
-    if "id_utilisateur" not in session:
-        return redirect(url_for("index"))
-    return f"Connecté en tant que {session['statut']} !"
-
-
-@app.route("/deconnexion")
-def deconnexion():
-    session.clear()
     return redirect(url_for("index"))
 
+@app.route("/menu")
+def menu():
+    if "id_utilisateur" not in session:
+        return redirect(url_for("index"))
+
+    return render_template("menu.jinja")
+
+
+@app.route("/vendeur")
+def vendeur():
+    if "id_utilisateur" not in session:
+        return redirect(url_for("index"))
+
+    return render_template("vendeur.jinja")

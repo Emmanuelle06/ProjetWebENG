@@ -1,6 +1,6 @@
 /* Couleur de base de l'appli */
 .btn-primary {
-    background-color: #B3835C;
+    background-color: #8a5e3a;
     color: white;
     border: none;
 }
@@ -25,7 +25,11 @@
     backdrop-filter: blur(6px);
     z-index: 1;
 }
+.titre-marron{
+    color:#8a5e3a;
+    letter-spacing: -1px;
 
+}
 .form-au-dessus {
     position: relative;
     z-index: 2;
@@ -54,8 +58,26 @@
     text-decoration: underline;
 }
 #pied {
-    background-color: #FFF9F2;
+    background-color: #f9be7a55;
     color: #555;
     text-align: center;
     padding: 15px;
+}
+
+.navbar {
+    background-color: #f9be7a55;
+    padding: 15px;
+    border: none;
+    box-shadow: none;
+}
+
+.nom-eatfast {
+    color: #754a2a;
+    font-weight: bold;
+    font-size: 28px;
+    text-decoration: none;
+}
+
+.nom-eatfast:hover {
+    color: #9C6D49;
 }
