@@ -38,12 +38,12 @@ def index():
     session["id_utilisateur"] = utilisateur["id"]
     session["statut"] = utilisateur["statut"]
     if utilisateur["statut"] == "acheteur":
-        return redirect(url_for("menu"))
+        return redirect('/menu',303)
 
     if utilisateur["statut"] == "vendeur":
-        return redirect(url_for("vendeur"))
+        return redirect('/vendeur',303)
 
-    return redirect(url_for("index"))
+    return redirect('/',303)
 
 
 @app.route('/inscription-vendeur', methods=["GET", "POST"])
@@ -176,4 +176,4 @@ def vendeur():
     if "id_utilisateur" not in session:
         return redirect(url_for("index"))
 
-    return render_template("vendeur.jinja")
+    return render_template("page_vendeur.jinja")
