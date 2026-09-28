@@ -289,12 +289,12 @@ def inscription_acheteur():
                                 {
                                     "username": nom_utilisateur,
                                     "mot_de_passe": mot_de_passe_hache,
-                                    "statut": "vendeur"
+                                    "statut": "acheteur"
                                 }
 )
         id_utilisateur = base_de_donnees.execute("SELECT last_insert_rowid()").fetchone()[0]
 
-        base_de_donnees.execute("""INSERT INTO acheteur (id,nom,prenom, adresse_postale, telephone, condition)
+        base_de_donnees.execute("""INSERT INTO acheteur (id,nom,prenom, adresse_postal, telephone, condition)
                                 VALUES (:id, :nom, :prenom, :adresse, :telephone, :condition)""",
                                 {
                                     "id":id_utilisateur,
