@@ -1,0 +1,60 @@
+/* Couleur de base de l'appli */
+
+:root,
+[data-bs-theme=light] {
+  --bs-primary: #B3835C;
+  --bs-primary-rgb: 179, 131, 92;
+  --bs-primary-text-emphasis: #4A3020;
+  --bs-primary-bg-subtle: #F6EEE7;
+  --bs-primary-border-subtle: #E4CDB8;
+  --bs-link-color: #9C6D49;
+  --bs-link-color-rgb: 156, 109, 73;
+  --bs-link-hover-color: #4A3020;
+  --bs-link-hover-color-rgb: 74, 48, 32;
+  --bs-focus-ring-color: rgba(179, 131, 92, 0.4);
+}
+
+.btn-primary {
+  --bs-btn-bg: #B3835C;
+  --bs-btn-border-color: #B3835C;
+  --bs-btn-color: #fff;
+  --bs-btn-hover-bg: #9C6D49;
+  --bs-btn-hover-border-color: #9C6D49;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: #8A5F3F;
+  --bs-btn-active-border-color: #8A5F3F;
+  --bs-btn-active-color: #fff;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: #9C6D49;
+  --bs-btn-border-color: #B3835C;
+  --bs-btn-hover-bg: #B3835C;
+  --bs-btn-hover-border-color: #B3835C;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: #9C6D49;
+  --bs-btn-active-border-color: #9C6D49;
+}
+
+
+
+
+.bg-image-floue {
+    position: relative;
+    background: url('../images/image_connexion.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.bg-image-floue::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    z-index: 1;
+}
+
+.form-au-dessus {
+    position: relative;
+    z-index: 2;
+}
