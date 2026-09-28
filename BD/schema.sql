@@ -34,4 +34,4 @@ CREATE TABLE vendeur
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
-
+DELETE FROM vendeur WHERE nom_restaurant = "gla";
