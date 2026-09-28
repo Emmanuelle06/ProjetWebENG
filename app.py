@@ -3,7 +3,6 @@ import hashlib
 from flask import Flask, render_template, request, redirect, flash,session,url_for
 from BD import db
 
-
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
 app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
