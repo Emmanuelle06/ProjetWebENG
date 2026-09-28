@@ -179,3 +179,8 @@ def vendeur():
         return redirect(url_for("index"))
 
     return render_template("page_vendeur.jinja")
+
+@app.route('/deconnexion')
+def deconnexion():
+    session.clear()
+    return redirect('/')
