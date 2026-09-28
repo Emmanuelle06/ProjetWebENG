@@ -1,3 +1,4 @@
+/* Couleur de base de l'appli */
 .carte-formulaire {
     width: 100%;
     max-width: 700px;
@@ -38,6 +39,10 @@
 .titre-marron{
     color:#8a5e3a;
     letter-spacing:-2px;
+}
+.titre{
+    color:#8a5e3a;
+    letter-spacing:-1px;
 }
 .form-au-dessus {
     position: relative;
@@ -90,4 +95,5 @@
 .nom-eatfast:hover {
     color: #9C6D49;
 }
+
 
