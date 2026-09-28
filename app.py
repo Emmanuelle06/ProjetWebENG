@@ -7,6 +7,7 @@ app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
 
 db.init_app(app)
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "GET":
@@ -40,12 +41,12 @@ def index():
 @app.route("/apres-connexion")
 def apres_connexion():
     if "id_utilisateur" not in session:
-        return redirect(url_for("bonjour"))
+        return redirect(url_for("index"))
     return f"Connecté en tant que {session['statut']} !"
 
 
 @app.route("/deconnexion")
 def deconnexion():
     session.clear()
-    return redirect(url_for("bonjour"))
+    return redirect(url_for("index"))
 
