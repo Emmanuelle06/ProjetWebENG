@@ -12,6 +12,16 @@
 
 <body>
 
+    <nav>
+        <div class="container">
+
+            <a class="navbar-brand nom-eatfast" href="{{ url_for('index') }}">
+                EatFast
+            </a>
+
+        </div>
+    </nav>
+
     <main>
 
         {% block contenu %}
@@ -20,7 +30,7 @@
 
     </main>
 
-    <footer id="pied" class="bg-dark text-white text-center p-3">
+    <footer id="pied">
 
         <div class="d-flex justify-content-center">
             <p class="mb-0 text-center "> &copy; Glawdys & Emmanuelle & Noah </p>

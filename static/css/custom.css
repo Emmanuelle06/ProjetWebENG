@@ -53,3 +53,9 @@
 .lien-compte:hover {
     text-decoration: underline;
 }
+#pied {
+    background-color: #FFF9F2;
+    color: #555;
+    text-align: center;
+    padding: 15px;
+}
