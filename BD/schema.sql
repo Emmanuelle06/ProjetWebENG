@@ -18,7 +18,7 @@ CREATE TABLE acheteur
     telephone VARCHAR(10) CHECK (length(telephone) = 10) ,
     nom TEXT,
     prenom TEXT,
-    code_postal TEXT,
+    adresse_postal TEXT,
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
