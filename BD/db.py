@@ -39,8 +39,8 @@ def add_repas(repas):
     db = get_db()
     try:
         db.execute(
-                "INSERT INTO REPAS (nom, prix, description, disponibilite, image)" \
-                "VALUES (:nom, :prix, :description, :disponibilite, :image)",
+                "INSERT INTO REPAS (nom, prix, description, disponibilite, image, id_vendeur)" \
+                "VALUES (:nom, :prix, :description, :disponibilite, :image, :id_vendeur)",
                 repas
             )
         db.commit()
