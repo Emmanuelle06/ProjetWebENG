@@ -73,7 +73,7 @@ def inscription_vendeur():
     else:
         classe_adresse = "is-valid"
 
-    if telephone == "":
+    if len(telephone) != 10 or not telephone.isdigit():
         a_erreur = True
         classe_telephone = "is-invalid"
     else:
