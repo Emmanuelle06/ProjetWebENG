@@ -12,27 +12,6 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 
-.btn-submit {
-    display: inline-block;
-    width: auto;
-    padding: 12px 40px;
-    background-color: #b3835c;
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 16px;
-    border: none;
-    box-shadow: none;
-    border-radius: 10px;
-    cursor: pointer;
-    margin: 0;
-    transform: none;
-}
-
-.btn-submit:hover {
-    background-color: #9c6d49;
-    box-shadow: none;
-    transform: none;
-}
 
 :root,
 [data-bs-theme=light] {

@@ -11,7 +11,7 @@ app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c2
 db.init_app(app)
 
 @app.route("/")
-def bonjour():
+def index():
     """Page d'accueil"""
     return render_template('accueil.jinja')
 
@@ -135,4 +135,8 @@ def inscription_vendeur():
         base_de_donnees.commit()
 
         flash("Compte vendeur crée avec succès")
-        return "Compte vendeur créé avec succès ! (redirection vers le menu à venir)"
+        return redirect("/", 303)
+
+@app.route('/menu', methods=["GET", "POST"])
+def menu():
+    return render_template("menu.jinja")
