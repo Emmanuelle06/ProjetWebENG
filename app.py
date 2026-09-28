@@ -1,6 +1,6 @@
 import os
 import hashlib
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash,session,url_for
 from BD import db
 from vendeur import bp_vendeur
 
@@ -12,15 +12,49 @@ app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c2
 
 db.init_app(app)
 
+<<<<<<< HEAD
 # @app.route("/")
 # def bonjour():
 #     """Page d'accueil"""
 #     return render_template('accueil.jinja')
 
 @app.route("/")
+=======
+@app.route("/", methods=["GET", "POST"])
+>>>>>>> origin/main
 def index():
-    """Page d'accueil"""
-    return render_template('accueil.jinja')
+    if request.method == "GET":
+        return render_template("accueil.jinja")
+
+    nom_utilisateur = request.form.get("username", "").strip()
+    mot_de_passe = request.form.get("password", "")
+    statut = request.form.get("statut", "")
+
+    mot_de_passe_hache = hashlib.sha512(mot_de_passe.encode()).hexdigest()
+
+    base_de_donnees = db.get_db()
+    utilisateur = base_de_donnees.execute(
+        """SELECT id, statut FROM utilisateur
+           WHERE username = ? AND mot_de_passe = ? AND statut = ?""",
+        (nom_utilisateur, mot_de_passe_hache, statut)
+    ).fetchone()
+
+    if utilisateur is None:
+        return render_template("accueil.jinja",
+                               nom_utilisateur=nom_utilisateur,
+                               statut=statut,
+                               message_erreur="Nom d'utilisateur, mot de passe ou statut incorrect.")
+
+    session.clear()
+    session["id_utilisateur"] = utilisateur["id"]
+    session["statut"] = utilisateur["statut"]
+    if utilisateur["statut"] == "acheteur":
+        return redirect('/menu',303)
+
+    if utilisateur["statut"] == "vendeur":
+        return redirect('/vendeur',303)
+
+    return redirect('/',303)
 
 
 @app.route('/inscription-vendeur', methods=["GET", "POST"])
@@ -147,3 +181,13 @@ def inscription_vendeur():
 @app.route('/menu', methods=["GET", "POST"])
 def menu():
     return render_template("menu.jinja")
+<<<<<<< HEAD
+=======
+
+@app.route("/vendeur")
+def vendeur():
+    if "id_utilisateur" not in session:
+        return redirect(url_for("index"))
+
+    return render_template("page_vendeur.jinja")
+>>>>>>> origin/main
