@@ -18,7 +18,18 @@
             <a class="navbar-brand nom-eatfast" href="{{ url_for('index') }}">
                 EatFast
             </a>
-
+            <div class="ms-auto d-flex gap-3">
+                {% if session["statut"] == "vendeur" %}
+                    <form action="/vendeur/ajout-repas" method="GET">
+                        <input type="submit" value="Ajouter un repas" class="btn btn-primary">
+                    </form>
+                {% endif %}
+                {% if session %}
+                 <form action="/deconnexion" method="GET">
+                    <input type="submit" value="Déconnexion" class="btn btn-primary">
+                 </form>
+                {% endif %}
+            </div>
         </div>
     </nav>
 

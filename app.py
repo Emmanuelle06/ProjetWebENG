@@ -2,17 +2,22 @@ import os
 import hashlib
 from flask import Flask, render_template, request, redirect, flash,session,url_for
 from BD import db
+from vendeur import bp_vendeur
 
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
+app.register_blueprint(bp_vendeur, url_prefix='/vendeur')
 app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
 
 db.init_app(app)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    if session.get("statut") == "vendeur":
+        return render_template('page_vendeur.jinja')
     if request.method == "GET":
+        deconnexion()
         return render_template("accueil.jinja")
 
     nom_utilisateur = request.form.get("username", "").strip()
@@ -177,3 +182,8 @@ def vendeur():
         return redirect(url_for("index"))
 
     return render_template("page_vendeur.jinja")
+
+@app.route('/deconnexion')
+def deconnexion():
+    session.clear()
+    return redirect('/')
