@@ -12,16 +12,7 @@ app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c2
 
 db.init_app(app)
 
-<<<<<<< HEAD
-# @app.route("/")
-# def bonjour():
-#     """Page d'accueil"""
-#     return render_template('accueil.jinja')
-
-@app.route("/")
-=======
 @app.route("/", methods=["GET", "POST"])
->>>>>>> origin/main
 def index():
     if request.method == "GET":
         return render_template("accueil.jinja")
@@ -181,8 +172,6 @@ def inscription_vendeur():
 @app.route('/menu', methods=["GET", "POST"])
 def menu():
     return render_template("menu.jinja")
-<<<<<<< HEAD
-=======
 
 @app.route("/vendeur")
 def vendeur():
@@ -190,4 +179,3 @@ def vendeur():
         return redirect(url_for("index"))
 
     return render_template("page_vendeur.jinja")
->>>>>>> origin/main
