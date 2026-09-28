@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session
 from BD import db
 
 bp_vendeur = Blueprint('vendeur', __name__)
@@ -13,7 +13,8 @@ def creer_repas():
             "prix": request.form.get("prix"),
             "description": request.form.get("description"),
             "disponibilite": request.form.get("dispo"),
-            "image" : image_blob
+            "image" : image_blob,
+            # "id_vendeur" : session["id_vendeur"] 
             }
         print(repasAAjouter)     
         condition = db.add_repas(repasAAjouter)
