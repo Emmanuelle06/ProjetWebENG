@@ -1,27 +1,17 @@
 {% extends "modele.jinja" %}
 
 {% block contenu %}
-<div class="container">
-    <div class="col-md-6 mx-auto">
+<div class="bg-image-floue d-flex justify-content-center align-items-center min-vh-100">
+    <div class="form-au-dessus bg-white bg-opacity-75 rounded-4 p-5 my-4 carte-formulaire">
         <header>
-            <h2 class="text-center">Création d'un compte acheteur</h2>
+            <h1 class="text-center titre-marron mb-4">Créer un compte acheteur</h1>
         </header>
 
         <main>
             <form method="post" action="/inscription-acheteur" novalidate>
 
                 <div class="mb-2">
-                    <label for="nom_utilisateur">Nom d'utilisateur </label>
-                    <input type="text" name="nom_utilisateur" id="nom_utilisateur" value="{{ nom_utilisateur }}"
-                        class="form-control {{ classe_nom_utilisateur }}">
-
-                    <div class="invalid-feedback">
-                        {{ message_nom_utilisateur }}
-                    </div>
-                </div>
-
-                <div class="mb-2">
-                    <label for="nom">Nom</label>
+                    <label for="nom">Nom </label>
                     <input type="text" name="nom" id="nom" value="{{ nom }}"
                         class="form-control {{ classe_nom }}">
 
@@ -37,6 +27,17 @@
 
                     <div class="invalid-feedback">
                         Veuillez saisir votre prenom.
+                    </div>
+                </div>
+
+
+                <div class="mb-2">
+                    <label for="nom_utilisateur">Nom d'utilisateur </label>
+                    <input type="text" name="nom_utilisateur" id="nom_utilisateur" value="{{ nom_utilisateur }}"
+                        class="form-control {{ classe_nom_utilisateur }}">
+
+                    <div class="invalid-feedback">
+                        {{ message_nom_utilisateur }}
                     </div>
                 </div>
 
@@ -99,7 +100,7 @@
 
 
                 <div class="text-center mb-2">
-                    <button type="submit" class="btn-submit">Créer un compte</button>
+                    <button type="submit" class="btn btn-primary w-50 py-2 mt-2 fs-5">Créer un compte</button>
                 </div>
 
             </form>
