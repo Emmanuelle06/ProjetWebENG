@@ -28,12 +28,12 @@ id_vendeur int primary key
 
 CREATE TABLE repas
 (
-id_repas integer primary KEY, 
-nom TEXT Not null,
-prix INTEGER,
-description TEXT not null,
-disponibilite BOOLEAN,
-image BLOB,
-id_restaurant INTEGER,
-FOREIGN KEY (id_restaurant) REFERENCES restaurant(id) ON DELETE CASCADE
+    id_repas integer primary KEY, 
+    nom TEXT Not null,
+    prix INTEGER,
+    description TEXT not null,
+    disponibilite BOOLEAN,
+    image BLOB,
+    id_vendeur INTEGER,
+    FOREIGN KEY (id_vendeur) REFERENCES vendeur(id_vendeur) ON DELETE CASCADE
 );

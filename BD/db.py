@@ -40,12 +40,13 @@ def add_repas(repas):
     try:
         db.execute(
                 "INSERT INTO REPAS (nom, prix, description, disponibilite, image)" \
-                "VALUES (:nom, :prix, :description, :disponibilite, :image )",
-                (repas)
+                "VALUES (:nom, :prix, :description, :disponibilite, :image)",
+                repas
             )
         db.commit()
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
     
     
