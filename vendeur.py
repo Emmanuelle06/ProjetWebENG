@@ -7,6 +7,8 @@ bp_vendeur = Blueprint('vendeur', __name__)
 def creer_repas():
     if not session:
         abort(401)
+    if session.get("statut") != "vendeur":
+        abort(403)
     else:
         classe_titre = ""
         classe_prix = ""
