@@ -1,7 +1,7 @@
 {% extends "modele.jinja" %}
 
 {% block contenu %}
-<div class="bg-image-floue d-flex justify-content-center py-5">
+<div class="d-flex justify-content-center py-5">
 
     <div class="form-au-dessus connexion mb-5">
 
@@ -37,13 +37,13 @@
             </div>
             <div class="mb-3">
                 <label for="photo">Photo du repas</label>
-                <input type="file" name="photo" id="photo" class="form-control {{ classe_photo }}">
+                <input type="file" name="photo" id="photo" class="form-control {{ classe_photo }} ">
                 <div class="invalid-feedback">
                     {{ message_photo }}
                 </div>
             </div>
-            <div class="mb-3">
-                <button type="submit">Ajouter repas</button>
+            <div class="mb-3 text-center p-3 m-25">
+                <button type="submit" class="btn btn-primary w-75">Ajouter repas</button>
             </div>
         </form>
     </div>
