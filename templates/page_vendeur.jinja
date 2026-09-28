@@ -1,0 +1,11 @@
+
+{% extends "modele.jinja" %}
+
+{% block contenu %}
+
+<h1>Page du vendeur</h1>
+{% for message in get_flashed_messages() %}
+<p class="alert alert-success" role="alert">{{message}}</p>
+{% endfor %}
+
+{% endblock %}

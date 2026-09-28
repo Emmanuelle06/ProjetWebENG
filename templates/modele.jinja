@@ -5,11 +5,33 @@
     <title>EatFast</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
 </head>
 
 
 <body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+
+            <a class="navbar-brand nom-eatfast" href="{{ url_for('index') }}">
+                EatFast
+            </a>
+            <div class="ms-auto d-flex gap-3">
+                {% if session["statut"] == "vendeur" %}
+                    <form action="/vendeur/ajout-repas" method="GET">
+                        <input type="submit" value="Ajouter un repas" class="btn btn-primary">
+                    </form>
+                {% endif %}
+                {% if session %}
+                 <form action="/deconnexion" method="GET">
+                    <input type="submit" value="Déconnexion" class="btn btn-primary">
+                 </form>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
 
     <main>
 
@@ -19,7 +41,7 @@
 
     </main>
 
-    <footer id="pied" class="bg-dark text-white text-center p-3">
+    <footer id="pied">
 
         <div class="d-flex justify-content-center">
             <p class="mb-0 text-center "> &copy; Glawdys & Emmanuelle & Noah </p>

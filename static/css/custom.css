@@ -1,0 +1,99 @@
+/* Couleur de base de l'appli */
+.carte-formulaire {
+    width: 100%;
+    max-width: 700px;
+}
+
+.carte-formulaire form .mb-2 {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-primary {
+    background-color: #8a5e3a;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #9C6D49;
+    color: white;
+}
+
+
+.bg-image-floue {
+    position: relative;
+    background: url('../images/background.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.bg-image-floue::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    z-index: 1;
+}
+.titre-marron{
+    color:#8a5e3a;
+    letter-spacing:-2px;
+}
+.titre{
+    color:#8a5e3a;
+    letter-spacing:-1px;
+}
+.form-au-dessus {
+    position: relative;
+    z-index: 2;
+}
+.connexion {
+    width: 400px;
+}
+
+.connexion .form-control {
+    height: 50px;
+    border-radius: 15px;
+}
+
+.connexion .btn {
+    border-radius: 15px;
+    font-weight: bold;
+}
+
+.lien-compte {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.lien-compte:hover {
+    text-decoration: underline;
+}
+#pied {
+    background-color: #f9be7a55;
+    color: #555;
+    text-align: center;
+    padding: 15px;
+}
+
+.navbar {
+    background-color: #f9be7a55;
+    padding: 15px;
+    border: none;
+    box-shadow: none;
+}
+
+.nom-eatfast {
+    color: #754a2a;
+    font-weight: bold;
+    font-size: 28px;
+    text-decoration: none;
+}
+
+.nom-eatfast:hover {
+    color: #9C6D49;
+}
+
+

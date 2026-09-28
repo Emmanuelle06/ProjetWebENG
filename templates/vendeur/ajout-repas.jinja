@@ -1,0 +1,52 @@
+{% extends "modele.jinja" %}
+
+{% block contenu %}
+<div class="d-flex justify-content-center py-5">
+
+    <div class="form-au-dessus connexion mb-5">
+
+        <h2 class="text-center fw-bold titre">Ajout d'un repas</h2>
+        <form action="/vendeur/ajout-repas" method="POST" enctype="multipart/form-data" novalidate>
+            <div class="mb-3">
+                <label for="titre">Nom repas :</label>
+                <input type="text" name="titre" id="titre" class="form-control {{ classe_titre }}">
+                <div class="invalid-feedback">
+                    <p>Veuillez entrer un nom de repas</p>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="prix">Prix :</label>
+                <input type="number" name="prix" id="prix" class="form-control {{ classe_prix }}">
+                <div class="invalid-feedback">
+                    {{ message_prix }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="description">Description :</label>
+                <input type="text" name="description" id="description" class="form-control {{ classe_description }}">
+                <div class="invalid-feedback">
+                    <p>Veuillez entrer une description.</p>
+                </div>
+            </div>
+            <div class="mb-3">
+                <input type="checkbox" name="dispo" id="dispo">
+                <label for="dispo">Repas disponible</label>
+                <div class="invalid-feedback">
+                    {{ message_dispo }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="photo">Photo du repas</label>
+                <input type="file" name="photo" id="photo" class="form-control {{ classe_photo }} ">
+                <div class="invalid-feedback">
+                    {{ message_photo }}
+                </div>
+            </div>
+            <div class="mb-3 text-center p-3 m-25">
+                <button type="submit" class="btn btn-primary w-75">Ajouter repas</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
