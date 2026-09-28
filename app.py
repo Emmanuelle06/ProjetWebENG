@@ -14,7 +14,10 @@ db.init_app(app)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    if session.get("statut") == "vendeur":
+        return render_template('page_vendeur.jinja')
     if request.method == "GET":
+        deconnexion()
         return render_template("accueil.jinja")
 
     nom_utilisateur = request.form.get("username", "").strip()

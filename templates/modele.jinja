@@ -20,10 +20,14 @@
             </a>
             <div class="ms-auto d-flex gap-3">
                 {% if session["statut"] == "vendeur" %}
-                <a href="/vendeur/ajout-repas">Ajouter un repas</a>
+                    <form action="/vendeur/ajout-repas" method="GET">
+                        <input type="submit" value="Ajouter un repas" class="btn btn-primary">
+                    </form>
                 {% endif %}
                 {% if session %}
-                <a href="/deconnexion">Déconnexion</a>
+                 <form action="/deconnexion" method="GET">
+                    <input type="submit" value="Déconnexion" class="btn btn-primary">
+                 </form>
                 {% endif %}
             </div>
         </div>
