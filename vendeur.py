@@ -6,7 +6,7 @@ bp_vendeur = Blueprint('vendeur', __name__)
 @bp_vendeur.route('/ajout-repas', methods=['GET', 'POST'])
 def creer_repas():
     if "id_utilisateur" not in session:
-        flash("Vous devez être connecté pour ajouter un repas.")
+        flash("Vous devez être connecté pour ajouter un repas.", "warning")
         return redirect("/")
     if session.get("statut") != "vendeur":
         abort(403)
@@ -64,7 +64,7 @@ def creer_repas():
 
                 condition = db.add_repas(repasAAjouter)
                 if condition == True:
-                    flash("Repas créé avec succès")
+                    flash("Repas créé avec succès", "success")
                     return render_template('page_vendeur.jinja')
                 else:
                     print('ERREUR')

@@ -97,11 +97,6 @@
 }
 
 
-.carte-repas {
-    background-color: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-}
 
 .image-repas {
     width: 100%;
@@ -134,32 +129,6 @@
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.image-repas {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    display: block;
-}
-
-.info-repas {
-    padding: 12px 4px 4px;
-}
-
-.nom-repas {
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.nom-resto-repas {
-    color: #8a5e3a;
-    font-size: 0.85rem;
-}
-
-.prix-repas {
-    font-weight: 700;
-    font-size: 1.1rem;
 }
 
 .btn-ajouter {

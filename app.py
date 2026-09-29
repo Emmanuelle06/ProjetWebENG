@@ -171,7 +171,7 @@ def inscription_vendeur():
 )
         base_de_donnees.commit()
 
-        flash("Compte vendeur crée avec succès")
+        flash("Compte vendeur crée avec succès", "success")
         return redirect("/", 303)
 
 
@@ -179,7 +179,7 @@ def inscription_vendeur():
 def menu():
     """Affiche tous les repas disponibles, peu importe le vendeur"""
     if "id_utilisateur" not in session:
-        flash("Vous devez être connecté pour accéder au menu.")
+        flash("Vous devez être connecté pour accéder au menu.", "warning")
         return redirect("/")
 
     base_de_donnees = db.get_db()
@@ -192,13 +192,13 @@ def menu():
     return render_template("menu.jinja", repas=repas)
 
 
-
 @app.route('/image-repas/<int:id_repas>')
 def image_repas(id_repas):
     """Sert l'image d'un repas stockée en BLOB dans la BD"""
     base_de_donnees = db.get_db()
     ligne = base_de_donnees.execute(
-        "SELECT image FROM repas WHERE id_repas = ?", (id_repas,)
+        "SELECT image FROM repas WHERE id_repas = :id_repas",
+        {"id_repas": id_repas}
     ).fetchone()
 
     if ligne is None or ligne["image"] is None:
@@ -344,7 +344,7 @@ def inscription_acheteur():
 )
         base_de_donnees.commit()
 
-        flash("Compte acheteur crée avec succès")
+        flash("Compte acheteur crée avec succès", "success")
         return redirect("/", 303)
 @app.route('/deconnexion')
 def deconnexion():
