@@ -18,22 +18,40 @@
             <a class="navbar-brand nom-eatfast" href="{{ url_for('index') }}">
                 EatFast
             </a>
-            <div class="ms-auto d-flex gap-3">
-                {% if session["statut"] == "vendeur" %}
-                    <form action="/vendeur/ajout-repas" method="GET">
-                        <input type="submit" value="Ajouter un repas" class="btn btn-primary">
-                    </form>
+
+            <div class="ms-auto d-flex align-items-center gap-3">
+                {% if session.id_utilisateur %}
+                <a href="{{ url_for('menu') }}" class="nav-link">Menu</a>
+
                 {% endif %}
-                {% if session %}
-                 <form action="/deconnexion" method="GET">
+
+                {% if session["statut"] == "vendeur" %}
+                <form action="/vendeur/ajout-repas" method="GET" class="mb-0">
+                    <input type="submit" value="Ajouter un repas" class="btn btn-primary">
+                </form>
+                {% endif %}
+
+                {% if session.id_utilisateur %}
+                <form action="/deconnexion" method="GET" class="mb-0">
                     <input type="submit" value="Déconnexion" class="btn btn-primary">
-                 </form>
+                </form>
                 {% endif %}
             </div>
+
         </div>
     </nav>
 
     <main>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} text-center" role="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
         {% block contenu %}
 

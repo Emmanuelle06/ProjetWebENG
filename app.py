@@ -2,6 +2,7 @@ import os
 import hashlib
 from flask import Flask, render_template, request, redirect, flash,session,url_for
 from BD import db
+from flask import Response, abort
 from vendeur import bp_vendeur
 
 
@@ -16,8 +17,12 @@ db.init_app(app)
 def index():
     if session.get("statut") == "vendeur":
         return render_template('page_vendeur.jinja')
+    if session.get("statut") == "acheteur":
+        return render_template('menu.jinja')
+    
     if request.method == "GET":
-        deconnexion()
+        session.pop("id_utilisateur", default=None)
+        session.pop("statut", default=None)
         return render_template("accueil.jinja")
 
     nom_utilisateur = request.form.get("username", "").strip()
@@ -169,12 +174,42 @@ def inscription_vendeur():
 )
         base_de_donnees.commit()
 
-        flash("Compte vendeur crée avec succès")
+        flash("Compte vendeur crée avec succès", "success")
         return redirect("/", 303)
 
-@app.route('/menu', methods=["GET", "POST"])
+
+@app.route('/menu', methods=["GET"])
 def menu():
-    return render_template("menu.jinja")
+    """Affiche tous les repas disponibles, peu importe le vendeur"""
+    if "id_utilisateur" not in session:
+        flash("Vous devez être connecté pour accéder au menu.", "warning")
+        return redirect("/")
+
+    base_de_donnees = db.get_db()
+    repas = base_de_donnees.execute(
+        """SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
+           FROM repas
+           LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
+           WHERE repas.disponibilite = 'on'"""
+    ).fetchall()
+    return render_template("menu.jinja", repas=repas)
+
+
+@app.route('/image-repas/<int:id_repas>')
+def image_repas(id_repas):
+    """Sert l'image d'un repas stockée en BLOB dans la BD"""
+    base_de_donnees = db.get_db()
+    ligne = base_de_donnees.execute(
+        "SELECT image FROM repas WHERE id_repas = :id_repas",
+        {"id_repas": id_repas}
+    ).fetchone()
+
+    if ligne is None or ligne["image"] is None:
+        abort(404)
+
+    return Response(ligne["image"], mimetype="image/jpeg")
+
+
 
 @app.route("/vendeur")
 def vendeur():
@@ -312,7 +347,7 @@ def inscription_acheteur():
 )
         base_de_donnees.commit()
 
-        flash("Compte acheteur crée avec succès")
+        flash("Compte acheteur crée avec succès", "success")
         return redirect("/", 303)
 @app.route('/deconnexion')
 def deconnexion():

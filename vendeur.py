@@ -5,8 +5,9 @@ bp_vendeur = Blueprint('vendeur', __name__)
 
 @bp_vendeur.route('/ajout-repas', methods=['GET', 'POST'])
 def creer_repas():
-    if not session:
-        abort(401)
+    if "id_utilisateur" not in session:
+        flash("Vous devez être connecté pour ajouter un repas.", "warning")
+        return redirect("/")
     if session.get("statut") != "vendeur":
         abort(403)
     else:
@@ -44,8 +45,8 @@ def creer_repas():
             if not request.form.get("description"):
                 classe_description = "is-invalid"
                 valide = False
-            
-            
+
+
             if not photo or photo.filename == "":
                 classe_photo = "is-invalid"
                 message_photo = "Veuillez sélectionner une photo."
@@ -60,10 +61,10 @@ def creer_repas():
                     "image" : image_blob,
                     "id_vendeur": session["id_utilisateur"]
                     }
-                
+
                 condition = db.add_repas(repasAAjouter)
                 if condition == True:
-                    flash("Repas créé avec succès")
+                    flash("Repas créé avec succès", "success")
                     return render_template('page_vendeur.jinja')
                 else:
                     print('ERREUR')

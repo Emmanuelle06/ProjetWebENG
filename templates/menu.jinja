@@ -1,8 +1,30 @@
-
 {% extends "modele.jinja" %}
 
 {% block contenu %}
+<div class="container my-4">
+    <h1 class="text-center titre-marron mb-4">Menu</h1>
 
-<h1>Menu à venir</h1>
-
+    {% if repas %}
+    <div class="row g-4">
+        {% for item in repas %}
+        <div class="col-6 col-md-3">
+            <div class="carte-repas">
+                <img src="{{ url_for('image_repas', id_repas=item['id_repas']) }}"
+                     class="image-repas" alt="{{ item['nom'] }}">
+                <div class="info-repas">
+                    <p class="nom-repas mb-0">{{ item['nom'] }}</p>
+                    <p class="nom-resto-repas mb-2">{{ item['nom_restaurant'] or "Restaurant inconnu" }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="prix-repas">{{ item['prix'] }}$ CA</span>
+                        <a href="#" class="btn-ajouter">+</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center">Aucun repas disponible pour le moment.</p>
+    {% endif %}
+</div>
 {% endblock %}
