@@ -17,6 +17,9 @@ db.init_app(app)
 def index():
     if session.get("statut") == "vendeur":
         return render_template('page_vendeur.jinja')
+    if session.get("statut") == "acheteur":
+        return render_template('menu.jinja')
+    
     if request.method == "GET":
         session.pop("id_utilisateur", default=None)
         session.pop("statut", default=None)
