@@ -30,7 +30,7 @@
                 </form>
                 {% endif %}
 
-                {% if session %}
+                {% if session.id_utilisateur %}
                 <form action="/deconnexion" method="GET" class="mb-0">
                     <input type="submit" value="Déconnexion" class="btn btn-primary">
                 </form>
@@ -41,6 +41,16 @@
     </nav>
 
     <main>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for message in messages %}
+                    <div class="alert alert-success text-center" role="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
         {% block contenu %}
 
