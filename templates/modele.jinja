@@ -19,6 +19,12 @@
                 EatFast
             </a>
 
+            {% if session.id_utilisateur %}
+                <div class="ms-auto">
+                    <a href="{{ url_for('menu') }}" class="nav-link d-inline-block">Menu</a>
+                </div>
+            {% endif %}
+
         </div>
     </nav>
 
