@@ -2,6 +2,8 @@ import os
 import hashlib
 from flask import Flask, render_template, request, redirect, flash,session,url_for
 from BD import db
+from flask import Response, abort
+
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
@@ -166,9 +168,37 @@ def inscription_vendeur():
         flash("Compte vendeur crée avec succès")
         return redirect("/", 303)
 
-@app.route('/menu', methods=["GET", "POST"])
+@app.route('/menu', methods=["GET"])
 def menu():
-    return render_template("menu.jinja")
+    """Affiche tous les repas disponibles, peu importe le vendeur"""
+    if "id_utilisateur" not in session:
+        return redirect("/")
+
+    base_de_donnees = db.get_db()
+    repas = base_de_donnees.execute(
+        """SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
+           FROM repas
+           LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
+           WHERE repas.disponibilite = 'on'"""
+    ).fetchall()
+    return render_template("menu.jinja", repas=repas)
+
+
+
+@app.route('/image-repas/<int:id_repas>')
+def image_repas(id_repas):
+    """Sert l'image d'un repas stockée en BLOB dans la BD"""
+    base_de_donnees = db.get_db()
+    ligne = base_de_donnees.execute(
+        "SELECT image FROM repas WHERE id_repas = ?", (id_repas,)
+    ).fetchone()
+
+    if ligne is None or ligne["image"] is None:
+        abort(404)
+
+    return Response(ligne["image"], mimetype="image/jpeg")
+
+
 
 @app.route("/vendeur")
 def vendeur():
