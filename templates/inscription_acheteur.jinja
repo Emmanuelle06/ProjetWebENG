@@ -1,0 +1,116 @@
+{% extends "modele.jinja" %}
+
+{% block contenu %}
+<div class="bg-image-floue d-flex justify-content-center align-items-center min-vh-100">
+    <div class="form-au-dessus bg-white bg-opacity-75 rounded-4 p-5 my-4 carte-formulaire">
+        <header>
+            <h1 class="text-center titre-marron mb-4">Créer un compte acheteur</h1>
+        </header>
+
+        <main>
+            <form method="post" action="/inscription-acheteur" novalidate>
+
+                <div class="mb-2">
+                    <label for="nom">Nom </label>
+                    <input type="text" name="nom" id="nom" value="{{ nom }}"
+                        class="form-control {{ classe_nom }}">
+
+                    <div class="invalid-feedback">
+                        Veuillez saisir votre nom.
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label for="prenom">Prénom </label>
+                    <input type="text" name="prenom" id="prenom" value="{{ prenom }}"
+                        class="form-control {{ classe_prenom }}">
+
+                    <div class="invalid-feedback">
+                        Veuillez saisir votre prenom.
+                    </div>
+                </div>
+
+
+                <div class="mb-2">
+                    <label for="nom_utilisateur">Nom d'utilisateur </label>
+                    <input type="text" name="nom_utilisateur" id="nom_utilisateur" value="{{ nom_utilisateur }}"
+                        class="form-control {{ classe_nom_utilisateur }}">
+
+                    <div class="invalid-feedback">
+                        {{ message_nom_utilisateur }}
+                    </div>
+                </div>
+
+
+                <div class="mb-2">
+                    <label for="adresse">Adresse postale </label>
+                    <input type="text" name="adresse" id="adresse" value="{{ adresse }}"
+                        class="form-control {{ classe_adresse }}">
+
+                    <div class="invalid-feedback">
+                        Veuillez saisir une adresse postale.
+                    </div>
+                </div>
+
+
+                <div class="mb-2">
+                    <label for="telephone">Téléphone </label>
+                    <input type="tel" name="telephone" id="telephone" value="{{ telephone }}"
+                        class="form-control {{ classe_telephone }}">
+
+                    <div class="invalid-feedback">
+                        Veuillez saisir un numéro de téléphone valide (10 caractères).
+                    </div>
+                </div>
+
+
+                <div class="mb-2">
+                    <label for="mot_de_passe">Mot de passe </label>
+                    <input type="password" name="mot_de_passe" id="mot_de_passe"
+                        class="form-control {{ classe_mot_de_passe }}">
+
+                    <div class="invalid-feedback">
+                        Veuillez saisir un mot de passe.
+                    </div>
+                </div>
+
+
+                <div class="mb-2">
+                    <label for="confirmation_mot_de_passe">
+                        Confirmation du mot de passe
+                    </label>
+
+                    <input type="password" name="confirmation_mot_de_passe" id="confirmation_mot_de_passe"
+                        class="form-control {{ classe_confirmation_mot_de_passe }}">
+
+                    <div class="invalid-feedback">
+                        Les mots de passe doivent être identiques.
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <input type="checkbox" name="condition" id="condition"
+                        class="form-check-input {{ classe_condition }}">
+                    <label for="condition">J'accepte les conditions d'utilisation</label>
+
+                    <div class="invalid-feedback">
+                        Vous devez d'abord accepter les conditions d'utilisation.
+                    </div>
+                </div>
+
+
+                <div class="text-center mb-2">
+                    <button type="submit" class="btn btn-primary w-50 py-2 mt-2 fs-5">Créer un compte</button>
+                </div>
+
+            </form>
+
+            <p class="text-center">
+                Déjà inscrit ? <a href="/">Se connecter</a>
+            </p>
+
+        </main>
+    </div>
+</div>
+
+{% endblock %}

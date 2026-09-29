@@ -20,6 +20,7 @@ CREATE TABLE acheteur
     nom TEXT,
     prenom TEXT,
     adresse_postal TEXT,
+    condition BOOLEAN,
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
