@@ -19,11 +19,23 @@
                 EatFast
             </a>
 
-            {% if session.id_utilisateur %}
-                <div class="ms-auto">
-                    <a href="{{ url_for('menu') }}" class="nav-link d-inline-block">Menu</a>
-                </div>
-            {% endif %}
+            <div class="ms-auto d-flex align-items-center gap-3">
+                {% if session.id_utilisateur %}
+                <a href="{{ url_for('menu') }}" class="nav-link">Menu</a>
+                {% endif %}
+
+                {% if session["statut"] == "vendeur" %}
+                <form action="/vendeur/ajout-repas" method="GET" class="mb-0">
+                    <input type="submit" value="Ajouter un repas" class="btn btn-primary">
+                </form>
+                {% endif %}
+
+                {% if session %}
+                <form action="/deconnexion" method="GET" class="mb-0">
+                    <input type="submit" value="Déconnexion" class="btn btn-primary">
+                </form>
+                {% endif %}
+            </div>
 
         </div>
     </nav>
