@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS repas;
 DROP TABLE IF EXISTS acheteur;
 DROP TABLE IF EXISTS utilisateur;
 DROP TABLE IF EXISTS vendeur;
@@ -24,18 +25,6 @@ CREATE TABLE acheteur
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
-CREATE TABLE repas
-(
-    id_repas integer primary KEY, 
-    nom TEXT Not null,
-    prix INTEGER,
-    description TEXT not null,
-    disponibilite BOOLEAN,
-    image BLOB,
-    id_vendeur INTEGER,
-    FOREIGN KEY (id_vendeur) REFERENCES vendeur(id_vendeur) ON DELETE CASCADE
-);
-
 CREATE TABLE vendeur
 (
     id INTEGER PRIMARY KEY,
@@ -46,4 +35,16 @@ CREATE TABLE vendeur
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
-DELETE FROM vendeur WHERE nom_restaurant = "gla";
+
+CREATE TABLE repas
+(
+    id_repas INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom TEXT NOT NULL,
+    prix INTEGER,
+    description TEXT NOT NULL,
+    disponibilite BOOLEAN,
+    image BLOB,
+    id_vendeur INTEGER,
+    FOREIGN KEY (id_vendeur) REFERENCES vendeur(id) ON DELETE CASCADE
+);
+
