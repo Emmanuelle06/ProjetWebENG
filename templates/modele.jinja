@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+
 </head>
 
 
@@ -35,22 +36,42 @@
                 <form action="/deconnexion" method="GET" class="mb-0">
                     <input type="submit" value="Déconnexion" class="btn btn-primary">
                 </form>
-                {% endif %}
-            </div>
 
+                <!-- Panier cliquable -->
+                <img src="{{ url_for('static', filename='images/panier.png') }}" alt="Panier"
+                    style="width: 40px; cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                    aria-controls="offcanvasRight">
+
+            </div>
+            {% endif %}
         </div>
     </nav>
 
+
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Mon panier</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer">
+            </button>
+        </div>
+
+        <div class="offcanvas-body">
+            <h1>Test du panier</h1>
+            <p>SVP mon panier fonctionne!</p>
+        </div>
+
+    </div>
     <main>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="container mt-3">
-                    {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} text-center" role="alert">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+        {% if messages %}
+        <div class="container mt-3">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} text-center" role="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% endwith %}
 
         {% block contenu %}
@@ -66,6 +87,7 @@
 
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 

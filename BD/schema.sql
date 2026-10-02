@@ -2,6 +2,8 @@ DROP TABLE IF EXISTS repas;
 DROP TABLE IF EXISTS acheteur;
 DROP TABLE IF EXISTS utilisateur;
 DROP TABLE IF EXISTS vendeur;
+DROP TABLE IF EXISTS commande;
+DROP TABLE IF EXISTS commande_repas;
 
 
 CREATE TABLE utilisateur
@@ -46,5 +48,24 @@ CREATE TABLE repas
     image BLOB,
     id_vendeur INTEGER,
     FOREIGN KEY (id_vendeur) REFERENCES vendeur(id) ON DELETE CASCADE
+);
+
+create table commande
+(
+    id_commande INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_acheteur INTEGER,
+    statut TEXT CHECK (statut IN ('attente', 'cours', 'terminer')),
+    FOREIGN KEY (id_acheteur) REFERENCES acheteur(id) ON DELETE CASCADE
+);
+
+create table commande_repas
+(
+    id_commande INTEGER,
+    id_repas INTEGER,
+    quantite INTEGER,
+
+    PRIMARY KEY(id_commande, id_repas),
+    FOREIGN KEY(id_commande) REFERENCES commande(id_commande),
+    FOREIGN KEY(id_repas) REFERENCES repas(id_repas)
 );
 
