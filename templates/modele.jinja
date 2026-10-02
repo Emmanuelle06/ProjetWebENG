@@ -37,11 +37,9 @@
                     <input type="submit" value="Déconnexion" class="btn btn-primary">
                 </form>
 
-                <!-- Panier cliquable -->
                 <img src="{{ url_for('static', filename='images/panier.png') }}" alt="Panier"
                     style="width: 40px; cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                     aria-controls="offcanvasRight">
-
             </div>
             {% endif %}
         </div>
@@ -56,9 +54,12 @@
             </button>
         </div>
 
-        <div class="offcanvas-body">
-            <h1>Test du panier</h1>
-            <p>SVP mon panier fonctionne!</p>
+        <div class="offcanvas-body" id="panier">
+            {% if "panier" in session%}
+                {% for repas in session["panier"]%}
+                    <p>{{repas.nom}} - {{repas.prix}} $ <a href="/enlever-panier/{{ repas['id'] }}">Supprimer</a></p>
+                    {%endfor%}
+            {%endif%}
         </div>
 
     </div>

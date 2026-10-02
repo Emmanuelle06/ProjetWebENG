@@ -1,12 +1,7 @@
-DROP TABLE IF EXISTS repas;
-DROP TABLE IF EXISTS acheteur;
-DROP TABLE IF EXISTS utilisateur;
-DROP TABLE IF EXISTS vendeur;
-DROP TABLE IF EXISTS commande;
-DROP TABLE IF EXISTS commande_repas;
 
 
-CREATE TABLE utilisateur
+
+CREATE TABLE IF NOT EXISTS utilisateur
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
@@ -16,7 +11,7 @@ CREATE TABLE utilisateur
 );
 
 
-CREATE TABLE acheteur
+CREATE TABLE IF NOT EXISTS acheteur
 (
     id INTEGER PRIMARY KEY,
     telephone VARCHAR(10) CHECK (length(telephone) = 10) ,
@@ -27,7 +22,7 @@ CREATE TABLE acheteur
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
-CREATE TABLE vendeur
+CREATE TABLE IF NOT EXISTS vendeur
 (
     id INTEGER PRIMARY KEY,
     telephone VARCHAR(10) CHECK (length(telephone) = 10),
@@ -38,7 +33,7 @@ CREATE TABLE vendeur
 );
 
 
-CREATE TABLE repas
+CREATE TABLE IF NOT EXISTS repas
 (
     id_repas INTEGER PRIMARY KEY AUTOINCREMENT,
     nom TEXT NOT NULL,
@@ -50,7 +45,7 @@ CREATE TABLE repas
     FOREIGN KEY (id_vendeur) REFERENCES vendeur(id) ON DELETE CASCADE
 );
 
-create table commande
+create table IF NOT EXISTS commande
 (
     id_commande INTEGER PRIMARY KEY AUTOINCREMENT,
     id_acheteur INTEGER,
@@ -58,7 +53,7 @@ create table commande
     FOREIGN KEY (id_acheteur) REFERENCES acheteur(id) ON DELETE CASCADE
 );
 
-create table commande_repas
+create table IF NOT EXISTS commande_repas
 (
     id_commande INTEGER,
     id_repas INTEGER,

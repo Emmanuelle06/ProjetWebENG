@@ -355,3 +355,25 @@ def inscription_acheteur():
 def deconnexion():
     session.clear()
     return redirect('/')
+
+@app.route('/ajout-panier/<int:id_repas>')
+def ajouter_panier(id_repas):
+    repas = db.get_repas(id_repas)
+    if "panier" not in session:
+        session["panier"] = []
+
+    session["panier"].append({
+        "id": repas["id_repas"],
+        "nom": repas["nom"],
+        "prix": repas["prix"]
+    })
+    session.modified = True
+    return redirect("/menu")
+
+@app.route('/enlever-panier/<int:id_repas>')
+def supprimer_panier(id_repas):
+    for repas in session["panier"]:
+        if repas["id"] == id_repas:
+            session["panier"].remove(repas)
+            session.modified = True
+    return redirect("/menu")

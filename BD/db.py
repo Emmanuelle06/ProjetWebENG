@@ -48,5 +48,37 @@ def add_repas(repas):
     except Exception as e:
         print(e)
         return False
-    
-    
+
+def add_commande(commande):
+    db = get_db()
+    try:
+        db.execute(
+            "INSERT INTO commande (id_acheteur, statut)" \
+            "VALUES (:id_acheteur, :statut)"
+        )
+    except Exception as e:
+        print(e)
+        return False
+
+def commande_repas(repas):
+    db = get_db()
+    try:
+        db.execute(
+            "INSERT INTO commande_repas (id_commande, id_repas, quantite)" \
+            "VALUES ()"
+        )
+    except Exception as e:
+        print (e)
+        return False
+
+def get_repas(id):
+    db = get_db()
+    try:
+        repas = db.execute(
+            "Select * from repas where id_repas = ?",
+        (id,)
+        ).fetchone()
+        return repas
+    except Exception as e:
+        print(e)
+        return False
