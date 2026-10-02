@@ -21,7 +21,7 @@ def index():
         return render_template('page_vendeur.jinja')
     if session.get("statut") == "acheteur":
         return render_template('menu.jinja')
-    
+
     if request.method == "GET":
         session.pop("id_utilisateur", default=None)
         session.pop("statut", default=None)
@@ -29,22 +29,20 @@ def index():
 
     nom_utilisateur = request.form.get("username", "").strip()
     mot_de_passe = request.form.get("password", "")
-    statut = request.form.get("statut", "")
 
     mot_de_passe_hache = hashlib.sha512(mot_de_passe.encode()).hexdigest()
 
     base_de_donnees = db.get_db()
     utilisateur = base_de_donnees.execute(
         """SELECT id, statut FROM utilisateur
-           WHERE username = ? AND mot_de_passe = ? AND statut = ?""",
-        (nom_utilisateur, mot_de_passe_hache, statut)
+           WHERE username = ? AND mot_de_passe = ?""",
+        (nom_utilisateur, mot_de_passe_hache )
     ).fetchone()
 
     if utilisateur is None:
         return render_template("accueil.jinja",
                                nom_utilisateur=nom_utilisateur,
-                               statut=statut,
-                               message_erreur="Nom d'utilisateur, mot de passe ou statut incorrect.")
+                               message_erreur="Nom d'utilisateur, mot de passe incorrect.")
 
     session.clear()
     session["id_utilisateur"] = utilisateur["id"]
