@@ -31,6 +31,20 @@
                 </form>
                 {% endif %}
 
+                {% if session["statut"] == "acheteur" %}
+
+                    <a href="{{ url_for('acheteur.profil') }}"
+                       class="nav-link d-flex align-items-center gap-2">
+
+                        <img src="images/avatar.jpg" class="avatar" alt="avatar">
+                        <span>
+                            {{ session["username"] }}
+                        </span>
+
+                    </a>
+
+                {% endif %}
+
                 {% if session.id_utilisateur %}
                 <form action="/deconnexion" method="GET" class="mb-0">
                     <input type="submit" value="Déconnexion" class="btn btn-primary">

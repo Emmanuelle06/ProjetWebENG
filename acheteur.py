@@ -31,7 +31,7 @@ def profil():
 
     utilisateur = obtenir_profil(session["id_utilisateur"])
 
-    return render_template("profil.jinja", utilisateur=utilisateur)
+    return render_template("profil/profil.jinja", utilisateur=utilisateur)
 
 @bp_acheteur.route('/inscription-acheteur', methods=["GET", "POST"])
 def inscription_acheteur():
@@ -163,3 +163,78 @@ def inscription_acheteur():
 
         flash("Compte acheteur crée avec succès", "success")
         return redirect("/", 303)
+
+@bp_acheteur.route('/profil/modifier', methods=["GET", "POST"])
+def modifier_profil():
+    """Modification des informations du profil acheteur"""
+    if "id_utilisateur" not in session:
+        return redirect("/")
+
+    id_utilisateur = session["id_utilisateur"]
+    utilisateur = obtenir_profil(id_utilisateur)
+
+    if utilisateur is None:
+        session.clear()
+        return redirect("/")
+
+    if request.method == "GET":
+        return render_template("profil/modifier_profil.jinja",
+                               nom=utilisateur["nom"],
+                               prenom=utilisateur["prenom"],
+                               telephone=utilisateur["telephone"],
+                               adresse=utilisateur["adresse_postal"])
+
+    nom = request.form.get("nom", "").strip()
+    prenom = request.form.get("prenom", "").strip()
+    telephone = request.form.get("telephone", "").strip()
+    adresse = request.form.get("adresse", "").strip()
+
+    a_erreur = False
+
+    if nom == "":
+        a_erreur = True
+        classe_nom = "is-invalid"
+    else:
+        classe_nom = "is-valid"
+
+    if prenom == "":
+        a_erreur = True
+        classe_prenom = "is-invalid"
+    else:
+        classe_prenom = "is-valid"
+
+    if len(telephone) != 10 or not telephone.isdigit():
+        a_erreur = True
+        classe_telephone = "is-invalid"
+    else:
+        classe_telephone = "is-valid"
+
+    if adresse == "":
+        a_erreur = True
+        classe_adresse = "is-invalid"
+    else:
+        classe_adresse = "is-valid"
+
+    if a_erreur:
+        return render_template("profil/modifier_profil.jinja",
+                               nom=nom, prenom=prenom,
+                               telephone=telephone, adresse=adresse,
+                               classe_nom=classe_nom,
+                               classe_prenom=classe_prenom,
+                               classe_telephone=classe_telephone,
+                               classe_adresse=classe_adresse)
+
+    base_de_donnees = db.get_db()
+    base_de_donnees.execute(
+        """
+        UPDATE acheteur
+        SET nom = ?, prenom = ?, telephone = ?, adresse_postal = ?
+        WHERE id = ?
+        """,
+        (nom, prenom, telephone, adresse, id_utilisateur)
+    )
+    base_de_donnees.commit()
+
+    flash("Profil modifié avec succès", "success")
+    return redirect("/profil", 303)
+
