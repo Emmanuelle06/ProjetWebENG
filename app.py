@@ -21,7 +21,7 @@ def index():
         return render_template('page_vendeur.jinja')
     if session.get("statut") == "acheteur":
         return render_template('menu.jinja')
-    
+
     if request.method == "GET":
         session.pop("id_utilisateur", default=None)
         session.pop("statut", default=None)
@@ -182,19 +182,23 @@ def inscription_vendeur():
 
 @app.route('/menu', methods=["GET"])
 def menu():
-    """Affiche tous les repas disponibles, peu importe le vendeur"""
+    """Affiche les repas disponibles, avec recherche par nom"""
     if "id_utilisateur" not in session:
         flash("Vous devez être connecté pour accéder au menu.", "warning")
         return redirect("/")
+
+    recherche = request.args.get("recherche", "").strip()
 
     base_de_donnees = db.get_db()
     repas = base_de_donnees.execute(
         """SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
            FROM repas
            LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
-           WHERE repas.disponibilite = 'on'"""
+           WHERE repas.disponibilite = 'on'
+             AND repas.nom LIKE :recherche""",
+        {"recherche": "%" + recherche + "%"}
     ).fetchall()
-    return render_template("menu.jinja", repas=repas)
+    return render_template("menu.jinja", repas=repas, recherche=recherche)
 
 
 @app.route('/image-repas/<int:id_repas>')
@@ -355,3 +359,11 @@ def inscription_acheteur():
 def deconnexion():
     session.clear()
     return redirect('/')
+
+
+
+
+
+
+
+
