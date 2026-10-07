@@ -58,10 +58,26 @@
         <div class="offcanvas-body" id="panier">
             {% if "panier" in session%}
             {% for repas in session["panier"]%}
-            <p>{{repas.nom}} - {{repas.prix}} $ <a href="/enlever-panier/{{ repas['id'] }}">Supprimer</a></p>
+            <div class="d-flex border border-black m-1">
+                <img src="{{ url_for('image_repas', id_repas=repas['id']) }}" style="width: 60px; height: 60px;"
+                    alt="{{ repas['nom'] }}">
+                <div style="width: 100%;">
+                    <div class="d-flex justify-content-between">
+                        <p class="fs-5 m-0"> {{repas.nom}} - {{repas.prix}} $</p>
+                        <a href="/enlever-panier/{{ repas['id'] }}">
+                            <img src="{{ url_for('static', filename='images/poubelle.png') }}" alt="poubelle"
+                                style="width: 25px; height: 25px;"></a>
+
+
+                    </div>
+                    <p class="fs-5 m-0">Quantité : </p>
+                </div>
+
+            </div>
             {%endfor%}
+            <p class="fs-5">Coût total :</p>
             <form method="post" action="/vider-panier">
-                <button type="reset">Vider le panier</button>
+                <button type="submit">Vider le panier</button>
             </form>
             <form method="post" action="/passer-commande">
                 <button type="submit">Passer la comamnde</button>

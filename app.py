@@ -351,6 +351,7 @@ def inscription_acheteur():
 
         flash("Compte acheteur crée avec succès", "success")
         return redirect("/", 303)
+
 @app.route('/deconnexion')
 def deconnexion():
     session.clear()
@@ -368,7 +369,8 @@ def ajouter_panier(id_repas):
         "prix": repas["prix"]
     })
     session.modified = True
-    flash("Repas ajouté au panier.", "success")
+
+    # flash("Repas ajouté au panier.", "success")
     return redirect("/menu")
 
 @app.route('/enlever-panier/<int:id_repas>')
@@ -377,6 +379,22 @@ def supprimer_panier(id_repas):
         if repas["id"] == id_repas:
             session["panier"].remove(repas)
             session.modified = True
-            flash("Repas supprimé avec succès", "success")
+            # flash("Repas supprimé avec succès", "success")
             break
     return redirect("/menu")
+
+# @app.route('/passer-commande', methods=["POST"])
+# def passer_commande():
+#     if session["panier"]:
+
+
+#    return redirect("/")
+
+@app.route('/vider-panier',methods=["POST"])
+def vider_panier():
+    if session:
+        session["panier"] = []
+        flash("Panier vidé avec succès", "success")
+        return redirect('/menu')
+    else:
+        abort(401)

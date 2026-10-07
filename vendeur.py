@@ -30,6 +30,7 @@ def creer_repas():
             if not request.form.get("titre"):
                 classe_titre = "is-invalid"
                 valide = False
+                
 
             if not prix:
                 classe_prix = "is-invalid"
