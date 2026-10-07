@@ -28,9 +28,12 @@ def obtenir_profil(id_utilisateur):
 def profil():
     if "id_utilisateur" not in session:
         return redirect("/")
+    id_utilisateur = session["id_utilisateur"]
+    utilisateur = obtenir_profil(id_utilisateur)
 
-    utilisateur = obtenir_profil(session["id_utilisateur"])
-
+    if utilisateur is None:
+        session.clear()
+        return redirect("/")
     return render_template("profil/profil.jinja", utilisateur=utilisateur)
 
 @bp_acheteur.route('/inscription-acheteur', methods=["GET", "POST"])
@@ -179,10 +182,7 @@ def modifier_profil():
 
     if request.method == "GET":
         return render_template("profil/modifier_profil.jinja",
-                               nom=utilisateur["nom"],
-                               prenom=utilisateur["prenom"],
-                               telephone=utilisateur["telephone"],
-                               adresse=utilisateur["adresse_postal"])
+                               utilisateur=utilisateur)
 
     nom = request.form.get("nom", "").strip()
     prenom = request.form.get("prenom", "").strip()
@@ -217,6 +217,7 @@ def modifier_profil():
 
     if a_erreur:
         return render_template("profil/modifier_profil.jinja",
+                               utilisateur=utilisateur,
                                nom=nom, prenom=prenom,
                                telephone=telephone, adresse=adresse,
                                classe_nom=classe_nom,

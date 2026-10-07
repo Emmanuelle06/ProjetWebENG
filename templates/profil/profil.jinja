@@ -2,68 +2,53 @@
 
 {% block contenu %}
 
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
 
-    <h1>Mon profil</h1>
+    <h1 class="mb-4">Mon profil</h1>
 
-    <div class="row mt-4">
+    <div class="row g-4">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h3>Informations du compte</h3>
-                    <p> <strong>Nom d'utilisateur :</strong> {{ utilisateur["username"] }} </p>
-                    <p> <strong>Nom :</strong> {{ utilisateur["nom"] }} </p>
-                    <p> <strong>Prénom :</strong> {{ utilisateur["prenom"] }} </p>
-                    <p> <strong>Téléphone :</strong> {{ utilisateur["telephone"] }} </p>
-                    <p> <strong>Adresse :</strong> {{ utilisateur["adresse_postal"] }} </p>
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-3">Informations du compte</h3>
+                    <p><strong>Nom d'utilisateur :</strong> {{ utilisateur["username"] }}</p>
+                    <p><strong>Nom :</strong> {{ utilisateur["nom"] }}</p>
+                    <p><strong>Prénom :</strong> {{ utilisateur["prenom"] }}</p>
+                    <p><strong>Téléphone :</strong> {{ utilisateur["telephone"] }}</p>
+                    <p><strong>Adresse :</strong> {{ utilisateur["adresse_postal"] }}</p>
 
-
-                    <button type="button" class="btn btn-primary"> Modifier mon profil </button>
-
+                    <a href="/profil/modifier" class="btn btn-primary mt-2 me-2">
+                        <i class="bi bi-pencil-square me-2"></i>Modifier mon profil
+                    </a>
+                    <a href="/supprimer-compte" class="btn btn-danger mt-2">
+                        <i class="bi bi-trash3 me-2"></i>Supprimer mon compte
+                    </a>
                 </div>
             </div>
-
         </div>
 
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h3>Carte de fidélité</h3>
-                    <p>Crédit disponible :</p>
-                    <h2>{{ utilisateur["credit"] }} $</h2>
-                    <button type="button" class="btn btn-primary">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h3 class="card-title mb-3">Carte de fidélité</h3>
+                        <p class="mb-1 text-muted">Crédit disponible :</p>
+                        <h2 class="text-success mb-3">{{ utilisateur["credit"] }} $</h2>
+                    </div>
+                    <button type="button" class="btn btn-primary w-75">
                         Charger ma carte
                     </button>
-
                 </div>
             </div>
-
-        </div>
-
-    </div>
-
-    <div class="card mt-4">
-        <div class="card-body">
-
-            <h3>Historique de mes commandes</h3>
-
-            <p>Aucune commande à afficher pour le moment.</p>
-
         </div>
     </div>
 
-    <div class="mt-4 mb-4">
-
-        <h3>Supprimer mon compte</h3>
-
-        <p>La suppression de votre compte est définitive.</p>
-
-        <button type="button" class="btn btn-danger">
-            Supprimer mon compte
-        </button>
-
+    <div class="card shadow-sm border-0 rounded-4 mt-4">
+        <div class="card-body p-4">
+            <h3 class="card-title mb-3">Historique de mes commandes</h3>
+            <p class="text-muted mb-0">Aucune commande à afficher pour le moment.</p>
+        </div>
     </div>
-
 </div>
 
 {% endblock %}

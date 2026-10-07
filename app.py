@@ -13,8 +13,8 @@ app.register_blueprint(bp_acheteur)
 app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
 
 db.init_app(app)
-with app.app_context():
-    db.init_db()
+#with app.app_context():
+#   db.init_db()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -49,6 +49,7 @@ def index():
     session["id_utilisateur"] = utilisateur["id"]
     session["statut"] = utilisateur["statut"]
     session["username"] = nom_utilisateur
+    session["avatar"] = utilisateur["avatar"] if "avatar" in utilisateur and utilisateur["avatar"] else "avatar.jpg"
     if utilisateur["statut"] == "acheteur":
         return redirect('/menu',303)
 
