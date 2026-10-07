@@ -36,12 +36,13 @@
                 <form action="/deconnexion" method="GET" class="mb-0">
                     <input type="submit" value="Déconnexion" class="btn btn-primary">
                 </form>
-
+                {% endif %}
+                {% if session["statut"] == 'acheteur'%}
                 <img src="{{ url_for('static', filename='images/panier.png') }}" alt="Panier"
                     style="width: 40px; cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                     aria-controls="offcanvasRight">
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </nav>
 
@@ -56,9 +57,15 @@
 
         <div class="offcanvas-body" id="panier">
             {% if "panier" in session%}
-                {% for repas in session["panier"]%}
-                    <p>{{repas.nom}} - {{repas.prix}} $ <a href="/enlever-panier/{{ repas['id'] }}">Supprimer</a></p>
-                    {%endfor%}
+            {% for repas in session["panier"]%}
+            <p>{{repas.nom}} - {{repas.prix}} $ <a href="/enlever-panier/{{ repas['id'] }}">Supprimer</a></p>
+            {%endfor%}
+            <form method="post" action="/vider-panier">
+                <button type="reset">Vider le panier</button>
+            </form>
+            <form method="post" action="/passer-commande">
+                <button type="submit">Passer la comamnde</button>
+            </form>
             {%endif%}
         </div>
 

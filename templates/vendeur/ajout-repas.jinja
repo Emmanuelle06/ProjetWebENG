@@ -9,21 +9,21 @@
         <form action="/vendeur/ajout-repas" method="POST" enctype="multipart/form-data" novalidate>
             <div class="mb-3">
                 <label for="titre">Nom repas :</label>
-                <input type="text" name="titre" id="titre" class="form-control {{ classe_titre }}">
+                <input type="text" name="titre" id="titre" class="form-control {{ classe_titre }}" value="{{nom_repas}}">
                 <div class="invalid-feedback">
                     <p>Veuillez entrer un nom de repas</p>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="prix">Prix ($):</label>
-                <input type="number" name="prix" id="prix" class="form-control {{ classe_prix }}">
+                <input type="number" name="prix" id="prix" class="form-control {{ classe_prix }}" value="{{prix_repas}}">
                 <div class="invalid-feedback">
                     {{ message_prix }}
                 </div>
             </div>
             <div class="mb-3">
                 <label for="description">Description :</label>
-                <input type="text" name="description" id="description" class="form-control {{ classe_description }}">
+                <input type="text" name="description" id="description" class="form-control {{ classe_description }}" value="{{desc_repas}}">
                 <div class="invalid-feedback">
                     <p>Veuillez entrer une description.</p>
                 </div>

@@ -368,6 +368,7 @@ def ajouter_panier(id_repas):
         "prix": repas["prix"]
     })
     session.modified = True
+    flash("Repas ajouté au panier.", "success")
     return redirect("/menu")
 
 @app.route('/enlever-panier/<int:id_repas>')
@@ -376,4 +377,6 @@ def supprimer_panier(id_repas):
         if repas["id"] == id_repas:
             session["panier"].remove(repas)
             session.modified = True
+            flash("Repas supprimé avec succès", "success")
+            break
     return redirect("/menu")
