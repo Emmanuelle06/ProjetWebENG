@@ -4,12 +4,9 @@ from flask import Flask, render_template, request, redirect, flash,session,url_f
 from BD import db
 from flask import Response, abort
 from vendeur import bp_vendeur
-<<<<<<< HEAD
 from menu import bp_menu
 
-=======
 from BD.inserer_repas import inserer_donnees_test
->>>>>>> origin/main
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
@@ -28,11 +25,7 @@ def index():
     if session.get("statut") == "vendeur":
         return render_template('page_vendeur.jinja')
     if session.get("statut") == "acheteur":
-<<<<<<< HEAD
         return redirect('/menu')
-=======
-        return render_template('menu.jinja')
->>>>>>> origin/main
 
     if request.method == "GET":
         session.pop("id_utilisateur", default=None)
