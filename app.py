@@ -42,7 +42,7 @@ def index():
     if utilisateur is None:
         return render_template("accueil.jinja",
                                nom_utilisateur=nom_utilisateur,
-                               message_erreur="Nom d'utilisateur ou mot de passe incorrect.\nVeuillez réessayer!")
+                               message_erreur="Nom d'utilisateur ou mot de passe incorrect. \nVeuillez réessayer!")
 
     session.clear()
     session["id_utilisateur"] = utilisateur["id"]
