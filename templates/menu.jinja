@@ -4,14 +4,9 @@
 <div class="container my-4">
     <h1 class="text-center titre-marron mb-4">Menu</h1>
 
-    </form>
-        <form id="form-recherche" role="search" class="mb-4">
-        <label for="mot" class="form-label d-block text-center">Rechercher un repas</label>
-        <div class="d-flex justify-content-center gap-2">
-            <input type="search" id="mot" name="mot" class="form-control w-50" autocomplete="off"
-                placeholder="Rechercher un repas par nom 🔍"  aria-label="Rechercher un repas">
-
-        </div>
+    <form id="form-recherche" role="search" class="d-flex flex-column align-items-start mb-4">
+        <input type="search" id="mot" name="mot" class="form-control w-25" autocomplete="off"
+            placeholder="🔍 Rechercher  ">
     </form>
 
     <p id="message-aucun" class="text-center d-none">Aucun repas ne correspond à votre recherche.</p>
@@ -22,3 +17,6 @@
 <script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
 <script src="{{ url_for('static', filename='js/recherche.js') }}"></script>
 {% endblock %}
+
+
+
