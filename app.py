@@ -5,6 +5,7 @@ from BD import db
 from flask import Response, abort
 from vendeur import bp_vendeur
 from acheteur import bp_acheteur
+from BD.inserer_repas import inserer_donnees_test
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
@@ -12,9 +13,11 @@ app.register_blueprint(bp_vendeur, url_prefix='/vendeur')
 app.register_blueprint(bp_acheteur)
 app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
 
+
 db.init_app(app)
-#with app.app_context():
-#   db.init_db()
+with app.app_context():
+    db.init_db()
+    inserer_donnees_test(db.get_db())
 
 @app.route("/", methods=["GET", "POST"])
 def index():
