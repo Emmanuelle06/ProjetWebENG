@@ -184,12 +184,36 @@ def modifier_profil():
         return render_template("profil/modifier_profil.jinja",
                                utilisateur=utilisateur)
 
+    nom_utilisateur = request.form.get("nom_utilisateur", "").strip()
     nom = request.form.get("nom", "").strip()
     prenom = request.form.get("prenom", "").strip()
     telephone = request.form.get("telephone", "").strip()
     adresse = request.form.get("adresse", "").strip()
 
     a_erreur = False
+
+    if nom_utilisateur == "":
+        a_erreur = True
+        classe_nom_utilisateur = "is-invalid"
+        message_nom_utilisateur = "Veuillez saisir un nom d'utilisateur."
+    else:
+        base_de_donnees = db.get_db()
+
+        utilisateur_existant = base_de_donnees.execute(
+            """
+            SELECT id
+            FROM utilisateur
+            WHERE username = ? AND id != ?
+            """,
+            (nom_utilisateur, id_utilisateur)
+        ).fetchone()
+
+        if utilisateur_existant is not None:
+            a_erreur = True
+            classe_nom_utilisateur = "is-invalid"
+            message_nom_utilisateur = "Ce nom d'utilisateur existe déjà."
+        else:
+            classe_nom_utilisateur = "is-valid"
 
     if nom == "":
         a_erreur = True
@@ -220,12 +244,22 @@ def modifier_profil():
                                utilisateur=utilisateur,
                                nom=nom, prenom=prenom,
                                telephone=telephone, adresse=adresse,
+                               classe_nom_utilisateur=classe_nom_utilisateur,
                                classe_nom=classe_nom,
                                classe_prenom=classe_prenom,
                                classe_telephone=classe_telephone,
                                classe_adresse=classe_adresse)
 
     base_de_donnees = db.get_db()
+    base_de_donnees.execute(
+        """
+        UPDATE utilisateur
+        SET username = ?
+        WHERE id = ?
+        """,
+        (nom_utilisateur, id_utilisateur)
+    )
+
     base_de_donnees.execute(
         """
         UPDATE acheteur
@@ -236,6 +270,7 @@ def modifier_profil():
     )
     base_de_donnees.commit()
 
+    session["username"] = nom_utilisateur
     flash("Profil modifié avec succès", "success")
     return redirect("/profil", 303)
 
