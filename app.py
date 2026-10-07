@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, flash,session,url_f
 from BD import db
 from flask import Response, abort
 from vendeur import bp_vendeur
+from BD.inserer_repas import inserer_donnees_test
 
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
@@ -14,6 +15,7 @@ app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c2
 db.init_app(app)
 with app.app_context():
     db.init_db()
+    inserer_donnees_test(db.get_db())
 
 @app.route("/", methods=["GET", "POST"])
 def index():

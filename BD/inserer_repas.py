@@ -16,12 +16,24 @@ REPAS = [
     ("Pizza",              13, "Sauce tomate, mozzarella et basilic",       "pizza.webp",       "Burger House"),
 ]
 
-connexion = sqlite3.connect("BD/eatfast.sqlite")
-for nom, prix, description, fichier, restaurant in REPAS:
-    connexion.execute(
-        """INSERT INTO repas (nom, prix, description, disponibilite, image, id_vendeur)
-           VALUES (?, ?, ?, 'on', ?, (SELECT id FROM vendeur WHERE nom_restaurant = ?))""",
-        (nom, prix, description, (DOSSIER / fichier).read_bytes(), restaurant)
-    )
-connexion.commit()
-connexion.close()
+def inserer_donnees_test(connexion):
+    """Insère les vendeurs et repas de test, seulement si aucun repas n'existe."""
+    if connexion.execute("SELECT COUNT(*) FROM repas").fetchone()[0] > 0:
+        return
+
+    with open("BD/donnees_test.sql", encoding="utf-8") as f:
+        connexion.executescript(f.read())
+
+    for nom, prix, description, fichier, restaurant in REPAS:
+        connexion.execute(
+            """INSERT INTO repas (nom, prix, description, disponibilite, image, id_vendeur)
+               VALUES (?, ?, ?, 'on', ?, (SELECT id FROM vendeur WHERE nom_restaurant = ?))""",
+            (nom, prix, description, (DOSSIER / fichier).read_bytes(), restaurant)
+        )
+    connexion.commit()
+
+
+if __name__ == "__main__":
+    connexion = sqlite3.connect("BD/eatfast.sqlite")
+    inserer_donnees_test(connexion)
+    connexion.close()
