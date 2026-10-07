@@ -12,12 +12,15 @@
         <h2 class="text-center fw-bold titre">Connexion </h2>
 
         {% if message_erreur %}
-            <p class="text-danger text-center">{{ message_erreur }}</p>
+            <div class="d-flex align-items-center justify-content-center gap-2 bg-white border
+             border-2 border-danger rounded-3 p-1 mb-1 text-danger fw-semibold" role="alert">
+                <i class="bi bi-x-circle-fill fs-4"></i>
+                <span>{{ message_erreur }}</span>
+            </div>
         {% endif %}
-
         <form method="POST" action="/" novalidate>
 
-            <div class="mb-3">
+            <div class="mt-4 mb-3">
                 <label for="username" class="form-label">Nom d'utilisateur:</label>
                 <input type="text"id="username" name="username" class="form-control" required>
             </div>
@@ -27,7 +30,7 @@
                 <input type="password" id="password" name="password" class="form-control" required>
             </div>
 
-            
+
             <div class="text-center">
                 <button type="submit" class="btn btn-primary w-75 py-3 fs-5">Se connecter</button>
             </div>
