@@ -4,11 +4,14 @@ from flask import Flask, render_template, request, redirect, flash,session,url_f
 from BD import db
 from flask import Response, abort
 from vendeur import bp_vendeur
+from menu import bp_menu
+
 from BD.inserer_repas import inserer_donnees_test
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
 app.register_blueprint(bp_vendeur, url_prefix='/vendeur')
+app.register_blueprint(bp_menu)
 app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
 
 
@@ -22,7 +25,7 @@ def index():
     if session.get("statut") == "vendeur":
         return render_template('page_vendeur.jinja')
     if session.get("statut") == "acheteur":
-        return render_template('menu.jinja')
+        return redirect('/menu')
 
     if request.method == "GET":
         session.pop("id_utilisateur", default=None)
@@ -180,21 +183,6 @@ def inscription_vendeur():
         return redirect("/", 303)
 
 
-@app.route('/menu', methods=["GET"])
-def menu():
-    """Affiche tous les repas disponibles, peu importe le vendeur"""
-    if "id_utilisateur" not in session:
-        flash("Vous devez être connecté pour accéder au menu.", "warning")
-        return redirect("/")
-
-    base_de_donnees = db.get_db()
-    repas = base_de_donnees.execute(
-        """SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
-           FROM repas
-           LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
-           WHERE repas.disponibilite = 'on'"""
-    ).fetchall()
-    return render_template("menu.jinja", repas=repas)
 
 
 @app.route('/image-repas/<int:id_repas>')
@@ -355,3 +343,11 @@ def inscription_acheteur():
 def deconnexion():
     session.clear()
     return redirect('/')
+
+
+
+
+
+
+
+
