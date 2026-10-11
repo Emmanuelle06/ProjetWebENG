@@ -4,7 +4,7 @@
 
 <div class="container mt-4 mb-5">
 
-    <h1 class="mb-4">Mon profil</h1>
+    <h1 class="mb-4">Bienvenue, {{ utilisateur["prenom"] }}</h1>
 
     <div class="row g-4">
         <div class="col-md-8">
@@ -20,9 +20,31 @@
                     <a href="/profil/modifier" class="btn btn-primary mt-2 me-2">
                         <i class="bi bi-pencil-square me-2"></i>Modifier mon profil
                     </a>
-                    <a href="/supprimer-compte" class="btn btn-danger mt-2">
-                        <i class="bi bi-trash3 me-2"></i>Supprimer mon compte
-                    </a>
+                    <button type="button" class="btn btn-danger mt-2"
+                        commandfor="dialogSuppression" command="show-modal">
+                        <i class="bi bi-trash3 me-2"></i>Supprimer mon profil
+                    </button>
+
+                    <dialog id="dialogSuppression" class="rounded-4 border-2 border-dark p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Supprimer mon compte
+                        </h5>
+
+                        <p>Voulez-vous vraiment supprimer votre compte ? Cette action est définitive.</p>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary"
+                                    commandfor="dialogSuppression" command="close">
+                                Annuler
+                            </button>
+
+                            <form method="post" action="{{ url_for('acheteur.supprimer_profil') }}">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash3 me-2"></i>Oui, supprimer
+                                </button>
+                            </form>
+                        </div>
+                    </dialog>
                 </div>
             </div>
         </div>
@@ -35,9 +57,17 @@
                         <p class="mb-1 text-muted">Crédit disponible :</p>
                         <h2 class="text-success mb-3">{{ utilisateur["credit"] }} $</h2>
                     </div>
-                    <button type="button" class="btn btn-primary w-75">
-                        Charger ma carte
-                    </button>
+                    <form method="post" action="{{ url_for('acheteur.charger_carte') }}">
+                        <div class="mb-3">
+                            <label for="montant" class="form-label">Montant à ajouter ($) </label>
+                            <input type="number" id="montant" name="montant" class="form-control w-75" min="1" max="500" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-75">
+                            Charger ma carte
+                        </button>
+
+                    </form>
                 </div>
             </div>
         </div>

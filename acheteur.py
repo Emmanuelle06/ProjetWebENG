@@ -259,7 +259,6 @@ def modifier_profil():
         """,
         (nom_utilisateur, id_utilisateur)
     )
-
     base_de_donnees.execute(
         """
         UPDATE acheteur
@@ -269,8 +268,56 @@ def modifier_profil():
         (nom, prenom, telephone, adresse, id_utilisateur)
     )
     base_de_donnees.commit()
-
     session["username"] = nom_utilisateur
     flash("Profil modifié avec succès", "success")
     return redirect("/profil", 303)
 
+
+@bp_acheteur.route('/profil/supprimer', methods=["POST"])
+def supprimer_profil():
+    if "id_utilisateur" not in session:
+        return redirect("/")
+
+    id_utilisateur = session["id_utilisateur"]
+    base_de_donnees = db.get_db()
+    base_de_donnees.execute(
+        "DELETE FROM utilisateur WHERE id = ?",
+        (id_utilisateur,)
+    )
+    base_de_donnees.commit()
+    session.clear()
+    flash("Votre compte a été supprimé.", "success")
+
+    return redirect("/", 303)
+
+
+@bp_acheteur.route('/profil/charger-carte', methods=["POST"])
+def charger_carte():
+    if "id_utilisateur" not in session:
+        return redirect("/")
+
+    montant_saisi = request.form.get("montant", "").strip()
+
+    try:
+        montant = float(montant_saisi)
+    except ValueError:
+        flash("Veuillez saisir un montant valide.", "danger")
+        return redirect("/profil", 303)
+
+    if montant <= 0:
+        flash("Le montant doit être supérieur à zéro.", "danger")
+        return redirect("/profil", 303)
+
+    base_de_donnees = db.get_db()
+    base_de_donnees.execute(
+        """
+        UPDATE acheteur
+        SET credit = credit + ?
+        WHERE id = ?
+        """,
+        (montant, session["id_utilisateur"])
+    )
+    base_de_donnees.commit()
+    flash("Votre carte de fidélité a été chargée avec succès.", "success")
+
+    return redirect("/profil", 303)
