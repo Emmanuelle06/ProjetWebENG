@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS acheteur
     prenom TEXT,
     adresse_postal TEXT,
     condition BOOLEAN,
+    credit REAL NOT NULL DEFAULT 0,
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
