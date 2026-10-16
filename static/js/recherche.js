@@ -45,7 +45,7 @@ function ajouterCarte(repas) {
     prix.textContent = repas.prix + "$ CA"
 
     const bouton = document.createElement("a")
-    bouton.href = "#"
+    bouton.href = "/ajout-panier/" + repas.id_repas
     bouton.className = "btn-ajouter"
     bouton.textContent = "+"
 

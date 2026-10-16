@@ -17,7 +17,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="prix-repas">{{ item['prix'] }}$ CA</span>
                         {% if session['statut'] == 'acheteur'%}
-                        <a href="/ajout-panier/{{ item['id_repas'] }}" class="btn-ajouter">+</a>
+                            <a href="/ajout-panier/{{ item['id_repas'] }}" class="btn-ajouter">+</a>                        
                         {% endif%}
                     </div>
                 </div>

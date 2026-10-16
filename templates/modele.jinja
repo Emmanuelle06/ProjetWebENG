@@ -97,11 +97,16 @@
                             <img src="{{ url_for('static', filename='images/poubelle.png') }}" alt="poubelle"
                                 style="width: 25px; height: 25px;"></a>
                     </div>
-                    <p class="fs-5 m-0">Quantité : {{repas.quantite}}</p>
-                    <form method="POST" action="/modifier-quantite/{{repas['id']}}">
-                        <button type="submit" name="action" value="moins">-</button>
-                        <button type="submit" name="action" value="plus">+</button>
-                    </form>
+                    <div class="d-flex gap-3 align-items-center">
+                        <p class="fs-5 m-0">{{repas.nom_resto}}</p>
+                        <form method="POST" action="/modifier-quantite/{{repas['id']}}"
+                            class="d-flex gap-2 align-items-center">
+                            <button type="submit" name="action" value="moins">-</button>
+                            <p class="fs-5 m-0">{{repas.quantite}}</p>
+                            <button type="submit" name="action" value="plus">+</button>
+                        </form>
+                    </div>
+                    
                 </div>
             </div>
             {%endfor%}

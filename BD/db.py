@@ -83,3 +83,16 @@ def get_repas(id):
     except Exception as e:
         print(e)
         return False
+
+def get_restaurant(id_repas):
+    db = get_db()
+    try:
+        resto = db.execute(
+            "Select v.nom_restaurant from repas r " \
+            "JOIN vendeur v ON r.id_vendeur = v.id where r.id_repas = ?",
+        (id_repas,)
+        ).fetchone()
+        return resto
+    except Exception as e:
+            print(e)
+            return False
