@@ -87,7 +87,7 @@
         <div class="offcanvas-body" id="panier">
             {% if "panier" in session%}
             {% for repas in session["panier"]%}
-            <div class="d-flex border border-black m-1">
+            <div class="d-flex m-2 carte-repas">
                 <img src="{{ url_for('image_repas', id_repas=repas['id']) }}" style="width: 60px; height: 60px;"
                     alt="{{ repas['nom'] }}">
                 <div style="width: 100%;">
@@ -101,9 +101,9 @@
                         <p class="fs-5 m-0">{{repas.nom_resto}}</p>
                         <form method="POST" action="/modifier-quantite/{{repas['id']}}"
                             class="d-flex gap-2 align-items-center">
-                            <button type="submit" name="action" value="moins">-</button>
+                            <button type="submit" name="action" value="moins" class="btn btn-primary btn-sm">-</button>
                             <p class="fs-5 m-0">{{repas.quantite}}</p>
-                            <button type="submit" name="action" value="plus">+</button>
+                            <button type="submit" name="action" value="plus" class="btn btn-primary btn-sm">+</button>
                         </form>
                     </div>
                     
