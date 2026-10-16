@@ -67,21 +67,23 @@
                         <a href="/enlever-panier/{{ repas['id'] }}">
                             <img src="{{ url_for('static', filename='images/poubelle.png') }}" alt="poubelle"
                                 style="width: 25px; height: 25px;"></a>
-
-
                     </div>
-                    <p class="fs-5 m-0">Quantité : </p>
+                    <p class="fs-5 m-0">Quantité : {{repas.quantite}}</p>
+                    
                 </div>
-
             </div>
             {%endfor%}
-            <p class="fs-5">Coût total :</p>
-            <form method="post" action="/vider-panier">
-                <button type="submit">Vider le panier</button>
-            </form>
-            <form method="post" action="/passer-commande">
-                <button type="submit">Passer la comamnde</button>
-            </form>
+            {% if session["panier"] != []%}
+            <p class="fs-5 fw-bold">Coût total : {{session["cout"]}} $</p>
+            <div class="d-flex justify-content-between align-item-center">
+                <form method="post" action="/vider-panier">
+                    <button type="submit" class="btn btn-primary">Vider le panier</button>
+                </form>
+                <form method="post" action="/passer-commande">
+                    <button type="submit" class="btn btn-primary">Passer la comamnde</button>
+                </form>
+            </div>
+            {%endif%}
             {%endif%}
         </div>
 

@@ -360,14 +360,25 @@ def deconnexion():
 @app.route('/ajout-panier/<int:id_repas>')
 def ajouter_panier(id_repas):
     repas = db.get_repas(id_repas)
+
     if "panier" not in session:
         session["panier"] = []
-
-    session["panier"].append({
-        "id": repas["id_repas"],
-        "nom": repas["nom"],
-        "prix": repas["prix"]
-    })
+    indicateur = False
+    session["cout"] = 0
+    for item in session["panier"]:
+        session["cout"] += item["prix"]
+        if item["id"] == repas["id_repas"]:
+            item["quantite"] += 1
+            indicateur = True
+            break
+        
+    if indicateur == False:
+        session["panier"].append({
+             "id": repas["id_repas"],
+            "nom": repas["nom"],
+            "prix": repas["prix"],
+            "quantite": 1
+            })
     session.modified = True
 
     # flash("Repas ajouté au panier.", "success")
@@ -381,6 +392,9 @@ def supprimer_panier(id_repas):
             session.modified = True
             # flash("Repas supprimé avec succès", "success")
             break
+    session["cout"] = 0
+    for repas in session["panier"]:
+        session["cout"] += repas["prix"]
     return redirect("/menu")
 
 # @app.route('/passer-commande', methods=["POST"])
@@ -395,6 +409,9 @@ def vider_panier():
     if session:
         session["panier"] = []
         flash("Panier vidé avec succès", "success")
+        session["cout"] = 0
+        for repas in session["panier"]:
+            session["cout"] += repas["prix"]
         return redirect('/menu')
     else:
         abort(401)
