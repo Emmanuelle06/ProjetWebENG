@@ -379,6 +379,10 @@ def ajouter_panier(id_repas):
             "prix": repas["prix"],
             "quantite": 1
             })
+    session["cout"] = 0
+
+    for item in session["panier"]:
+        session["cout"] += item["prix"] * item["quantite"]
     session.modified = True
 
     # flash("Repas ajouté au panier.", "success")
@@ -393,8 +397,8 @@ def supprimer_panier(id_repas):
             # flash("Repas supprimé avec succès", "success")
             break
     session["cout"] = 0
-    for repas in session["panier"]:
-        session["cout"] += repas["prix"]
+    for item in session["panier"]:
+        session["cout"] += item["prix"] * item["quantite"]
     return redirect("/menu")
 
 # @app.route('/passer-commande', methods=["POST"])
@@ -410,8 +414,27 @@ def vider_panier():
         session["panier"] = []
         flash("Panier vidé avec succès", "success")
         session["cout"] = 0
-        for repas in session["panier"]:
-            session["cout"] += repas["prix"]
+        for item in session["panier"]:
+            session["cout"] += item["prix"] * item["quantite"]
         return redirect('/menu')
     else:
         abort(401)
+
+@app.route('/modifier-quantite/<int:id_repas>', methods=['POST'])
+def modifier_quantite(id_repas):
+    action = request.form.get("action")
+
+    for repas in session["panier"]:
+        if repas["id"] == id_repas:
+            if action == "plus":
+                repas["quantite"] += 1
+            elif action == "moins":
+                repas["quantite"] -= 1
+                if  repas["quantite"] <= 0:
+                    session["panier"].remove(repas)
+            break
+    session["cout"] = 0
+    for item in session["panier"]:
+        session["cout"] += item["prix"] * item["quantite"]
+    session.modified = True        
+    return redirect ('/menu')
