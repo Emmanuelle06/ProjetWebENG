@@ -4,24 +4,31 @@ from flask import Flask, render_template, request, redirect, flash,session,url_f
 from BD import db
 from flask import Response, abort
 from vendeur import bp_vendeur
+from acheteur import bp_acheteur
+from menu import bp_menu
 
+from BD.inserer_repas import inserer_donnees_test
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
 app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
 app.register_blueprint(bp_vendeur, url_prefix='/vendeur')
+app.register_blueprint(bp_acheteur)
+app.register_blueprint(bp_menu)
 app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
+
 
 db.init_app(app)
 with app.app_context():
     db.init_db()
+    inserer_donnees_test(db.get_db())
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if session.get("statut") == "vendeur":
         return render_template('page_vendeur.jinja')
     if session.get("statut") == "acheteur":
-        return render_template('menu.jinja')
-    
+        return redirect('/menu')
+
     if request.method == "GET":
         session.pop("id_utilisateur", default=None)
         session.pop("statut", default=None)
@@ -29,26 +36,26 @@ def index():
 
     nom_utilisateur = request.form.get("username", "").strip()
     mot_de_passe = request.form.get("password", "")
-    statut = request.form.get("statut", "")
 
     mot_de_passe_hache = hashlib.sha512(mot_de_passe.encode()).hexdigest()
 
     base_de_donnees = db.get_db()
     utilisateur = base_de_donnees.execute(
         """SELECT id, statut FROM utilisateur
-           WHERE username = ? AND mot_de_passe = ? AND statut = ?""",
-        (nom_utilisateur, mot_de_passe_hache, statut)
+           WHERE username = ? AND mot_de_passe = ?""",
+        (nom_utilisateur, mot_de_passe_hache )
     ).fetchone()
 
     if utilisateur is None:
         return render_template("accueil.jinja",
                                nom_utilisateur=nom_utilisateur,
-                               statut=statut,
-                               message_erreur="Nom d'utilisateur, mot de passe ou statut incorrect.")
+                               message_erreur="Nom d'utilisateur ou mot de passe incorrect. \nVeuillez réessayer!")
 
     session.clear()
     session["id_utilisateur"] = utilisateur["id"]
     session["statut"] = utilisateur["statut"]
+    session["username"] = nom_utilisateur
+    session["avatar"] = utilisateur["avatar"] if "avatar" in utilisateur and utilisateur["avatar"] else "avatar.jpg"
     if utilisateur["statut"] == "acheteur":
         return redirect('/menu',303)
 
@@ -180,21 +187,6 @@ def inscription_vendeur():
         return redirect("/", 303)
 
 
-@app.route('/menu', methods=["GET"])
-def menu():
-    """Affiche tous les repas disponibles, peu importe le vendeur"""
-    if "id_utilisateur" not in session:
-        flash("Vous devez être connecté pour accéder au menu.", "warning")
-        return redirect("/")
-
-    base_de_donnees = db.get_db()
-    repas = base_de_donnees.execute(
-        """SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
-           FROM repas
-           LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
-           WHERE repas.disponibilite = 'on'"""
-    ).fetchall()
-    return render_template("menu.jinja", repas=repas)
 
 
 @app.route('/image-repas/<int:id_repas>')
