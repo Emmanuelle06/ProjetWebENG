@@ -349,3 +349,44 @@ def deconnexion():
     session.clear()
     return redirect('/')
 
+
+@app.route('/passer-commande', methods=["POST"])
+def passer_commande():
+    if "id_utilisateur" not in session:
+        abort(401) 
+     
+    if session["panier"]:
+        cout_total = 0
+        for repas in session["panier"]:
+            cout_total += repas["prix"] * repas["quantite"]
+        acheteur = db.get_acheteur(session["id_utilisateur"])
+        if not acheteur:
+            abort(404)
+
+        if acheteur["credit"] < cout_total:
+            flash("Crédit insuffisant", "danger")
+            return redirect("/menu")
+
+        id_commande = db.add_commande({
+            "id_acheteur": session["id_utilisateur"],
+            "statut": "attente"
+        })
+
+        if id_commande:
+            for repas in session["panier"]:
+                resultat = db.commande_repas({
+                    "id_commande": id_commande,
+                    "id_repas": repas["id"],
+                    "quantite": repas["quantite"]
+                })
+                if not resultat:
+                    break
+            if resultat:
+                nouv_credit = acheteur["credit"] - cout_total
+                db.modif_credit(
+                    session["id_utilisateur"],
+                    nouv_credit
+                )
+                session["panier"] = []
+                flash("Commande passée avec succès.", "success" )
+    return redirect("/menu")

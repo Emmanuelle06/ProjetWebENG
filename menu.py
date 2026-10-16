@@ -105,12 +105,7 @@ def supprimer_panier(id_repas):
         session["cout"] += item["prix"] * item["quantite"]
     return redirect("/menu")
 
-# @bp_menu.route('/passer-commande', methods=["POST"])
-# def passer_commande():
-#     if session["panier"]:
 
-
-#    return redirect("/")
 
 @bp_menu.route('/vider-panier',methods=["POST"])
 def vider_panier():
