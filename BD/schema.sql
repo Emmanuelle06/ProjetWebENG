@@ -1,5 +1,6 @@
 
 
+
 CREATE TABLE IF NOT EXISTS utilisateur
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,4 +46,22 @@ CREATE TABLE IF NOT EXISTS repas
     FOREIGN KEY (id_vendeur) REFERENCES vendeur(id) ON DELETE CASCADE
 );
 
+create table IF NOT EXISTS commande
+(
+    id_commande INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_acheteur INTEGER,
+    statut TEXT CHECK (statut IN ('attente', 'cours', 'terminer')),
+    FOREIGN KEY (id_acheteur) REFERENCES acheteur(id) ON DELETE CASCADE
+);
+
+create table IF NOT EXISTS commande_repas
+(
+    id_commande INTEGER,
+    id_repas INTEGER,
+    quantite INTEGER,
+
+    PRIMARY KEY(id_commande, id_repas),
+    FOREIGN KEY(id_commande) REFERENCES commande(id_commande),
+    FOREIGN KEY(id_repas) REFERENCES repas(id_repas)
+);
 

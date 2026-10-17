@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+
 </head>
 
 
@@ -65,21 +66,75 @@
                     <input type="submit" value="Déconnexion" class="btn btn-primary">
                 </form>
                 {% endif %}
+                {% if session["statut"] == 'acheteur'%}
+                <img src="{{ url_for('static', filename='images/panier.png') }}" alt="Panier"
+                    style="width: 40px; cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                    aria-controls="offcanvasRight">
+                {% endif %}
             </div>
-
         </div>
     </nav>
 
+
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Mon panier</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer">
+            </button>
+        </div>
+
+        <div class="offcanvas-body" id="panier">
+            {% if "panier" in session%}
+            {% for repas in session["panier"]%}
+            <div class="d-flex m-2 carte-repas">
+                <img src="{{ url_for('image_repas', id_repas=repas['id']) }}" style="width: 60px; height: 60px;"
+                    alt="{{ repas['nom'] }}">
+                <div style="width: 100%;">
+                    <div class="d-flex justify-content-between">
+                        <p class="fs-5 m-0"> {{repas.nom}} - {{repas.prix}} $</p>
+                        <a href="/enlever-panier/{{ repas['id'] }}">
+                            <img src="{{ url_for('static', filename='images/poubelle.png') }}" alt="poubelle"
+                                style="width: 25px; height: 25px;"></a>
+                    </div>
+                    <div class="d-flex gap-3 align-items-center">
+                        <p class="fs-5 m-0">{{repas.nom_resto}}</p>
+                        <form method="POST" action="/modifier-quantite/{{repas['id']}}"
+                            class="d-flex gap-2 align-items-center">
+                            <button type="submit" name="action" value="moins" class="btn btn-primary btn-sm">-</button>
+                            <p class="fs-5 m-0">{{repas.quantite}}</p>
+                            <button type="submit" name="action" value="plus" class="btn btn-primary btn-sm">+</button>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+            {%endfor%}
+            {% if session["panier"] != []%}
+            <p class="fs-5 fw-bold">Coût total : {{session["cout"]}} $</p>
+            <div class="d-flex justify-content-between align-item-center">
+                <form method="post" action="/vider-panier">
+                    <button type="submit" class="btn btn-primary">Vider le panier</button>
+                </form>
+                <form method="post" action="/passer-commande">
+                    <button type="submit" class="btn btn-primary">Passer la comamnde</button>
+                </form>
+            </div>
+            {%endif%}
+            {%endif%}
+        </div>
+
+    </div>
     <main>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="container mt-3">
-                    {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} text-center" role="alert">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+        {% if messages %}
+        <div class="container mt-3">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} text-center" role="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% endwith %}
 
         {% block contenu %}
@@ -95,8 +150,7 @@
 
         </div>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 
