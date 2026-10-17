@@ -29,7 +29,8 @@
                 </div>
             </div>
             <div class="mb-3">
-                <input type="checkbox" name="dispo" id="dispo">
+                <input type="checkbox" name="dispo" id="dispo"
+                {% if dispo%}checked{%endif%}>
                 <label for="dispo">Repas disponible</label>
                 <div class="invalid-feedback">
                     {{ message_dispo }}
