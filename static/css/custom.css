@@ -172,6 +172,14 @@ main {
     font-weight: bold;
 }
 
+.lien{
+    color: #754a2a;
+    font-weight: semi-bold;
+    font-size: 16px;
+}
+.lien:hover {
+    color: #9C6D49;
+}
 .btn-panier{
     background-color: white;
     color: black;

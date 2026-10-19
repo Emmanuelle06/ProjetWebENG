@@ -1,0 +1,112 @@
+
+{% extends "modele.jinja" %}
+
+{% block contenu %}
+
+<div class="container mt-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Mes repas</h1>
+            <p class="text-muted">Gérez les repas de votre restaurant.</p>
+        </div>
+
+        <a href="{{ url_for('vendeur.creer_repas') }}"
+           class="btn btn-primary">
+            Ajouter un repas
+        </a>
+    </div>
+
+    {% if repas %}
+
+        {% for plat in repas %}
+
+            <div class="card border mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+
+                        <img
+                            src="{{ url_for('vendeur.image_repas', id_repas=plat['id_repas']) }}"
+                            alt="{{ plat['nom'] }}"
+                            width="110"
+                            height="110"
+                            style="object-fit: cover; flex-shrink: 0;"
+                        >
+
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1">{{ plat['nom'] }}</h5>
+
+                            <p class="text-muted mb-2">
+                                {{ plat['description'] }}
+                            </p>
+
+                            <p class="fw-bold mb-2">
+                                {{ "%.2f"|format(plat['prix']) }} $
+                            </p>
+
+                            {% if plat['disponibilite']|string|lower in ['1', 'true', 'on'] %}
+                                <span class="badge bg-success">
+                                    Disponible
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    Indisponible
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex flex-column gap-2">
+
+                            <form method="post"
+                                  action="{{ url_for('vendeur.changer_disponibilite', id_repas=plat['id_repas']) }}">
+
+                                {% if plat['disponibilite']|string|lower in ['1', 'true', 'on'] %}
+                                    <button type="submit"
+                                            class="btn btn-outline-secondary btn-sm">
+                                        Désactiver
+                                    </button>
+                                {% else %}
+                                    <button type="submit"
+                                            class="btn btn-outline-success btn-sm">
+                                        Réactiver
+                                    </button>
+                                {% endif %}
+
+                            </form>
+
+                            <form method="post"
+                                  action="{{ url_for('vendeur.supprimer_mon_repas', id_repas=plat['id_repas']) }}"
+                                  onsubmit="return confirm('Voulez-vous vraiment supprimer ce repas ?');">
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm">
+                                    Supprimer
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="text-center py-5">
+            <h4>Aucun repas pour le moment</h4>
+            <p class="text-muted">
+                Ajoutez votre premier repas pour le voir apparaître ici.
+            </p>
+            <a href="{{ url_for('vendeur.creer_repas') }}"
+               class="btn btn-primary">
+                Ajouter un repas
+            </a>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
