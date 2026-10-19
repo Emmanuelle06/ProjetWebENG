@@ -35,32 +35,32 @@
 
                 {% if session["statut"] == "acheteur" %}
 
-                    <a href="{{ url_for('acheteur.profil') }}"
-                       class="nav-link d-flex align-items-center gap-2">
+                <a href="{{ url_for('acheteur.profil') }}" class="nav-link d-flex align-items-center gap-2">
 
-                        <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}" class="avatar" alt="avatar">
-                        <span>
-                            {{ session["username"] }}
-                        </span>
+                    <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}"
+                        class="avatar" alt="avatar">
+                    <span>
+                        {{ session["username"] }}
+                    </span>
 
-                    </a>
+                </a>
 
                 {% endif %}
 
                 {% if session["statut"] == "vendeur" %}
 
-                    <a href="{{ url_for('vendeur.profil') }}"
-                       class="nav-link d-flex align-items-center gap-2">
+                <a href="{{ url_for('vendeur.profil') }}" class="nav-link d-flex align-items-center gap-2">
 
-                        <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}" class="avatar" alt="avatar">
-                        <span>
-                            {{ session["username"] }}
-                        </span>
+                    <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}"
+                        class="avatar" alt="avatar">
+                    <span>
+                        {{ session["username"] }}
+                    </span>
 
-                    </a>
+                </a>
 
                 {% endif %}
-                
+
                 {% if session.id_utilisateur %}
                 <form action="/deconnexion" method="GET" class="mb-0">
                     <input type="submit" value="Déconnexion" class="btn btn-primary">
@@ -87,7 +87,7 @@
         <div class="offcanvas-body" id="panier">
             {% if "panier" in session%}
             {% for repas in session["panier"]%}
-            <div class="d-flex m-2 carte-repas">
+            <div class="d-flex m-2 carte-repas gap-2 m-3">
                 <img src="{{ url_for('image_repas', id_repas=repas['id']) }}" style="width: 60px; height: 60px;"
                     alt="{{ repas['nom'] }}">
                 <div style="width: 100%;">
@@ -95,18 +95,22 @@
                         <p class="fs-5 m-0"> {{repas.nom}} - {{repas.prix}} $</p>
                         <a href="/enlever-panier/{{ repas['id'] }}">
                             <img src="{{ url_for('static', filename='images/poubelle.png') }}" alt="poubelle"
-                                style="width: 25px; height: 25px;"></a>
+                                style="width: 20px; height: 20px;"></a>
                     </div>
                     <div class="d-flex gap-3 align-items-center">
                         <p class="fs-5 m-0">{{repas.nom_resto}}</p>
                         <form method="POST" action="/modifier-quantite/{{repas['id']}}"
                             class="d-flex gap-2 align-items-center">
-                            <button type="submit" name="action" value="moins" class="btn btn-primary btn-sm">-</button>
-                            <p class="fs-5 m-0">{{repas.quantite}}</p>
-                            <button type="submit" name="action" value="plus" class="btn btn-primary btn-sm">+</button>
+                            <div class="d-flex gap-2 rounded-pill btn-panier">
+                                <button type="submit" name="action" value="moins"
+                                    class=" btn-sm">-</button>
+                                <p class="fs-5 m-0">{{repas.quantite}}</p>
+                                <button type="submit" name="action" value="plus"
+                                    class=" btn-sm">+</button>
+                            </div>
                         </form>
                     </div>
-                    
+
                 </div>
             </div>
             {%endfor%}
