@@ -16,7 +16,7 @@
                     <p><strong>Téléphone :</strong> {{ utilisateur["telephone"] }}</p>
                     <p><strong>Adresse :</strong> {{ utilisateur["adresse_postale"] }}</p>
 
-                    <a href="/profil/modifier" class="btn btn-primary mt-2 me-2">
+                    <a href="{{ url_for('vendeur.modifier_profil') }}" class="btn btn-primary mt-2 me-2">
                         <i class="bi bi-pencil-square me-2"></i>Modifier mon profil
                     </a>
                     <button type="button" class="btn btn-danger mt-2"
@@ -37,7 +37,7 @@
                                 Annuler
                             </button>
 
-                            <form method="post" action="{{ url_for('acheteur.supprimer_profil') }}">
+                            <form method="post" action="{{ url_for('vendeur.supprimer_profil') }}">
                                 <button type="submit" class="btn btn-danger">
                                     <i class="bi bi-trash3 me-2"></i>Oui, supprimer
                                 </button>
@@ -49,12 +49,95 @@
         </div>
     </div>
 
+
+
     <div class="card shadow-sm border-0 rounded-4 mt-4">
         <div class="card-body p-4">
-            <h3 class="card-title mb-3">Historique de mes commandes</h3>
-            <p class="text-muted mb-0">Aucune commande à afficher pour le moment.</p>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="card-title mb-3">Historique de mes repas</h3>
+
+            </div>
+
+            {% if repas %}
+
+                {% for plat in repas %}
+
+                    <div class="border rounded-3 p-3 mb-3">
+                        <div class="d-flex align-items-center gap-3">
+
+                            <img
+                                src="{{ url_for('vendeur.image_repas', id_repas=plat['id_repas']) }}"
+                                alt="{{ plat['nom'] }}"
+                                width="100"
+                                height="100"
+                                style="object-fit: cover; flex-shrink: 0;"
+                            >
+
+                            <div class="flex-grow-1">
+                                <h5>{{ plat['nom'] }}</h5>
+
+                                <p class="text-muted mb-2">
+                                    {{ plat['description'] }}
+                                </p>
+
+                                <p class="fw-bold mb-2">
+                                    {{ "%.2f"|format(plat['prix']) }} $
+                                </p>
+
+                                {% if plat['disponibilite']|string|lower in ['1', 'true', 'on'] %}
+                                    <span class="badge bg-success">Disponible</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Indisponible</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-flex flex-column gap-2">
+
+                                <form method="post"
+                                    action="{{ url_for('vendeur.changer_disponibilite', id_repas=plat['id_repas']) }}">
+
+                                    {% if plat['disponibilite']|string|lower in ['1', 'true', 'on'] %}
+                                        <button type="submit"
+                                                class="btn btn-outline-secondary btn-sm">
+                                            Désactiver
+                                        </button>
+                                    {% else %}
+                                        <button type="submit"
+                                                class="btn btn-outline-success btn-sm">
+                                            Réactiver
+                                        </button>
+                                    {% endif %}
+
+                                </form>
+
+                                <form method="post"
+                                    action="{{ url_for('vendeur.supprimer_mon_repas', id_repas=plat['id_repas']) }}"
+                                    onsubmit="return confirm('Voulez-vous vraiment supprimer ce repas ?');">
+
+                                    <button type="submit"
+                                            class="btn btn-outline-danger btn-sm">
+                                        Supprimer
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="text-muted mb-0">
+                    Vous n'avez pas encore ajouté de repas.
+                </p>
+
+            {% endif %}
+
         </div>
     </div>
-</div>
 
+</div>
 {% endblock %}

@@ -40,7 +40,7 @@ def add_repas(repas):
     db = get_db()
     try:
         db.execute(
-                "INSERT INTO REPAS (nom, prix, description, disponibilite, image, id_vendeur)" \
+                "INSERT INTO repas (nom, prix, description, disponibilite, image, id_vendeur)" \
                 "VALUES (:nom, :prix, :description, :disponibilite, :image, :id_vendeur)",
                 repas
             )
@@ -51,3 +51,67 @@ def add_repas(repas):
         return False
 
 
+#fonction pour obtenir les repas dun client, supprimer et rendre son repas indisponible
+
+def obtenir_mes_repas(id_vendeur):
+    base_de_donnees = get_db()
+
+    repas = base_de_donnees.execute(
+        """
+        SELECT id_repas, nom, prix, description, disponibilite,image
+        FROM repas
+        WHERE id_vendeur = ?
+        ORDER BY id_repas DESC
+        """,
+        (id_vendeur,)
+    ).fetchall()
+
+    return repas
+
+
+def obtenir_repas(id_repas, id_vendeur):
+    base_de_donnees = get_db()
+
+    repas = base_de_donnees.execute(
+        """
+        SELECT id_repas, nom, prix, description, disponibilite, image
+        FROM repas
+        WHERE id_repas = ? AND id_vendeur = ?
+        """,
+        (id_repas, id_vendeur)
+    ).fetchone()
+
+    return repas
+
+
+def modifier_disponibilite(id_repas, id_vendeur, disponibilite):
+    base_de_donnees = get_db()
+
+    curseur = base_de_donnees.execute(
+        """
+        UPDATE repas
+        SET disponibilite = ?
+        WHERE id_repas = ? AND id_vendeur = ?
+        """,
+        (disponibilite, id_repas, id_vendeur)
+    )
+
+    base_de_donnees.commit()
+
+    return curseur.rowcount > 0
+
+
+def supprimer_repas(id_repas, id_vendeur):
+    base_de_donnees = get_db()
+
+    curseur = base_de_donnees.execute(
+        """
+        DELETE FROM repas
+        WHERE id_repas = ? AND id_vendeur = ?
+        """,
+        (id_repas, id_vendeur)
+    )
+
+    base_de_donnees.commit()
+
+    return curseur.rowcount > 0
