@@ -35,17 +35,6 @@
 
                 {% if session["statut"] == "acheteur" %}
 
-<<<<<<< HEAD
-                <a href="{{ url_for('acheteur.profil') }}" class="nav-link d-flex align-items-center gap-2">
-
-                    <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}"
-                        class="avatar" alt="avatar">
-                    <span>
-                        {{ session["username"] }}
-                    </span>
-
-                </a>
-=======
                     <a href="{{ url_for('acheteur.profil') }}"
                        class="nav-link d-flex align-items-center gap-2">
 
@@ -55,26 +44,11 @@
                         </span>
 
                     </a>
->>>>>>> main
 
                 {% endif %}
 
                 {% if session["statut"] == "vendeur" %}
 
-<<<<<<< HEAD
-                <a href="{{ url_for('vendeur.profil') }}" class="nav-link d-flex align-items-center gap-2">
-
-                    <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}"
-                        class="avatar" alt="avatar">
-                    <span>
-                        {{ session["username"] }}
-                    </span>
-
-                </a>
-
-                {% endif %}
-
-=======
                     <a href="{{ url_for('vendeur.profil') }}"
                        class="nav-link d-flex align-items-center gap-2">
 
@@ -86,20 +60,16 @@
                     </a>
 
                 {% endif %}
-                
->>>>>>> main
+
                 {% if session.id_utilisateur %}
                 <form action="/deconnexion" method="GET" class="mb-0">
                     <input type="submit" value="Déconnexion" class="btn btn-primary">
                 </form>
-<<<<<<< HEAD
                 {% endif %}
                 {% if session["statut"] == 'acheteur'%}
                 <img src="{{ url_for('static', filename='images/panier.png') }}" alt="Panier"
                     style="width: 40px; cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                     aria-controls="offcanvasRight">
-=======
->>>>>>> main
                 {% endif %}
             </div>
 
@@ -163,15 +133,6 @@
     <main>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
-<<<<<<< HEAD
-        {% if messages %}
-        <div class="container mt-3">
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} text-center" role="alert">{{ message }}</div>
-            {% endfor %}
-        </div>
-        {% endif %}
-=======
             {% if messages %}
                 <div class="container mt-3">
                     {% for category, message in messages %}
@@ -179,7 +140,6 @@
                     {% endfor %}
                 </div>
             {% endif %}
->>>>>>> main
         {% endwith %}
 
         {% block contenu %}
@@ -195,12 +155,8 @@
 
         </div>
     </footer>
-<<<<<<< HEAD
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-=======
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
->>>>>>> main
 </body>
 
 
