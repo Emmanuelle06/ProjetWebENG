@@ -50,4 +50,80 @@ def add_repas(repas):
         print(e)
         return False
 
+def add_commande(commande):
+    db = get_db()
+    try:
+        curseur = db.execute(
+            "INSERT INTO commande (id_acheteur, statut, cout_total)" \
+            "VALUES (:id_acheteur, :statut, :cout_total)",
+            commande
+        )
+        db.commit()
+        return curseur.lastrowid
+    except Exception as e:
+        print(e)
+        return False
 
+def commande_repas(repas):
+    db = get_db()
+    try:
+        db.execute(
+            "INSERT INTO commande_repas (id_commande, id_repas, quantite)" \
+            "VALUES (:id_commande, :id_repas, :quantite)",
+            repas
+        )
+        db.commit()
+        return True
+    except Exception as e:
+        print (e)
+        return False
+
+def get_repas(id):
+    db = get_db()
+    try:
+        repas = db.execute(
+            "Select * from repas where id_repas = ?",
+        (id,)
+        ).fetchone()
+        return repas
+    except Exception as e:
+        print(e)
+        return False
+
+def get_restaurant(id_repas):
+    db = get_db()
+    try:
+        resto = db.execute(
+            "Select v.nom_restaurant from repas r " \
+            "JOIN vendeur v ON r.id_vendeur = v.id where r.id_repas = ?",
+        (id_repas,)
+        ).fetchone()
+        return resto
+    except Exception as e:
+            print(e)
+            return False
+
+def get_acheteur(id_acheteur):
+    db = get_db()
+    try:
+        acheteur = db.execute(
+            "Select credit from acheteur where id = ?",
+            (id_acheteur,)
+            ).fetchone()
+        return acheteur
+    except Exception as e:
+            print(e)
+            return False
+
+def modif_credit(id_acheteur, nouv_credit):
+    db = get_db()
+    try:
+        db.execute(
+            "update acheteur SET credit = ? where id = ?",
+            (nouv_credit, id_acheteur)
+        )
+        db.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False

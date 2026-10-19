@@ -22,28 +22,43 @@ def creer_repas():
         message_description = ""
         message_dispo = ""
         message_photo = ""
+
+
+        nom_repas = ""
+        prix_repas = ""
+        desc_repas = ""
+        dispo = False
+
         valide = True
         if request.method == 'POST':
+            nom_repas = request.form.get("titre", "").strip()
+            prix_repas = request.form.get("prix", "").strip()
+            desc_repas = request.form.get("description", "").strip()
+            if request.form.get("dispo"):
+                dispo = True
+            else:
+                dispo = False
             photo = request.files.get("photo")
-            prix = request.form.get("prix")
 
-            if not request.form.get("titre"):
+            if not nom_repas:
                 classe_titre = "is-invalid"
                 valide = False
-
-            if not prix:
+                
+            prix = None
+            if not prix_repas:
                 classe_prix = "is-invalid"
                 message_prix = "Veuillez saisir un prix valide."
                 valide = False
             else:
-                prix = float(prix)
+                prix = float(prix_repas)
                 if prix < 0:
                     classe_prix = "is-invalid"
                     message_prix = "Veuillez saisir un prix valide."
                     valide = False
 
-            if not request.form.get("description"):
+            if not desc_repas:
                 classe_description = "is-invalid"
+                message_description = "Veuillez saisir un prix valide."
                 valide = False
 
 
@@ -54,10 +69,10 @@ def creer_repas():
             if valide:
                 image_blob = photo.read()
                 repasAAjouter = {
-                    "nom": request.form.get("titre"),
+                    "nom": nom_repas,
                     "prix": prix,
-                    "description": request.form.get("description"),
-                    "disponibilite": request.form.get("dispo"),
+                    "description": desc_repas,
+                    "disponibilite": dispo,
                     "image" : image_blob,
                     "id_vendeur": session["id_utilisateur"]
                     }
@@ -76,7 +91,12 @@ def creer_repas():
             message_prix=message_prix,
             message_description=message_description,
             message_dispo=message_dispo,
-            message_photo=message_photo)
+            message_photo=message_photo,
+            nom_repas=nom_repas,
+            prix_repas = prix_repas,
+            desc_repas=desc_repas,
+            dispo=dispo
+            )
 
 def obtenir_profil(id_utilisateur):
     base_de_donnees = db.get_db()
