@@ -13,6 +13,7 @@
 
 <body>
 
+
     <nav class="navbar navbar-expand-lg">
         <div class="container">
 
@@ -20,55 +21,59 @@
                 EatFast
             </a>
 
-            <div class="ms-auto d-flex align-items-center gap-3">
-                {% if session.id_utilisateur %}
-                <a href="{{ url_for('menu.menu') }}" class="nav-link">Menu</a>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menuNavigation"
+                    aria-controls="menuNavigation"
+                    aria-expanded="false"
+                    aria-label="Ouvrir le menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                {% endif %}
+            <div class="collapse navbar-collapse" id="menuNavigation">
+                <div class="navbar-nav mx-auto align-items-lg-center gap-lg-3">
 
-                {% if session["statut"] == "vendeur" %}
-                <form action="/vendeur/ajout-repas" method="GET" class="mb-0">
-                    <input type="submit" value="Ajouter un repas" class="btn btn-primary">
-                </form>
-                {% endif %}
+                    {% if session.id_utilisateur %}
+                        <a href="{{ url_for('menu.menu') }}" class="nav-link lien">Menu</a>
+                    {% endif %}
 
-                {% if session["statut"] == "acheteur" %}
+                    {% if session.get("statut") == "vendeur" %}
+                        <a href="{{ url_for('vendeur.creer_repas') }}" class="nav-link lien"> Ajouter un repas</a>
+                    {% endif %}
 
-                    <a href="{{ url_for('acheteur.profil') }}"
-                       class="nav-link d-flex align-items-center gap-2">
+                </div>
 
-                        <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}" class="avatar" alt="avatar">
-                        <span>
-                            {{ session["username"] }}
-                        </span>
+                <div class="navbar-nav align-items-lg-center gap-lg-3">
 
-                    </a>
+                    {% if session.get("statut") == "acheteur" %}
+                        <a href="{{ url_for('acheteur.profil') }}"
+                        class="nav-link d-flex align-items-center gap-2">
+                            <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}"
+                                class="avatar" alt="Avatar">
+                            <span>{{ session["username"] }}</span>
+                        </a>
+                    {% endif %}
 
-                {% endif %}
+                    {% if session.get("statut") == "vendeur" %}
+                        <a href="{{ url_for('vendeur.profil') }}"
+                        class="nav-link d-flex align-items-center gap-2">
+                            <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}"
+                                class="avatar" alt="Avatar">
+                            <span>{{ session["username"] }}</span>
+                        </a>
+                    {% endif %}
 
-                {% if session["statut"] == "vendeur" %}
+                    {% if session.id_utilisateur %}
+                        <a href="/deconnexion" class="nav-link btn btn-primary btn-sm w-auto align-self-start px-3 py-2">
+                            Déconnexion
+                        </a>
+                    {% endif %}
 
-                    <a href="{{ url_for('vendeur.profil') }}"
-                       class="nav-link d-flex align-items-center gap-2">
-
-                        <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}" class="avatar" alt="avatar">
-                        <span>
-                            {{ session["username"] }}
-                        </span>
-
-                    </a>
-
-                {% endif %}
-                
-                {% if session.id_utilisateur %}
-                <form action="/deconnexion" method="GET" class="mb-0">
-                    <input type="submit" value="Déconnexion" class="btn btn-primary">
-                </form>
-                {% endif %}
+                </div>
             </div>
-
         </div>
     </nav>
+
 
     <main>
 
