@@ -19,7 +19,7 @@ def chercher_repas(mot):
         """SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
            FROM repas
            LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
-           WHERE repas.disponibilite = 'on'"""
+           WHERE LOWER(CAST(repas.disponibilite AS TEXT)) IN ('on', '1', 'true')"""
     ).fetchall()
 
     if mot:

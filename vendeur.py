@@ -248,3 +248,73 @@ def supprimer_profil():
     flash("Votre compte a été supprimé.", "success")
 
     return redirect("/", 303)
+
+
+@bp_vendeur.route('/repas/<int:id_repas>/image')
+def image_repas(id_repas):
+    if "id_utilisateur" not in session:
+        abort(403)
+
+    if session.get("statut") != "vendeur":
+        abort(403)
+
+    id_vendeur = session["id_utilisateur"]
+
+    repas = db.obtenir_repas(id_repas, id_vendeur)
+
+    if repas is None or repas["image"] is None:
+        abort(404)
+
+    image = bytes(repas["image"])
+
+    if image.startswith(b"\x89PNG\r\n\x1a\n"):
+        type_image = "image/png"
+    elif image.startswith(b"\xff\xd8\xff"):
+        type_image = "image/jpeg"
+    elif image.startswith(b"RIFF") and image[8:12] == b"WEBP":
+        type_image = "image/webp"
+    else:
+        abort(404)
+
+    return Response(image, mimetype=type_image)
+
+
+@bp_vendeur.route('/profil/repas/<int:id_repas>/disponibilite', methods=['POST'])
+def changer_disponibilite(id_repas):
+    if "id_utilisateur" not in session:
+        return redirect("/")
+
+    id_vendeur = session["id_utilisateur"]
+
+    repas = db.obtenir_repas(id_repas, id_vendeur)
+
+    if repas is None:
+        abort(404)
+
+    if repas["disponibilite"] == "on":
+        disponibilite = "off"
+    else:
+        disponibilite = "on"
+
+    db.modifier_disponibilite(id_repas, id_vendeur, disponibilite)
+
+    return redirect(url_for('vendeur.profil'))
+
+
+@bp_vendeur.route('/profil/repas/<int:id_repas>/supprimer', methods=['POST'])
+def supprimer_mon_repas(id_repas):
+    if "id_utilisateur" not in session:
+        return redirect("/")
+
+    id_vendeur = session["id_utilisateur"]
+
+    repas = db.obtenir_repas(id_repas, id_vendeur)
+
+    if repas is None:
+        abort(404)
+
+    db.supprimer_repas(id_repas, id_vendeur)
+
+    flash("Le repas a été supprimé.", "success")
+
+    return redirect(url_for('vendeur.profil'))
