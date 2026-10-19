@@ -74,7 +74,7 @@ def ajouter_panier(id_repas):
             item["quantite"] += 1
             indicateur = True
             break
-        
+
     if indicateur == False:
         session["panier"].append({
              "id": repas["id_repas"],
@@ -135,5 +135,5 @@ def modifier_quantite(id_repas):
     session["cout"] = 0
     for item in session["panier"]:
         session["cout"] += item["prix"] * item["quantite"]
-    session.modified = True        
+    session.modified = True
     return redirect ('/menu')

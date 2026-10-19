@@ -43,7 +43,7 @@ def creer_repas():
             if not nom_repas:
                 classe_titre = "is-invalid"
                 valide = False
-                
+
             prix = None
             if not prix_repas:
                 classe_prix = "is-invalid"
@@ -97,6 +97,7 @@ def creer_repas():
             desc_repas=desc_repas,
             dispo=dispo
             )
+            
 
 def obtenir_profil(id_utilisateur):
     base_de_donnees = db.get_db()

@@ -127,3 +127,4 @@ def modif_credit(id_acheteur, nouv_credit):
     except Exception as e:
         print(e)
         return False
+

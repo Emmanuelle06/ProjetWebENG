@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS repas
     FOREIGN KEY (id_vendeur) REFERENCES vendeur(id) ON DELETE CASCADE
 );
 
+<<<<<<< HEAD
 create table IF NOT EXISTS commande
 (
     id_commande INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,4 +66,6 @@ create table IF NOT EXISTS commande_repas
     FOREIGN KEY(id_commande) REFERENCES commande(id_commande),
     FOREIGN KEY(id_repas) REFERENCES repas(id_repas)
 );
+=======
+>>>>>>> main
 
