@@ -60,3 +60,80 @@ def api_recherche():
 
     return jsonify({"resultats": resultats, "total": len(resultats)})
 
+@bp_menu.route('/ajout-panier/<int:id_repas>')
+def ajouter_panier(id_repas):
+    repas = db.get_repas(id_repas)
+    resto = db.get_restaurant(id_repas)
+    if "panier" not in session:
+        session["panier"] = []
+    indicateur = False
+    session["cout"] = 0
+    for item in session["panier"]:
+        session["cout"] += item["prix"]
+        if item["id"] == repas["id_repas"]:
+            item["quantite"] += 1
+            indicateur = True
+            break
+        
+    if indicateur == False:
+        session["panier"].append({
+             "id": repas["id_repas"],
+            "nom": repas["nom"],
+            "prix": repas["prix"],
+            "quantite": 1,
+            "nom_resto": resto["nom_restaurant"]
+            })
+    session["cout"] = 0
+
+    for item in session["panier"]:
+        session["cout"] += item["prix"] * item["quantite"]
+    session.modified = True
+
+    flash("Repas ajouté au panier.", "success")
+    return redirect("/menu")
+
+@bp_menu.route('/enlever-panier/<int:id_repas>')
+def supprimer_panier(id_repas):
+    for repas in session["panier"]:
+        if repas["id"] == id_repas:
+            session["panier"].remove(repas)
+            session.modified = True
+            # flash("Repas supprimé avec succès", "success")
+            break
+    session["cout"] = 0
+    for item in session["panier"]:
+        session["cout"] += item["prix"] * item["quantite"]
+    return redirect("/menu")
+
+
+
+@bp_menu.route('/vider-panier',methods=["POST"])
+def vider_panier():
+    if session:
+        session["panier"] = []
+        flash("Panier vidé avec succès", "success")
+        session["cout"] = 0
+        for item in session["panier"]:
+            session["cout"] += item["prix"] * item["quantite"]
+        return redirect('/menu')
+    else:
+        abort(401)
+
+@bp_menu.route('/modifier-quantite/<int:id_repas>', methods=['POST'])
+def modifier_quantite(id_repas):
+    action = request.form.get("action")
+
+    for repas in session["panier"]:
+        if repas["id"] == id_repas:
+            if action == "plus":
+                repas["quantite"] += 1
+            elif action == "moins":
+                repas["quantite"] -= 1
+                if  repas["quantite"] <= 0:
+                    session["panier"].remove(repas)
+            break
+    session["cout"] = 0
+    for item in session["panier"]:
+        session["cout"] += item["prix"] * item["quantite"]
+    session.modified = True        
+    return redirect ('/menu')
