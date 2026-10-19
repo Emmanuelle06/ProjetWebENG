@@ -54,8 +54,8 @@ def add_commande(commande):
     db = get_db()
     try:
         curseur = db.execute(
-            "INSERT INTO commande (id_acheteur, statut)" \
-            "VALUES (:id_acheteur, :statut)",
+            "INSERT INTO commande (id_acheteur, statut, cout_total)" \
+            "VALUES (:id_acheteur, :statut, :cout_total)",
             commande
         )
         db.commit()

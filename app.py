@@ -369,7 +369,8 @@ def passer_commande():
 
         id_commande = db.add_commande({
             "id_acheteur": session["id_utilisateur"],
-            "statut": "attente"
+            "statut": "attente",
+            "cout_total": cout_total
         })
 
         if id_commande:

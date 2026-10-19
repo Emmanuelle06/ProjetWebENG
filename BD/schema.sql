@@ -51,6 +51,7 @@ create table IF NOT EXISTS commande
     id_commande INTEGER PRIMARY KEY AUTOINCREMENT,
     id_acheteur INTEGER,
     statut TEXT CHECK (statut IN ('attente', 'cours', 'terminer')),
+    cout_total INTEGER,
     FOREIGN KEY (id_acheteur) REFERENCES acheteur(id) ON DELETE CASCADE
 );
 
