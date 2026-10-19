@@ -1,8 +1,22 @@
-
 {% extends "modele.jinja" %}
 
 {% block contenu %}
+<div class="container my-4">
+    <h1 class="text-center titre-marron mb-4">Menu</h1>
 
-<h1>Menu à venir</h1>
+    <form id="form-recherche" role="search" class="d-flex flex-column align-items-start mb-4">
+        <input type="search" id="mot" name="mot" class="form-control w-25" autocomplete="off"
+            placeholder="🔍 Rechercher  ">
+    </form>
 
+    <p id="message-aucun" class="text-center d-none">Aucun repas ne correspond à votre recherche.</p>
+
+    <div id="liste-repas" class="row g-4"></div>
+</div>
+
+<script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
+<script src="{{ url_for('static', filename='js/recherche.js') }}"></script>
 {% endblock %}
+
+
+

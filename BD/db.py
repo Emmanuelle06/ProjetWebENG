@@ -9,6 +9,7 @@ def get_db():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
+        g.db.execute("PRAGMA foreign_keys = ON")
 
     return g.db
 
@@ -48,5 +49,5 @@ def add_repas(repas):
     except Exception as e:
         print(e)
         return False
-    
-    
+
+
