@@ -167,8 +167,8 @@ def supprimer_repas(id_repas, id_vendeur):
     base_de_donnees.commit()
 
     return curseur.rowcount > 0
-  
-  
+
+
 def get_acheteur(id_acheteur):
     db = get_db()
     try:
