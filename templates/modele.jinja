@@ -82,6 +82,9 @@
 
         <div class="offcanvas-body" id="panier">
             {% if "panier" in session%}
+            {% if session["panier"] == []%}
+            <p class="fs-5 fw-bold">Votre panier est vide</p>
+            {%endif%}
             {% for repas in session["panier"]%}
             <div class="d-flex m-2 carte-repas gap-2 m-3">
                 <img src="{{ url_for('image_repas', id_repas=repas['id']) }}" style="width: 60px; height: 60px;"
