@@ -43,7 +43,7 @@ def creer_repas():
             if not nom_repas:
                 classe_titre = "is-invalid"
                 valide = False
-                
+
             prix = None
             if not prix_repas:
                 classe_prix = "is-invalid"
@@ -97,6 +97,7 @@ def creer_repas():
             desc_repas=desc_repas,
             dispo=dispo
             )
+
 
 def obtenir_profil(id_utilisateur):
     base_de_donnees = db.get_db()
@@ -286,7 +287,7 @@ def image_repas(id_repas):
         abort(404)
 
     image = bytes(repas["image"])
-
+    type_image = None
     if image.startswith(b"\x89PNG\r\n\x1a\n"):
         type_image = "image/png"
     elif image.startswith(b"\xff\xd8\xff"):

@@ -353,8 +353,8 @@ def deconnexion():
 @app.route('/passer-commande', methods=["POST"])
 def passer_commande():
     if "id_utilisateur" not in session:
-        abort(401) 
-     
+        abort(401)
+
     if session["panier"]:
         cout_total = 0
         for repas in session["panier"]:
@@ -391,3 +391,9 @@ def passer_commande():
                 session["panier"] = []
                 flash("Commande passée avec succès.", "success" )
     return redirect("/menu")
+
+
+
+
+
+
