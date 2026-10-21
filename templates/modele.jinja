@@ -15,6 +15,7 @@
 <body>
 
 
+
     <nav class="navbar navbar-expand-lg">
         <div class="container">
 
@@ -32,42 +33,24 @@
             </button>
 
             <div class="collapse navbar-collapse" id="menuNavigation">
+
                 <div class="navbar-nav mx-auto align-items-lg-center gap-lg-3">
-            <div class="ms-auto d-flex align-items-center gap-3">
-                {% if session.id_utilisateur %}
-                <a href="{{ url_for('menu.menu') }}" class="nav-link">Menu</a>
-
-                {% endif %}
-
-                {% if session["statut"] == "vendeur" %}
-                <form action="/vendeur/ajout-repas" method="GET" class="mb-0">
-                    <input type="submit" value="Ajouter un repas" class="btn btn-primary">
-                </form>
-                {% endif %}
-
-                {% if session["statut"] == "acheteur" %}
-
-                <a href="{{ url_for('acheteur.profil') }}" class="nav-link d-flex align-items-center gap-2">
-
-                    <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}"
-                        class="avatar" alt="avatar">
-                    <span>
-                        {{ session["username"] }}
-                    </span>
-
-                </a>
 
                     {% if session.id_utilisateur %}
-                        <a href="{{ url_for('menu.menu') }}" class="nav-link lien">Menu</a>
+                        <a href="{{ url_for('menu.menu') }}" class="nav-link lien">
+                            Menu
+                        </a>
                     {% endif %}
 
                     {% if session.get("statut") == "vendeur" %}
-                        <a href="{{ url_for('vendeur.creer_repas') }}" class="nav-link lien"> Ajouter un repas</a>
+                        <a href="/vendeur/ajout-repas" class="nav-link lien">
+                            Ajouter un repas
+                        </a>
                     {% endif %}
 
                 </div>
 
-                <div class="navbar-nav align-items-lg-center gap-lg-3">
+                <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-3">
 
                     {% if session.get("statut") == "acheteur" %}
                         <a href="{{ url_for('acheteur.profil') }}"
@@ -76,6 +59,13 @@
                                 class="avatar" alt="Avatar">
                             <span>{{ session["username"] }}</span>
                         </a>
+
+                        <img src="{{ url_for('static', filename='images/panier.png') }}"
+                            alt="Panier"
+                            style="width: 40px; cursor: pointer;"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasRight"
+                            aria-controls="offcanvasRight">
                     {% endif %}
 
                     {% if session.get("statut") == "vendeur" %}
@@ -88,37 +78,17 @@
                     {% endif %}
 
                     {% if session.id_utilisateur %}
-                        <a href="/deconnexion" class="nav-link btn btn-primary btn-sm w-auto align-self-start px-3 py-2">
+                        <a href="/deconnexion"
+                        class="btn btn-primary btn-sm w-auto px-3 py-2">
                             Déconnexion
                         </a>
                     {% endif %}
 
                 </div>
-                <a href="{{ url_for('vendeur.profil') }}" class="nav-link d-flex align-items-center gap-2">
-
-                    <img src="{{ url_for('static', filename='images/' + session.get('avatar', 'avatar.jpg')) }}"
-                        class="avatar" alt="avatar">
-                    <span>
-                        {{ session["username"] }}
-                    </span>
-
-                </a>
-
-                {% endif %}
-
-                {% if session.id_utilisateur %}
-                <form action="/deconnexion" method="GET" class="mb-0">
-                    <input type="submit" value="Déconnexion" class="btn btn-primary">
-                </form>
-                {% endif %}
-                {% if session["statut"] == 'acheteur'%}
-                <img src="{{ url_for('static', filename='images/panier.png') }}" alt="Panier"
-                    style="width: 40px; cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                    aria-controls="offcanvasRight">
-                {% endif %}
             </div>
         </div>
     </nav>
+
 
 
 
