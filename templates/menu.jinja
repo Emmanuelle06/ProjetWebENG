@@ -7,6 +7,12 @@
     <form id="form-recherche" role="search" class="d-flex flex-column align-items-start mb-4">
         <input type="search" id="mot" name="mot" class="form-control w-25" autocomplete="off"
             placeholder="🔍 Rechercher  ">
+
+        <label class="form-label mt-3">Prix</label>
+        <div class="d-flex gap-2 w-25">
+            <input type="number" id="prix_min" name="prix_min" class="form-control" min="0" placeholder="Min" aria-label="Prix minimum">
+            <input type="number" id="prix_max" name="prix_max" class="form-control" min="0" placeholder="Max" aria-label="Prix maximum">
+        </div>
     </form>
 
     <p id="message-aucun" class="text-center d-none">Aucun repas ne correspond à votre recherche.</p>

@@ -46,6 +46,7 @@ function ajouterCarte(repas) {
 
     const bouton = document.createElement("a")
     bouton.href = "/ajout-panier/" + repas.id_repas
+    bouton.href = "#"
     bouton.className = "btn-ajouter"
     bouton.textContent = "+"
 
@@ -62,7 +63,9 @@ function ajouterCarte(repas) {
  */
 async function chargerRepas() {
     const parametres = {
-        "mot": document.getElementById("mot").value.trim()
+        "mot": document.getElementById("mot").value.trim(),
+        "prix_min": document.getElementById("prix_min").value,
+        "prix_max": document.getElementById("prix_max").value
     }
 
     const donnees = await envoyerRequeteAjax("/api/recherche", "GET", parametres)
@@ -93,6 +96,8 @@ function initialisation() {
     chargerRepas()
 
     document.getElementById("mot").addEventListener("input", chargerRepas)
+    document.getElementById("prix_min").addEventListener("input", chargerRepas)
+    document.getElementById("prix_max").addEventListener("input", chargerRepas)
     document.getElementById("form-recherche").addEventListener("submit", gererSubmit)
 }
 

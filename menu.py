@@ -13,14 +13,15 @@ def normaliser(texte):
     return texte.lower()
 
 
-def chercher_repas(mot):
-    """Retourne les repas disponibles dont le nom correspond au mot cherché"""
-    repas = db.get_db().execute(
-        """SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
-           FROM repas
-           LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
-           WHERE LOWER(CAST(repas.disponibilite AS TEXT)) IN ('on', '1', 'true')"""
-    ).fetchall()
+def chercher_repas(mot, prix_min, prix_max):
+    repas = db.get_db().execute("""
+        SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
+        FROM repas
+        LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
+        WHERE repas.disponibilite = 'on'
+        AND repas.prix >= :prix_min
+        AND repas.prix <= :prix_max""",
+        {"prix_min": prix_min, "prix_max": prix_max}).fetchall()
 
     if mot:
         mot_normalise = normaliser(mot)
@@ -47,9 +48,20 @@ def api_recherche():
         abort(403)
 
     mot = request.args.get("mot", "").strip()
+    prix_min = request.args.get("prix_min", "")
+    if prix_min.isdigit():
+        prix_min = int(prix_min)
+    else:
+        prix_min = 0
+
+    prix_max = request.args.get("prix_max", "")
+    if prix_max.isdigit():
+        prix_max = int(prix_max)
+    else:
+        prix_max = 1000000
 
     resultats = []
-    for r in chercher_repas(mot):
+    for r in chercher_repas(mot, prix_min, prix_max):
         resultats.append({
             "id_repas": r["id_repas"],
             "nom": r["nom"],
@@ -59,6 +71,8 @@ def api_recherche():
         })
 
     return jsonify({"resultats": resultats, "total": len(resultats)})
+
+
 
 @bp_menu.route('/ajout-panier/<int:id_repas>')
 def ajouter_panier(id_repas):
@@ -74,7 +88,7 @@ def ajouter_panier(id_repas):
             item["quantite"] += 1
             indicateur = True
             break
-        
+
     if indicateur == False:
         session["panier"].append({
              "id": repas["id_repas"],
@@ -135,5 +149,5 @@ def modifier_quantite(id_repas):
     session["cout"] = 0
     for item in session["panier"]:
         session["cout"] += item["prix"] * item["quantite"]
-    session.modified = True        
+    session.modified = True
     return redirect ('/menu')
