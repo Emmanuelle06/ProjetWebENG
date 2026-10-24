@@ -41,8 +41,9 @@ def menu():
     if "id_utilisateur" not in session:
         flash("Vous devez être connecté pour accéder au menu.", "warning")
         return redirect("/")
+    ouvrir_panier = session.pop("ouvrir_panier", False)
 
-    return render_template("menu.jinja")
+    return render_template("menu.jinja", ouvrir_panier=ouvrir_panier)
 
 
 
@@ -107,6 +108,7 @@ def ajouter_panier(id_repas):
     for item in session["panier"]:
         session["cout"] += item["prix"] * item["quantite"]
     calculer_quantite_panier()
+    session["ouvrir_panier"] = True
     session.modified = True
 
     flash("Repas ajouté au panier.", "success")
@@ -159,5 +161,6 @@ def modifier_quantite(id_repas):
     for item in session["panier"]:
         session["cout"] += item["prix"] * item["quantite"]
     calculer_quantite_panier()
+    session["ouvrir_panier"] = True
     session.modified = True
     return redirect ('/menu')

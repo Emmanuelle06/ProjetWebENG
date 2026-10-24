@@ -393,7 +393,8 @@ def passer_commande():
     return redirect("/menu")
 
 
-
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 
