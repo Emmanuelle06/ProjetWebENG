@@ -5,8 +5,8 @@
 
     <div class="form-au-dessus connexion mb-5">
 
-        <h2 class="text-center fw-bold titre">Ajout d'un repas</h2>
-        <form action="/vendeur/ajout-repas" method="POST" enctype="multipart/form-data" novalidate>
+        <h2 class="text-center fw-bold titre">{{ "Modification du repas" if modification else "Ajout d'un repas" }}</h2>
+        <form action="" method="POST" enctype="multipart/form-data" novalidate>
             <div class="mb-3">
                 <label for="titre">Nom repas :</label>
                 <input type="text" name="titre" id="titre" class="form-control {{ classe_titre }}" value="{{nom_repas}}">
@@ -37,14 +37,14 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label for="photo">Photo du repas</label>
+                <label for="photo">Photo du repas{% if modification %} (laisser vide pour garder l'actuelle){% endif %}</label>
                 <input type="file" name="photo" id="photo" class="form-control {{ classe_photo }} ">
                 <div class="invalid-feedback">
                     {{ message_photo }}
                 </div>
             </div>
             <div class="mb-3 text-center p-3 m-25">
-                <button type="submit" class="btn btn-primary w-75">Ajouter repas</button>
+                <button type="submit" class="btn btn-primary w-75">{{ "Enregistrer les modifications" if modification else "Ajouter repas" }}</button>
             </div>
         </form>
     </div>

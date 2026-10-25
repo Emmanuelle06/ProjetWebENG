@@ -19,14 +19,7 @@ def calculer_quantite_panier():
 
 
 def chercher_repas(mot, prix_min, prix_max):
-    repas = db.get_db().execute("""
-        SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
-        FROM repas
-        LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
-        WHERE repas.disponibilite = 'on'
-        AND repas.prix >= :prix_min
-        AND repas.prix <= :prix_max""",
-        {"prix_min": prix_min, "prix_max": prix_max}).fetchall()
+    repas = db.obtenir_repas_disponibles(prix_min, prix_max)
 
     if mot:
         mot_normalise = normaliser(mot)
@@ -64,7 +57,7 @@ def api_recherche():
     if prix_max.isdigit():
         prix_max = int(prix_max)
     else:
-        prix_max = 1000000
+        prix_max = 10000
 
     resultats = []
     for r in chercher_repas(mot, prix_min, prix_max):
@@ -164,3 +157,18 @@ def modifier_quantite(id_repas):
     session["ouvrir_panier"] = True
     session.modified = True
     return redirect ('/menu')
+
+
+
+@bp_menu.route('/repas/<int:id_repas>')
+def detail_repas(id_repas):
+    if "id_utilisateur" not in session:
+        flash("Veuillez vous connecter.", "warning")
+        return redirect("/")
+
+    repas = db.obtenir_repas_par_id(id_repas)
+
+    if repas is None:
+        abort(404)
+
+    return render_template("detail_repas.jinja", repas=repas)

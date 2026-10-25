@@ -193,3 +193,43 @@ def modif_credit(id_acheteur, nouv_credit):
     except Exception as e:
         print(e)
         return False
+
+
+def modifier_repas(repas):
+    """Modifie un repas du vendeur. Si image vaut None, on garde l'ancienne image."""
+    db = get_db()
+    try:
+        curseur = db.execute("""
+            UPDATE repas
+            SET nom = :nom, prix = :prix, description = :description,
+                disponibilite = :disponibilite, image = COALESCE(:image, image)
+            WHERE id_repas = :id_repas AND id_vendeur = :id_vendeur""",
+            repas)
+        db.commit()
+        return curseur.rowcount > 0
+    except Exception as e:
+        print(e)
+        return False
+
+
+def obtenir_repas_disponibles(prix_min, prix_max):
+    """Retourne les repas disponibles dont le prix est entre prix_min et prix_max"""
+    return get_db().execute("""
+        SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
+        FROM repas
+        LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
+        WHERE repas.disponibilite IN ('on', 1)
+        AND repas.prix >= :prix_min
+        AND repas.prix <= :prix_max""",
+        {"prix_min": prix_min, "prix_max": prix_max}).fetchall()
+
+
+def obtenir_repas_par_id(id_repas):
+    """Retourne un repas disponible avec son restaurant (ou None s'il n'existe pas)"""
+    return get_db().execute("""
+        SELECT repas.id_repas, repas.nom, repas.prix, repas.description, vendeur.nom_restaurant
+        FROM repas
+        LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
+        WHERE repas.id_repas = :id_repas
+        AND repas.disponibilite IN ('on', 1)""",
+        {"id_repas": id_repas}).fetchone()
