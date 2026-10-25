@@ -16,6 +16,7 @@ def calculer_quantite_panier():
     session["quantite_panier"] = 0
     for repas in session["panier"]:
         session["quantite_panier"] += repas["quantite"]
+    session["cout"] = round(session["cout"], 2)
 
 
 def chercher_repas(mot, prix_min, prix_max):
@@ -100,6 +101,7 @@ def ajouter_panier(id_repas):
 
     for item in session["panier"]:
         session["cout"] += item["prix"] * item["quantite"]
+    
     calculer_quantite_panier()
     session["ouvrir_panier"] = True
     session.modified = True
