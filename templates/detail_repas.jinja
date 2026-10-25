@@ -1,0 +1,35 @@
+{% extends "modele.jinja" %}
+
+{% block contenu %}
+<div class="container my-4" style="max-width: 1200px;">
+
+    <a href="{{ url_for('menu.menu') }}" class="btn btn-outline-primary mb-3">← Retour au menu</a>
+
+    <div class="card shadow-sm border-0 overflow-hidden">
+        <div class="row g-0">
+
+            <div class="col-md-6">
+                <div class="ratio ratio-4x3">
+                    <img src="/image-repas/{{ repas['id_repas'] }}" alt="{{ repas['nom'] }}"
+                         class="image-detail">
+                </div>
+            </div>
+
+            <div class="col-md-6 d-flex flex-column justify-content-center p-4 p-lg-5">
+                <h1 class="display-5 fw-bold">{{ repas["nom"] }}</h1>
+                <p class="fs-4 text-muted mb-3">{{ repas["nom_restaurant"] }}</p>
+                <p class="display-6 fw-bold mb-4">{{ repas["prix"] }}$ CA</p>
+                <p class="fs-5 mb-4">{{ repas["description"] }}</p>
+
+                {% if session.get("statut") == "acheteur" %}
+                <a href="/ajout-panier/{{ repas['id_repas'] }}" class="btn btn-primary btn-lg align-self-start">
+                    Ajouter au panier
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

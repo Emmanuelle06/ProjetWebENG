@@ -26,6 +26,11 @@ function ajouterCarte(repas) {
     image.alt = repas.nom
     image.className = "image-repas"
 
+    const lien = document.createElement("a")
+    lien.href = "/repas/" + repas.id_repas
+    lien.appendChild(image)
+    carte.appendChild(lien)
+
     const info = document.createElement("div")
     info.className = "info-repas"
 
@@ -51,7 +56,7 @@ function ajouterCarte(repas) {
 
     ligne.append(prix, bouton)
     info.append(nom, restaurant, ligne)
-    carte.append(image, info)
+    carte.append(info)
     col.append(carte)
     listeRepas.append(col)
 }
