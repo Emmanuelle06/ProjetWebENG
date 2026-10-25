@@ -193,3 +193,20 @@ def modif_credit(id_acheteur, nouv_credit):
     except Exception as e:
         print(e)
         return False
+
+
+def modifier_repas(repas):
+    """Modifie un repas du vendeur. Si image vaut None, on garde l'ancienne image."""
+    db = get_db()
+    try:
+        curseur = db.execute("""
+            UPDATE repas
+            SET nom = :nom, prix = :prix, description = :description,
+                disponibilite = :disponibilite, image = COALESCE(:image, image)
+            WHERE id_repas = :id_repas AND id_vendeur = :id_vendeur""",
+            repas)
+        db.commit()
+        return curseur.rowcount > 0
+    except Exception as e:
+        print(e)
+        return False

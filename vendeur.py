@@ -97,7 +97,7 @@ def creer_repas():
             desc_repas=desc_repas,
             dispo=dispo
             )
-            
+
 
 def obtenir_profil(id_utilisateur):
     base_de_donnees = db.get_db()
@@ -339,3 +339,88 @@ def supprimer_mon_repas(id_repas):
     flash("Le repas a été supprimé.", "success")
 
     return redirect(url_for('vendeur.profil'))
+
+
+@bp_vendeur.route('/modifier-repas/<int:id_repas>', methods=['GET', 'POST'])
+def modifier_repas(id_repas):
+    if "id_utilisateur" not in session:
+        flash("Vous devez être connecté.", "warning")
+        return redirect("/")
+    if session.get("statut") != "vendeur":
+        abort(403)
+
+    repas = db.obtenir_repas(id_repas, session["id_utilisateur"])
+    if repas is None:
+        abort(404)
+
+    classe_titre = ""
+    classe_prix = ""
+    classe_description = ""
+    message_prix = ""
+
+    # Au premier affichage, le formulaire contient les valeurs actuelles
+    nom_repas = repas["nom"]
+    prix_repas = repas["prix"]
+    desc_repas = repas["description"]
+    dispo = str(repas["disponibilite"]).lower() in ["1", "true", "on"]
+
+    if request.method == 'POST':
+        valide = True
+        nom_repas = request.form.get("titre", "").strip()
+        prix_repas = request.form.get("prix", "").strip()
+        desc_repas = request.form.get("description", "").strip()
+        dispo = request.form.get("dispo") is not None
+        photo = request.files.get("photo")
+
+        if not nom_repas:
+            classe_titre = "is-invalid"
+            valide = False
+
+        prix = None
+        if not prix_repas:
+            classe_prix = "is-invalid"
+            message_prix = "Veuillez saisir un prix valide."
+            valide = False
+        else:
+            prix = float(prix_repas)
+            if prix < 0:
+                classe_prix = "is-invalid"
+                message_prix = "Veuillez saisir un prix valide."
+                valide = False
+
+        if not desc_repas:
+            classe_description = "is-invalid"
+            valide = False
+
+        if valide:
+            image_blob = None
+            if photo and photo.filename != "":
+                image_blob = photo.read()
+
+            repas_modifie = {
+                "id_repas": id_repas,
+                "nom": nom_repas,
+                "prix": prix,
+                "description": desc_repas,
+                "disponibilite": dispo,
+                "image": image_blob,
+                "id_vendeur": session["id_utilisateur"]
+            }
+
+            if db.modifier_repas(repas_modifie):
+                flash("Repas modifié avec succès", "success")
+                return redirect(url_for("vendeur.profil"))
+            flash("Erreur lors de la modification.", "danger")
+
+    return render_template('vendeur/ajout-repas.jinja',
+        modification=True,
+        classe_titre=classe_titre,
+        classe_prix=classe_prix,
+        classe_description=classe_description,
+        classe_photo="",
+        message_prix=message_prix,
+        message_photo="",
+        nom_repas=nom_repas,
+        prix_repas=prix_repas,
+        desc_repas=desc_repas,
+        dispo=dispo)
