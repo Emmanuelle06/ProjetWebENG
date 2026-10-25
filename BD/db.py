@@ -227,11 +227,67 @@ def obtenir_repas_disponibles(prix_min, prix_max):
 def obtenir_repas_par_id(id_repas):
     """Retourne un repas disponible avec son restaurant (ou None s'il n'existe pas)"""
     return get_db().execute("""
-        SELECT repas.id_repas, repas.nom, repas.prix, repas.description, vendeur.nom_restaurant
+        SELECT repas.id_repas, repas.nom, repas.prix,repas.image ,repas.description, vendeur.nom_restaurant
         FROM repas
         LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
         WHERE repas.id_repas = :id_repas
         AND repas.disponibilite IN ('on', 1)""",
         {"id_repas": id_repas}).fetchone()
 
+#fonction pour avoir les commandes dun acheteur
+
+def obtenir_commandes_acheteur(id_acheteur):
+    """ Retoune les commandes d'un acheteur"""
+    db = get_db()
+
+    try:
+        curseur = db.execute(
+            """
+            SELECT
+                commande.id_commande,commande.statut, commande.cout_total
+                ,repas.nom,repas.prix,repas.id_repas,commande_repas.quantite
+            FROM commande
+            LEFT JOIN commande_repas
+                ON commande.id_commande = commande_repas.id_commande
+            LEFT JOIN repas
+                ON commande_repas.id_repas = repas.id_repas
+            WHERE commande.id_acheteur = ?
+            ORDER BY commande.id_commande DESC
+            """,
+            (id_acheteur,)
+        )
+
+        lignes = curseur.fetchall()
+        commandes = []
+
+        for ligne in lignes:
+            commande_trouvee = None
+
+            for commande in commandes:
+                if commande["id_commande"] == ligne["id_commande"]:
+                    commande_trouvee = commande
+                    break
+
+            if commande_trouvee is None:
+                commande_trouvee = {
+                    "id_commande": ligne["id_commande"],
+                    "statut": ligne["statut"],
+                    "cout_total": ligne["cout_total"],
+                    "repas": []
+                }
+                commandes.append(commande_trouvee)
+
+            if ligne["nom"] is not None:
+                commande_trouvee["repas"].append({
+                    "id_repas": ligne["id_repas"],
+                    "nom": ligne["nom"],
+                    "prix": ligne["prix"],
+                    "quantite": ligne["quantite"]
+                })
+
+        return commandes
+
+    except Exception as e:
+        print(e)
+        return []
 

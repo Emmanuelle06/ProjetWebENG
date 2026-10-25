@@ -34,7 +34,8 @@ def profil():
     if utilisateur is None:
         session.clear()
         return redirect("/")
-    return render_template("profil/profil.jinja", utilisateur=utilisateur)
+    commandes = db.obtenir_commandes_acheteur(id_utilisateur)
+    return render_template("profil/profil.jinja", utilisateur=utilisateur,commandes=commandes)
 
 @bp_acheteur.route('/inscription-acheteur', methods=["GET", "POST"])
 def inscription_acheteur():
@@ -71,8 +72,8 @@ def inscription_acheteur():
         classe_nom = "is-valid"
 
     if prenom == "":
-            a_erreur = True
-            classe_prenom = "is-invalid"
+        a_erreur = True
+        classe_prenom = "is-invalid"
     else:
         classe_prenom = "is-valid"
 
