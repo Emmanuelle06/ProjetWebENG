@@ -5,7 +5,7 @@ from BD import db
 from flask import Response, abort
 from vendeur import bp_vendeur
 from acheteur import bp_acheteur
-from menu import bp_menu
+from menu import bp_menu, calculer_quantite_panier
 
 from BD.inserer_repas import inserer_donnees_test
 
@@ -390,5 +390,13 @@ def passer_commande():
                     nouv_credit
                 )
                 session["panier"] = []
-                flash("Commande passée avec succès.", "success")
+                calculer_quantite_panier()
+                flash("Commande passée avec succès.", "success" )
     return redirect("/menu")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+

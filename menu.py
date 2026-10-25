@@ -12,16 +12,15 @@ def normaliser(texte):
     texte = "".join(c for c in texte if unicodedata.category(c) != "Mn")
     return texte.lower()
 
+def calculer_quantite_panier():
+    session["quantite_panier"] = 0
+    for repas in session["panier"]:
+        session["quantite_panier"] += repas["quantite"]
+    session["cout"] = round(session["cout"], 2)
+
 
 def chercher_repas(mot, prix_min, prix_max):
-    repas = db.get_db().execute("""
-        SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
-        FROM repas
-        LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
-        WHERE repas.disponibilite = 'on'
-        AND repas.prix >= :prix_min
-        AND repas.prix <= :prix_max""",
-        {"prix_min": prix_min, "prix_max": prix_max}).fetchall()
+    repas = db.obtenir_repas_disponibles(prix_min, prix_max)
 
     if mot:
         mot_normalise = normaliser(mot)
@@ -36,8 +35,9 @@ def menu():
     if "id_utilisateur" not in session:
         flash("Vous devez être connecté pour accéder au menu.", "warning")
         return redirect("/")
+    ouvrir_panier = session.pop("ouvrir_panier", False)
 
-    return render_template("menu.jinja")
+    return render_template("menu.jinja", ouvrir_panier=ouvrir_panier)
 
 
 
@@ -58,7 +58,7 @@ def api_recherche():
     if prix_max.isdigit():
         prix_max = int(prix_max)
     else:
-        prix_max = 1000000
+        prix_max = 10000
 
     resultats = []
     for r in chercher_repas(mot, prix_min, prix_max):
@@ -101,6 +101,9 @@ def ajouter_panier(id_repas):
 
     for item in session["panier"]:
         session["cout"] += item["prix"] * item["quantite"]
+    
+    calculer_quantite_panier()
+    session["ouvrir_panier"] = True
     session.modified = True
 
     flash("Repas ajouté au panier.", "success")
@@ -111,6 +114,7 @@ def supprimer_panier(id_repas):
     for repas in session["panier"]:
         if repas["id"] == id_repas:
             session["panier"].remove(repas)
+            calculer_quantite_panier()
             session.modified = True
             # flash("Repas supprimé avec succès", "success")
             break
@@ -129,6 +133,8 @@ def vider_panier():
         session["cout"] = 0
         for item in session["panier"]:
             session["cout"] += item["prix"] * item["quantite"]
+        calculer_quantite_panier()
+        session.modified = True
         return redirect('/menu')
     else:
         abort(401)
@@ -149,5 +155,22 @@ def modifier_quantite(id_repas):
     session["cout"] = 0
     for item in session["panier"]:
         session["cout"] += item["prix"] * item["quantite"]
+    calculer_quantite_panier()
+    session["ouvrir_panier"] = True
     session.modified = True
     return redirect ('/menu')
+
+
+
+@bp_menu.route('/repas/<int:id_repas>')
+def detail_repas(id_repas):
+    if "id_utilisateur" not in session:
+        flash("Veuillez vous connecter.", "warning")
+        return redirect("/")
+
+    repas = db.obtenir_repas_par_id(id_repas)
+
+    if repas is None:
+        abort(404)
+
+    return render_template("detail_repas.jinja", repas=repas)
