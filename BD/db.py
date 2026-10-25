@@ -218,7 +218,7 @@ def obtenir_repas_disponibles(prix_min, prix_max):
         SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
         FROM repas
         LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
-        WHERE repas.disponibilite = 'on'
+        WHERE repas.disponibilite IN ('on', 1)
         AND repas.prix >= :prix_min
         AND repas.prix <= :prix_max""",
         {"prix_min": prix_min, "prix_max": prix_max}).fetchall()
@@ -231,5 +231,5 @@ def obtenir_repas_par_id(id_repas):
         FROM repas
         LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
         WHERE repas.id_repas = :id_repas
-        AND repas.disponibilite = 'on'""",
+        AND repas.disponibilite IN ('on', 1)""",
         {"id_repas": id_repas}).fetchone()
