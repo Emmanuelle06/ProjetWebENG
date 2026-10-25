@@ -9,7 +9,7 @@
 
 const listeRepas = document.getElementById("liste-repas")
 const messageAucun = document.getElementById("message-aucun")
-
+const statut = document.getElementById("statut").value
 
 /**
  * Construit la carte d'un repas et l'ajoute à la grille.
@@ -43,17 +43,23 @@ function ajouterCarte(repas) {
     const prix = document.createElement("span")
     prix.className = "prix-repas"
     prix.textContent = repas.prix + "$ CA"
+    
+    if (statut === "acheteur"){
+        const bouton = document.createElement("a")
+        bouton.href = "/ajout-panier/" + repas.id_repas
+        bouton.className = "btn-ajouter"
+        bouton.textContent = "+"
+        ligne.append(prix, bouton)
+    }
+    else{
+        ligne.append(prix)
 
-    const bouton = document.createElement("a")
-    bouton.href = "/ajout-panier/" + repas.id_repas
-    bouton.className = "btn-ajouter"
-    bouton.textContent = "+"
-
-    ligne.append(prix, bouton)
+    }
     info.append(nom, restaurant, ligne)
     carte.append(image, info)
     col.append(carte)
     listeRepas.append(col)
+
 }
 
 
