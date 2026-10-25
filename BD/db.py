@@ -233,3 +233,5 @@ def obtenir_repas_par_id(id_repas):
         WHERE repas.id_repas = :id_repas
         AND repas.disponibilite IN ('on', 1)""",
         {"id_repas": id_repas}).fetchone()
+
+
