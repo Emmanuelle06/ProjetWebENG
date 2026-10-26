@@ -379,7 +379,8 @@ def passer_commande():
                 resultat = db.commande_repas({
                     "id_commande": id_commande,
                     "id_repas": repas["id"],
-                    "quantite": repas["quantite"]
+                    "quantite": repas["quantite"],
+                    "prix_unitaire": repas["prix"]
                 })
                 if not resultat:
                     break

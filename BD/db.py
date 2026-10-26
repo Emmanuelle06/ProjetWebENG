@@ -68,8 +68,8 @@ def commande_repas(repas):
     db = get_db()
     try:
         db.execute(
-            "INSERT INTO commande_repas (id_commande, id_repas, quantite)" \
-            "VALUES (:id_commande, :id_repas, :quantite)",
+            "INSERT INTO commande_repas (id_commande, id_repas, quantite, prix_unitaire)" \
+            "VALUES (:id_commande, :id_repas, :quantite, :prix_unitaire)",
             repas
         )
         db.commit()
@@ -245,7 +245,7 @@ def obtenir_commandes_acheteur(id_acheteur):
             """
             SELECT
                 commande.id_commande,commande.statut, commande.cout_total
-                ,repas.nom,repas.prix,repas.id_repas,commande_repas.quantite
+                ,repas.nom,repas.id_repas,commande_repas.quantite,commande_repas.prix_unitaire
             FROM commande
             LEFT JOIN commande_repas
                 ON commande.id_commande = commande_repas.id_commande
@@ -281,7 +281,7 @@ def obtenir_commandes_acheteur(id_acheteur):
                 commande_trouvee["repas"].append({
                     "id_repas": ligne["id_repas"],
                     "nom": ligne["nom"],
-                    "prix": ligne["prix"],
+                    "prix": ligne["prix_unitaire"],
                     "quantite": ligne["quantite"]
                 })
 

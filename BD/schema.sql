@@ -60,6 +60,7 @@ create table IF NOT EXISTS commande_repas
     id_commande INTEGER,
     id_repas INTEGER,
     quantite INTEGER,
+    prix_unitaire INTEGER,
 
     PRIMARY KEY(id_commande, id_repas),
     FOREIGN KEY(id_commande) REFERENCES commande(id_commande),
