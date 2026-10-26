@@ -1,6 +1,6 @@
 import os
 import hashlib
-from flask import Flask, render_template, request, redirect, flash,session,url_for
+from flask import Flask, render_template, request, redirect, flash, session, url_for
 from BD import db
 from flask import Response, abort
 from vendeur import bp_vendeur
@@ -10,7 +10,8 @@ from menu import bp_menu, calculer_quantite_panier
 from BD.inserer_repas import inserer_donnees_test
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
-app.config['DATABASE'] = 'BD/eatfast.sqlite' #cest la ou la bd sera enregistré
+# cest la ou la bd sera enregistré
+app.config['DATABASE'] = 'BD/eatfast.sqlite'
 app.register_blueprint(bp_vendeur, url_prefix='/vendeur')
 app.register_blueprint(bp_acheteur)
 app.register_blueprint(bp_menu)
@@ -21,6 +22,7 @@ db.init_app(app)
 with app.app_context():
     db.init_db()
     inserer_donnees_test(db.get_db())
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -43,7 +45,7 @@ def index():
     utilisateur = base_de_donnees.execute(
         """SELECT id, statut FROM utilisateur
            WHERE username = ? AND mot_de_passe = ?""",
-        (nom_utilisateur, mot_de_passe_hache )
+        (nom_utilisateur, mot_de_passe_hache)
     ).fetchone()
 
     if utilisateur is None:
@@ -57,12 +59,12 @@ def index():
     session["username"] = nom_utilisateur
     session["avatar"] = utilisateur["avatar"] if "avatar" in utilisateur and utilisateur["avatar"] else "avatar.jpg"
     if utilisateur["statut"] == "acheteur":
-        return redirect('/menu',303)
+        return redirect('/menu', 303)
 
     if utilisateur["statut"] == "vendeur":
-        return redirect('/vendeur',303)
+        return redirect('/vendeur', 303)
 
-    return redirect('/',303)
+    return redirect('/', 303)
 
 
 @app.route('/inscription-vendeur', methods=["GET", "POST"])
@@ -71,13 +73,14 @@ def inscription_vendeur():
     if request.method == "GET":
         return render_template("inscription_vendeur.jinja")
 
-    nom_restaurant = request.form.get("nom_restaurant","").strip()
+    nom_restaurant = request.form.get("nom_restaurant", "").strip()
     nom_utilisateur = request.form.get("nom_utilisateur", "").strip()
-    adresse = request.form.get("adresse","").strip()
-    telephone = request.form.get("telephone","").strip()
-    mot_de_passe = request.form.get("mot_de_passe","").strip()
-    confirmation_mot_de_passe = request.form.get("confirmation_mot_de_passe","").strip()
-    condition = request.form.get("condition","").strip()
+    adresse = request.form.get("adresse", "").strip()
+    telephone = request.form.get("telephone", "").strip()
+    mot_de_passe = request.form.get("mot_de_passe", "").strip()
+    confirmation_mot_de_passe = request.form.get(
+        "confirmation_mot_de_passe", "").strip()
+    condition = request.form.get("condition", "").strip()
 
     classe_nom_restaurant = ""
     classe_nom_utilisateur = ""
@@ -97,7 +100,6 @@ def inscription_vendeur():
     else:
         classe_nom_restaurant = "is-valid"
 
-
     if nom_utilisateur == "":
         a_erreur = True
         classe_nom_utilisateur = "is-invalid"
@@ -113,7 +115,6 @@ def inscription_vendeur():
             message_nom_utilisateur = "Ce nom d'utilisateur existe déjà."
         else:
             classe_nom_utilisateur = "is-valid"
-
 
     if adresse == "":
         a_erreur = True
@@ -147,15 +148,15 @@ def inscription_vendeur():
 
     if a_erreur:
         return render_template("inscription_vendeur.jinja", nom_restaurant=nom_restaurant,
-                            nom_utilisateur=nom_utilisateur,
-                            adresse=adresse, telephone=telephone,
-                            classe_nom_restaurant=classe_nom_restaurant,
-                            classe_nom_utilisateur=classe_nom_utilisateur,
-                            message_nom_utilisateur=message_nom_utilisateur,
-                            classe_adresse=classe_adresse, classe_telephone=classe_telephone,
-                            classe_mot_de_passe=classe_mot_de_passe,
-                            classe_confirmation_mot_de_passe=classe_confirmation_mot_de_passe,
-                            classe_condition=classe_condition)
+                               nom_utilisateur=nom_utilisateur,
+                               adresse=adresse, telephone=telephone,
+                               classe_nom_restaurant=classe_nom_restaurant,
+                               classe_nom_utilisateur=classe_nom_utilisateur,
+                               message_nom_utilisateur=message_nom_utilisateur,
+                               classe_adresse=classe_adresse, classe_telephone=classe_telephone,
+                               classe_mot_de_passe=classe_mot_de_passe,
+                               classe_confirmation_mot_de_passe=classe_confirmation_mot_de_passe,
+                               classe_condition=classe_condition)
     else:
         mot_de_passe_hache = hashlib.sha512(mot_de_passe.encode()).hexdigest()
 
@@ -168,25 +169,24 @@ def inscription_vendeur():
                                     "mot_de_passe": mot_de_passe_hache,
                                     "statut": "vendeur"
                                 }
-)
-        id_utilisateur = base_de_donnees.execute("SELECT last_insert_rowid()").fetchone()[0]
+                                )
+        id_utilisateur = base_de_donnees.execute(
+            "SELECT last_insert_rowid()").fetchone()[0]
 
         base_de_donnees.execute("""INSERT INTO vendeur (id,nom_restaurant, adresse_postale, telephone, condition)
                                 VALUES (:id, :nom_restaurant, :adresse, :telephone, :condition)""",
                                 {
-                                    "id":id_utilisateur,
+                                    "id": id_utilisateur,
                                     "nom_restaurant": nom_restaurant,
                                     "adresse": adresse,
                                     "telephone": telephone,
                                     "condition": True
                                 }
-)
+                                )
         base_de_donnees.commit()
 
         flash("Compte vendeur crée avec succès", "success")
         return redirect("/", 303)
-
-
 
 
 @app.route('/image-repas/<int:id_repas>')
@@ -204,7 +204,6 @@ def image_repas(id_repas):
     return Response(ligne["image"], mimetype="image/jpeg")
 
 
-
 @app.route("/vendeur")
 def vendeur():
     if "id_utilisateur" not in session:
@@ -219,14 +218,15 @@ def inscription_acheteur():
     if request.method == "GET":
         return render_template("inscription_acheteur.jinja")
 
-    nom = request.form.get("nom","").strip()
-    prenom = request.form.get("prenom","").strip()
+    nom = request.form.get("nom", "").strip()
+    prenom = request.form.get("prenom", "").strip()
     nom_utilisateur = request.form.get("nom_utilisateur", "").strip()
-    adresse = request.form.get("adresse","").strip()
-    telephone = request.form.get("telephone","").strip()
-    mot_de_passe = request.form.get("mot_de_passe","").strip()
-    confirmation_mot_de_passe = request.form.get("confirmation_mot_de_passe","").strip()
-    condition = request.form.get("condition","").strip()
+    adresse = request.form.get("adresse", "").strip()
+    telephone = request.form.get("telephone", "").strip()
+    mot_de_passe = request.form.get("mot_de_passe", "").strip()
+    confirmation_mot_de_passe = request.form.get(
+        "confirmation_mot_de_passe", "").strip()
+    condition = request.form.get("condition", "").strip()
 
     classe_nom = ""
     classe_prenom = ""
@@ -248,8 +248,8 @@ def inscription_acheteur():
         classe_nom = "is-valid"
 
     if prenom == "":
-            a_erreur = True
-            classe_prenom = "is-invalid"
+        a_erreur = True
+        classe_prenom = "is-invalid"
     else:
         classe_prenom = "is-valid"
 
@@ -268,7 +268,6 @@ def inscription_acheteur():
             message_nom_utilisateur = "Ce nom d'utilisateur existe déjà."
         else:
             classe_nom_utilisateur = "is-valid"
-
 
     if adresse == "":
         a_erreur = True
@@ -302,17 +301,17 @@ def inscription_acheteur():
 
     if a_erreur:
         return render_template("inscription_acheteur.jinja", nom=nom,
-                            prenom=prenom,
-                            nom_utilisateur=nom_utilisateur,
-                            adresse=adresse, telephone=telephone,
-                            classe_nom=classe_nom,
-                            classe_prenom=classe_prenom,
-                            classe_nom_utilisateur=classe_nom_utilisateur,
-                            message_nom_utilisateur=message_nom_utilisateur,
-                            classe_adresse=classe_adresse, classe_telephone=classe_telephone,
-                            classe_mot_de_passe=classe_mot_de_passe,
-                            classe_confirmation_mot_de_passe=classe_confirmation_mot_de_passe,
-                            classe_condition=classe_condition)
+                               prenom=prenom,
+                               nom_utilisateur=nom_utilisateur,
+                               adresse=adresse, telephone=telephone,
+                               classe_nom=classe_nom,
+                               classe_prenom=classe_prenom,
+                               classe_nom_utilisateur=classe_nom_utilisateur,
+                               message_nom_utilisateur=message_nom_utilisateur,
+                               classe_adresse=classe_adresse, classe_telephone=classe_telephone,
+                               classe_mot_de_passe=classe_mot_de_passe,
+                               classe_confirmation_mot_de_passe=classe_confirmation_mot_de_passe,
+                               classe_condition=classe_condition)
     else:
         mot_de_passe_hache = hashlib.sha512(mot_de_passe.encode()).hexdigest()
 
@@ -325,24 +324,26 @@ def inscription_acheteur():
                                     "mot_de_passe": mot_de_passe_hache,
                                     "statut": "acheteur"
                                 }
-)
-        id_utilisateur = base_de_donnees.execute("SELECT last_insert_rowid()").fetchone()[0]
+                                )
+        id_utilisateur = base_de_donnees.execute(
+            "SELECT last_insert_rowid()").fetchone()[0]
 
         base_de_donnees.execute("""INSERT INTO acheteur (id,nom,prenom, adresse_postal, telephone, condition)
                                 VALUES (:id, :nom, :prenom, :adresse, :telephone, :condition)""",
                                 {
-                                    "id":id_utilisateur,
+                                    "id": id_utilisateur,
                                     "nom": nom,
-                                    "prenom":prenom,
+                                    "prenom": prenom,
                                     "adresse": adresse,
                                     "telephone": telephone,
                                     "condition": True
                                 }
-)
+                                )
         base_de_donnees.commit()
 
         flash("Compte acheteur crée avec succès", "success")
         return redirect("/", 303)
+
 
 @app.route('/deconnexion')
 def deconnexion():
@@ -361,7 +362,7 @@ def passer_commande():
             cout_total += repas["prix"] * repas["quantite"]
         acheteur = db.get_acheteur(session["id_utilisateur"])
         if not acheteur:
-            abort(404)
+            abort(401)
 
         if acheteur["credit"] < cout_total:
             flash("Crédit insuffisant", "danger")
@@ -378,7 +379,8 @@ def passer_commande():
                 resultat = db.commande_repas({
                     "id_commande": id_commande,
                     "id_repas": repas["id"],
-                    "quantite": repas["quantite"]
+                    "quantite": repas["quantite"],
+                    "prix_unitaire": repas["prix"]
                 })
                 if not resultat:
                     break

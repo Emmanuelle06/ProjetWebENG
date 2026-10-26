@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, session, redirect, flash, abort,url_for,Response
+from flask import Blueprint, render_template, request, session, redirect,flash, abort,url_for,Response
 from BD import db
 
 bp_vendeur = Blueprint('vendeur', __name__)
 
 @bp_vendeur.route('/ajout-repas', methods=['GET', 'POST'])
 def creer_repas():
+    "Methode pour creer un repas"
     if "id_utilisateur" not in session:
         flash("Vous devez être connecté pour ajouter un repas.", "warning")
         return redirect("/")
@@ -68,7 +69,7 @@ def creer_repas():
                 valide = False
             if valide:
                 image_blob = photo.read()
-                repasAAjouter = {
+                repas_a_ajouter = {
                     "nom": nom_repas,
                     "prix": prix,
                     "description": desc_repas,
@@ -77,12 +78,11 @@ def creer_repas():
                     "id_vendeur": session["id_utilisateur"]
                     }
 
-                condition = db.add_repas(repasAAjouter)
+                condition = db.add_repas(repas_a_ajouter)
                 if condition == True:
                     flash("Repas créé avec succès", "success")
                     return render_template('page_vendeur.jinja')
-                else:
-                    print('ERREUR')
+
         return render_template('vendeur/ajout-repas.jinja', classe_titre=classe_titre,
             classe_prix=classe_prix,
             classe_description=classe_description,
@@ -100,6 +100,7 @@ def creer_repas():
 
 
 def obtenir_profil(id_utilisateur):
+    """ Methode pour obtenir un profil"""
     base_de_donnees = db.get_db()
 
     utilisateur = base_de_donnees.execute(
@@ -119,6 +120,7 @@ def obtenir_profil(id_utilisateur):
 
 @bp_vendeur.route('/profil')
 def profil():
+    """ Methode pour un profil"""
     if "id_utilisateur" not in session:
         return redirect("/")
     id_utilisateur = session["id_utilisateur"]
@@ -134,6 +136,7 @@ def profil():
 
 @bp_vendeur.route('/profil/modifier', methods=["GET", "POST"])
 def modifier_profil():
+    """ Methode pour modifier un profil"""
     if "id_utilisateur" not in session:
         return redirect("/")
 
@@ -255,6 +258,7 @@ def modifier_profil():
 
 @bp_vendeur.route('/profil/supprimer', methods=["POST"])
 def supprimer_profil():
+    """ Methode pour supprimer un profil"""
     if "id_utilisateur" not in session:
         return redirect("/")
 
@@ -273,21 +277,21 @@ def supprimer_profil():
 
 @bp_vendeur.route('/repas/<int:id_repas>/image')
 def image_repas(id_repas):
+    """ Methode pour obtenir l'image du repas"""
     if "id_utilisateur" not in session:
         abort(403)
 
-    if session.get("statut") != "vendeur":
-        abort(403)
-
-    id_vendeur = session["id_utilisateur"]
-
-    repas = db.obtenir_repas(id_repas, id_vendeur)
+    if session.get("statut") == "vendeur":
+        id_vendeur = session["id_utilisateur"]
+        repas = db.obtenir_repas(id_repas, id_vendeur)
+    else:
+        repas = db.obtenir_repas_par_id(id_repas)
 
     if repas is None or repas["image"] is None:
         abort(404)
 
     image = bytes(repas["image"])
-
+    type_image = None
     if image.startswith(b"\x89PNG\r\n\x1a\n"):
         type_image = "image/png"
     elif image.startswith(b"\xff\xd8\xff"):
@@ -302,6 +306,7 @@ def image_repas(id_repas):
 
 @bp_vendeur.route('/profil/repas/<int:id_repas>/disponibilite', methods=['POST'])
 def changer_disponibilite(id_repas):
+    """ Methode pour changer la disponibilite du repas"""
     if "id_utilisateur" not in session:
         return redirect("/")
 
@@ -324,6 +329,7 @@ def changer_disponibilite(id_repas):
 
 @bp_vendeur.route('/profil/repas/<int:id_repas>/supprimer', methods=['POST'])
 def supprimer_mon_repas(id_repas):
+    """ Methode pour supprimer un repas"""
     if "id_utilisateur" not in session:
         return redirect("/")
 
@@ -343,6 +349,7 @@ def supprimer_mon_repas(id_repas):
 
 @bp_vendeur.route('/modifier-repas/<int:id_repas>', methods=['GET', 'POST'])
 def modifier_repas(id_repas):
+    """ Methode pour modifier un repas"""
     if "id_utilisateur" not in session:
         flash("Vous devez être connecté.", "warning")
         return redirect("/")
