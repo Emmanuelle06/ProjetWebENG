@@ -72,7 +72,26 @@ def inserer_donnees_test(connexion):
     connexion.commit()
 
 
+
+def inserer_acheteur_test(connexion):
+    """Crée un acheteur de test (une seule fois, grâce à INSERT OR IGNORE)"""
+    connexion.execute("""INSERT OR IGNORE INTO utilisateur (username, mot_de_passe, statut)
+        VALUES (:username, :mot_de_passe, :statut)""",
+        {"username": "acheteurTest", "mot_de_passe": MOT_DE_PASSE, "statut": "acheteur"})
+
+    connexion.execute("""INSERT OR IGNORE INTO acheteur (id, nom, prenom, adresse_postal, telephone, condition, credit)
+        VALUES ((SELECT id FROM utilisateur WHERE username = :username),
+                :nom, :prenom, :adresse, :telephone, :condition, :credit)""",
+        {"username": "acheteurTest", "nom": "Test", "prenom": "Client",
+         "adresse": "01 Avenue Montréal", "telephone": "1234567890",
+         "condition": True, "credit": 100})
+
+    connexion.commit()
+
+
 if __name__ == "__main__":
     connexion = sqlite3.connect("BD/eatfast.sqlite")
     inserer_donnees_test(connexion)
+    inserer_acheteur_test(connexion)
     connexion.close()
+

@@ -6,7 +6,7 @@ from vendeur import bp_vendeur
 from acheteur import bp_acheteur
 from menu import bp_menu, calculer_quantite_panier
 
-from BD.inserer_repas import inserer_donnees_test
+from BD.inserer_repas import inserer_donnees_test, inserer_acheteur_test
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
 # cest la ou la bd sera enregistré
@@ -21,6 +21,7 @@ db.init_app(app)
 with app.app_context():
     db.init_db()
     inserer_donnees_test(db.get_db())
+    inserer_acheteur_test(db.get_db())
 
 
 @app.route("/", methods=["GET", "POST"])
