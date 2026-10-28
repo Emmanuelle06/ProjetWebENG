@@ -83,12 +83,25 @@
                         <p class="mb-1 text-muted">Crédit disponible :</p>
                         <h2 class="text-success mb-3">{{ utilisateur["credit"]|round(2) }} $</h2>
                     </div>
-                    <form method="post" action="{{ url_for('acheteur.charger_carte') }}">
+
+                    <form method="post" action="{{ url_for('acheteur.charger_carte') }}" novalidate>
                         <div class="mb-3">
-                            <label for="montant" class="form-label">Montant à ajouter ($) </label>
-                            <input type="number" id="montant" name="montant" class="form-control w-75" min="1" max="500" required>
+                            <label for="montant" class="form-label">Montant à ajouter ($)</label>
+
+                            <input type="number" id="montant" name="montant"
+                                class="form-control w-75 {{ 'is-invalid' if erreur_montant|default('') else '' }}"
+                                min="1" max="500" required>
+
+                            {% if erreur_montant|default('') %}
+                                <div class="invalid-feedback">
+                                    {{ erreur_montant }}
+                                </div>
+                            {% endif %}
                         </div>
-                        <button type="submit" class="btn btn-primary w-75">Charger ma carte</button>
+
+                        <button type="submit" class="btn btn-primary w-75">
+                            Charger ma carte
+                        </button>
                     </form>
                 </div>
             </div>

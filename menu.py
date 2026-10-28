@@ -1,3 +1,4 @@
+"""Gère les routes et l'affichage du menu des repas EatFast."""
 import unicodedata
 from flask import Blueprint, render_template, request, session, redirect, flash, abort, jsonify
 from BD import db
@@ -13,6 +14,7 @@ def normaliser(texte):
     return texte.lower()
 
 def calculer_quantite_panier():
+    """Fonction pour calculer la quantite d'élément dans le panier"""
     session["quantite_panier"] = 0
     for repas in session["panier"]:
         session["quantite_panier"] += repas["quantite"]
@@ -20,6 +22,7 @@ def calculer_quantite_panier():
 
 
 def chercher_repas(mot, prix_min, prix_max):
+    """Cherche un repas en fonction de son nom"""
     repas = db.obtenir_repas_disponibles(prix_min, prix_max)
 
     if mot:
@@ -76,6 +79,7 @@ def api_recherche():
 
 @bp_menu.route('/ajout-panier/<int:id_repas>')
 def ajouter_panier(id_repas):
+    """Methode pour ajouteer dans un panier"""
     repas = db.get_repas(id_repas)
     resto = db.get_restaurant(id_repas)
     if "panier" not in session:
@@ -89,7 +93,7 @@ def ajouter_panier(id_repas):
             indicateur = True
             break
 
-    if indicateur == False:
+    if indicateur is False:
         session["panier"].append({
              "id": repas["id_repas"],
             "nom": repas["nom"],
@@ -101,7 +105,7 @@ def ajouter_panier(id_repas):
 
     for item in session["panier"]:
         session["cout"] += item["prix"] * item["quantite"]
-    
+
     calculer_quantite_panier()
     session["ouvrir_panier"] = True
     session.modified = True
@@ -111,6 +115,7 @@ def ajouter_panier(id_repas):
 
 @bp_menu.route('/enlever-panier/<int:id_repas>')
 def supprimer_panier(id_repas):
+    """Methode pour supprimer un panier"""
     for repas in session["panier"]:
         if repas["id"] == id_repas:
             session["panier"].remove(repas)
@@ -127,6 +132,7 @@ def supprimer_panier(id_repas):
 
 @bp_menu.route('/vider-panier',methods=["POST"])
 def vider_panier():
+    """Methode pour vider un panier"""
     if session:
         session["panier"] = []
         flash("Panier vidé avec succès", "success")
@@ -141,6 +147,7 @@ def vider_panier():
 
 @bp_menu.route('/modifier-quantite/<int:id_repas>', methods=['POST'])
 def modifier_quantite(id_repas):
+    """Fonction pour modifier la quantite d'un plat"""
     action = request.form.get("action")
 
     for repas in session["panier"]:
@@ -164,6 +171,7 @@ def modifier_quantite(id_repas):
 
 @bp_menu.route('/repas/<int:id_repas>')
 def detail_repas(id_repas):
+    """ Methode pour afficher un detail repas"""
     if "id_utilisateur" not in session:
         flash("Veuillez vous connecter.", "warning")
         return redirect("/")

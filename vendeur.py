@@ -1,3 +1,4 @@
+"""Gère les routes et l'affichage du vendeur."""
 from flask import Blueprint, render_template, request, session, redirect,flash, abort,url_for,Response
 from BD import db
 
@@ -79,7 +80,7 @@ def creer_repas():
                     }
 
                 condition = db.add_repas(repas_a_ajouter)
-                if condition == True:
+                if condition is True:
                     flash("Repas créé avec succès", "success")
                     return render_template('page_vendeur.jinja')
 

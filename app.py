@@ -1,8 +1,7 @@
-import os
 import hashlib
 from flask import Flask, render_template, request, redirect, flash, session, url_for
-from BD import db
 from flask import Response, abort
+from BD import db
 from vendeur import bp_vendeur
 from acheteur import bp_acheteur
 from menu import bp_menu, calculer_quantite_panier
@@ -26,6 +25,7 @@ with app.app_context():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    """Fonction page accueil"""
     if session.get("statut") == "vendeur":
         return render_template('page_vendeur.jinja')
     if session.get("statut") == "acheteur":
@@ -347,12 +347,14 @@ def inscription_acheteur():
 
 @app.route('/deconnexion')
 def deconnexion():
+    """Fonction deconnexion"""
     session.clear()
     return redirect('/')
 
 
 @app.route('/passer-commande', methods=["POST"])
 def passer_commande():
+    """ Fonction pour passer une commande"""
     if "id_utilisateur" not in session:
         abort(401)
 
