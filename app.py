@@ -22,6 +22,7 @@ with app.app_context():
     db.init_db()
     inserer_donnees_test(db.get_db())
 
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if session.get("statut") == "vendeur":

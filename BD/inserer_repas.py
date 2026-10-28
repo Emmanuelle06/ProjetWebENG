@@ -76,3 +76,6 @@ if __name__ == "__main__":
     connexion = sqlite3.connect("BD/eatfast.sqlite")
     inserer_donnees_test(connexion)
     connexion.close()
+
+
+
