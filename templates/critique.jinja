@@ -1,0 +1,25 @@
+{% extends "modele.jinja" %}
+
+
+{% block contenu %}
+<div class="d-flex justify-content-center py-5 ">
+    <div class="form-au-dessus connexion mb-5">
+        <h1 class="text-center fw-bold titre">Mettre une note</h1>
+{# METTRE GENRE EL REPAS QUE JE VEUX METTRE UEN NOTE #}
+        <form method="post" action="{{ url_for('acheteur.faire_critique', id_repas=id_repas) }}">
+            <div class="mb-3">
+                <label for="note" class="form-label">Note :</label>
+                <input type="number" name="note" id="note" class="form-control">
+                <div class="invalid-feedback">
+                    <p>Veuillez entrer une note entre 0 et 5</p>
+                </div>
+            </div>
+
+            <div class="mb-3 text-center p-3 m-25">
+                <button type="submit" class="btn btn-primary w-75">Envoyer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{%endblock%}

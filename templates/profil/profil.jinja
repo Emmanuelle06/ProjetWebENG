@@ -142,6 +142,7 @@
                                     Terminée
                                 {% endif %}
                             </span>
+                            
                         </div>
 
                         {% for repas in commande["repas"] %}
@@ -158,11 +159,13 @@
                                         <div class="text-muted small">
                                             Quantité : {{ repas["quantite"] }}
                                         </div>
+                                        <a href="{{ url_for('acheteur.faire_critique', id_repas=repas['id_repas']) }}">Mettre une note</a>
                                     </div>
 
                                     <span class="fw-semibold text-nowrap">
                                         {{ (repas["prix"] * repas["quantite"])|round(2) }} $
                                     </span>
+                                    
                                 </div>
                             </a>
                         {% endfor %}

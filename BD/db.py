@@ -291,3 +291,16 @@ def obtenir_commandes_acheteur(id_acheteur):
         print(e)
         return []
 
+def add_critique(critique):
+    db = get_db()
+    try:
+        curseur = db.execute(
+            "INSERT INTO critique (id_utilisateur,id_repas ,id_acheteur )" \
+            "VALUES (:id_utilisateur, :id_repas, :id_acheteur)",
+            critique
+        )
+        db.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False

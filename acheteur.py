@@ -370,3 +370,16 @@ def charger_carte():
     )
 
     return redirect(url_for("acheteur.profil"), 303)
+
+@bp_acheteur.route('/critique/<int:id_repas>', methods=["GET", "POST"])
+def faire_critique(id_repas):
+    if request.method == "POST":
+        critique = ""
+        critique.note = request.form.get("note", "")
+        critique.id_utilisateur = session["id_utilisateur"]
+        critique.id_repas = id_repas
+
+        rep = db.add_critique(critique)
+        if(rep):
+            return render_template('/')
+    return render_template('/critique.jinja', id_repas=id_repas)
