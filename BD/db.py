@@ -291,3 +291,25 @@ def obtenir_commandes_acheteur(id_acheteur):
         print(e)
         return []
 
+
+def obtenir_notifications(id_acheteur):
+    """Commandes terminées dont la notification n'a pas encore été vue"""
+    return get_db().execute("""
+        SELECT id_commande
+        FROM commande
+        WHERE id_acheteur = :id_acheteur
+        AND statut = 'terminer'
+        AND id_commande NOT IN (SELECT id_commande FROM notification_lue)
+        ORDER BY id_commande DESC""",
+        {"id_acheteur": id_acheteur}).fetchall()
+
+
+def marquer_notifications_lues(id_acheteur):
+    """Marque comme vues les commandes terminées de l'acheteur"""
+    db = get_db()
+    db.execute("""
+        INSERT OR IGNORE INTO notification_lue (id_commande)
+        SELECT id_commande FROM commande
+        WHERE id_acheteur = :id_acheteur AND statut = 'terminer'""",
+        {"id_acheteur": id_acheteur})
+    db.commit()
