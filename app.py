@@ -5,7 +5,7 @@ from BD import db
 from vendeur import bp_vendeur
 from acheteur import bp_acheteur
 from menu import bp_menu, calculer_quantite_panier
-
+from notifications import bp_notifications
 from BD.inserer_repas import inserer_donnees_test, inserer_acheteur_test
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
@@ -14,6 +14,7 @@ app.config['DATABASE'] = 'BD/eatfast.sqlite'
 app.register_blueprint(bp_vendeur, url_prefix='/vendeur')
 app.register_blueprint(bp_acheteur)
 app.register_blueprint(bp_menu)
+app.register_blueprint(bp_notifications)
 app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
 
 

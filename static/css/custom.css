@@ -205,5 +205,11 @@ main {
     border-radius: 0 4rem 0 4rem ;
 }
 
+.panneau-notifications {
+    min-width: 300px;
+    border: 1px solid #dee2e6;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
 

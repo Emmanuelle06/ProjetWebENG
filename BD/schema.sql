@@ -67,3 +67,9 @@ create table IF NOT EXISTS commande_repas
     FOREIGN KEY(id_repas) REFERENCES repas(id_repas)
 );
 
+
+CREATE TABLE IF NOT EXISTS notification_lue
+(
+    id_commande INTEGER PRIMARY KEY,
+    FOREIGN KEY (id_commande) REFERENCES commande(id_commande) ON DELETE CASCADE
+);
