@@ -133,11 +133,11 @@
                                     text-bg-secondary
                                 {% endif %}">
                             {% if commande['statut_general'] == 'attente' %}
-                            En attente
+                            Commande en attente
                             {% elif commande['statut_general'] == 'cours' %}
-                            En cours
+                            Commande en Cours
                             {% elif commande['statut_general'] == 'terminer' %}
-                            Terminée
+                            Commande Terminée
                             {% endif %}
                         </span>
                     </div>
@@ -148,28 +148,6 @@
                             <h6 class="mb-0">
                                 {{ restaurant["nom_restaurant"] }}
                             </h6>
-                            {% if commande["plusieurs_restaurants"] %}
-                            <span class="badge
-                                        {% if restaurant['statut'] == 'attente' %}
-                                            text-bg-warning
-                                        {% elif restaurant['statut'] == 'cours' %}
-                                            text-bg-primary
-                                        {% elif restaurant['statut'] == 'terminer' %}
-                                            text-bg-success
-                                        {% else %}
-                                            text-bg-secondary
-                                        {% endif %}">
-                                {% if restaurant['statut'] == 'attente' %}
-                                En attente
-                                {% elif restaurant['statut'] == 'cours' %}
-                                En cours
-                                {% elif restaurant['statut'] == 'terminer' %}
-                                Terminée
-                                {% else %}
-                                Statut inconnu
-                                {% endif %}
-                            </span>
-                            {% endif %}
                         </div>
 
                         {% for repas in restaurant["repas"] %}
@@ -200,9 +178,34 @@
                                         {% endif %}
                                     </div>
 
-                                    <span class="fw-semibold text-nowrap">
-                                        {{ (repas["prix"] * repas["quantite"])|round(2) }} $
-                                    </span>
+                                    <div class="text-end">
+                                        <div class="fw-semibold text-nowrap">
+                                            {{ (repas["prix"] * repas["quantite"])|round(2) }} $
+                                        </div>
+
+                                        {% if commande["plusieurs_restaurants"] %}
+                                        <span class="badge
+            {% if restaurant['statut'] == 'attente' %}
+                text-bg-warning
+            {% elif restaurant['statut'] == 'cours' %}
+                text-bg-primary
+            {% elif restaurant['statut'] == 'terminer' %}
+                text-bg-success
+            {% else %}
+                text-bg-secondary
+            {% endif %} mt-1">
+                                            {% if restaurant['statut'] == 'attente' %}
+                                            En attente
+                                            {% elif restaurant['statut'] == 'cours' %}
+                                            En cours
+                                            {% elif restaurant['statut'] == 'terminer' %}
+                                            Terminée
+                                            {% else %}
+                                            Statut inconnu
+                                            {% endif %}
+                                        </span>
+                                        {% endif %}
+                                    </div>
                                 </div>
 
                                 {% if repas["disponibilite"] == 'on' or repas["disponibilite"] == 1 %}
