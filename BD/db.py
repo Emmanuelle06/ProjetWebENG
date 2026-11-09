@@ -295,8 +295,8 @@ def add_critique(critique):
     db = get_db()
     try:
         curseur = db.execute(
-            "INSERT INTO critique (id_utilisateur,id_repas ,id_acheteur )" \
-            "VALUES (:id_utilisateur, :id_repas, :id_acheteur)",
+            "INSERT INTO critique (id_utilisateur,id_repas , note )" \
+            "VALUES (:id_utilisateur, :id_repas, :note)",
             critique
         )
         db.commit()
@@ -304,3 +304,18 @@ def add_critique(critique):
     except Exception as e:
         print(e)
         return False
+
+def get_critique(id_repas):
+    db = get_db()
+    try:
+        curseur = db.execute(
+            "Select AVG(note) from critique " \
+            "Where id_repas = ?",
+            (id_repas,)
+        )
+        resultat = curseur.fetchone()
+        return resultat[0]
+    except Exception as e:
+            print(e)
+            return False 
+

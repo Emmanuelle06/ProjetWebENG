@@ -1,5 +1,5 @@
 import hashlib
-from flask import Blueprint, render_template, request, redirect, flash,session,url_for,abort
+from flask import Blueprint, render_template, request, redirect, flash,session,url_for,abort, jsonify
 from BD import db
 
 bp_acheteur = Blueprint('acheteur', __name__)
@@ -374,12 +374,21 @@ def charger_carte():
 @bp_acheteur.route('/critique/<int:id_repas>', methods=["GET", "POST"])
 def faire_critique(id_repas):
     if request.method == "POST":
-        critique = ""
-        critique.note = request.form.get("note", "")
-        critique.id_utilisateur = session["id_utilisateur"]
-        critique.id_repas = id_repas
+        critique = {
+        "note": request.form.get("note"),
+        "id_utilisateur": session["id_utilisateur"],
+        "id_repas": id_repas
+        }
+
 
         rep = db.add_critique(critique)
         if(rep):
-            return render_template('/')
+            flash("Votre critique a été ajouté avec succès.",
+                "success")
+            return render_template('/menu.jinja')
     return render_template('/critique.jinja', id_repas=id_repas)
+
+@bp_acheteur.route('/moyenne_note/<int:id_repas>')
+def moyenne_note(id_repas):
+    moyenne = db.get_critique(id_repas)
+    return jsonify(moyenne=moyenne)
