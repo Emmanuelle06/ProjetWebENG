@@ -379,6 +379,8 @@ def passer_commande():
         })
 
         if id_commande:
+            vendeurs = []
+
             for repas in session["panier"]:
                 resultat = db.commande_repas({
                     "id_commande": id_commande,
@@ -388,6 +390,22 @@ def passer_commande():
                 })
                 if not resultat:
                     break
+                repas_bd = db.get_repas(repas["id"])
+                if not repas_bd:
+                    resultat = False
+                    break
+
+                id_vendeur = repas_bd["id_vendeur"]
+
+                if id_vendeur not in vendeurs:
+                    vendeurs.append(id_vendeur)
+            if resultat:
+                for id_vendeur in vendeurs:
+                    resultat = db.add_commande_vendeur(id_commande, id_vendeur)
+
+                    if not resultat:
+                        break
+
             if resultat:
                 nouv_credit = acheteur["credit"] - cout_total
                 db.modif_credit(

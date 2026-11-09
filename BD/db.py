@@ -78,6 +78,23 @@ def commande_repas(repas):
         print (e)
         return False
 
+def add_commande_vendeur(id_commande, id_vendeur):
+    """ Fonction qui enregistre le restaurant associé à une commande"""
+    db = get_db()
+    try:
+        db.execute(
+            """
+            INSERT INTO commande_vendeur (id_commande, id_vendeur, statut)
+            VALUES (?, ?, 'attente')
+            """,
+            (id_commande, id_vendeur)
+        )
+        db.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
 def get_repas(id):
     db = get_db()
     try:
@@ -234,56 +251,40 @@ def obtenir_repas_par_id(id_repas):
         AND repas.disponibilite IN ('on', 1)""",
         {"id_repas": id_repas}).fetchone()
 
-#fonction pour avoir les commandes dun acheteur
-
+#fonction pour avoir les commandes dun acheteur- en seperant pour chaque restaurant
 def obtenir_commandes_acheteur(id_acheteur):
-    """ Retoune les commandes d'un acheteur"""
     db = get_db()
 
     try:
-        curseur = db.execute(
+        commandes = db.execute(
             """
             SELECT
-                commande.id_commande,commande.statut, commande.cout_total
-                ,repas.nom,repas.id_repas,commande_repas.quantite,commande_repas.prix_unitaire
+                commande.id_commande,
+                commande.cout_total,
+                commande.statut AS statut_general,
+                vendeur.id AS id_vendeur,
+                vendeur.nom_restaurant,
+                commande_vendeur.statut AS statut_restaurant,
+                repas.id_repas,
+                repas.nom,
+                repas.disponibilite,
+                commande_repas.quantite,
+                commande_repas.prix_unitaire
             FROM commande
             LEFT JOIN commande_repas
                 ON commande.id_commande = commande_repas.id_commande
             LEFT JOIN repas
                 ON commande_repas.id_repas = repas.id_repas
+            LEFT JOIN vendeur
+                ON repas.id_vendeur = vendeur.id
+            LEFT JOIN commande_vendeur
+                ON commande.id_commande = commande_vendeur.id_commande
+                AND vendeur.id = commande_vendeur.id_vendeur
             WHERE commande.id_acheteur = ?
             ORDER BY commande.id_commande DESC
             """,
             (id_acheteur,)
-        )
-
-        lignes = curseur.fetchall()
-        commandes = []
-
-        for ligne in lignes:
-            commande_trouvee = None
-
-            for commande in commandes:
-                if commande["id_commande"] == ligne["id_commande"]:
-                    commande_trouvee = commande
-                    break
-
-            if commande_trouvee is None:
-                commande_trouvee = {
-                    "id_commande": ligne["id_commande"],
-                    "statut": ligne["statut"],
-                    "cout_total": ligne["cout_total"],
-                    "repas": []
-                }
-                commandes.append(commande_trouvee)
-
-            if ligne["nom"] is not None:
-                commande_trouvee["repas"].append({
-                    "id_repas": ligne["id_repas"],
-                    "nom": ligne["nom"],
-                    "prix": ligne["prix_unitaire"],
-                    "quantite": ligne["quantite"]
-                })
+        ).fetchall()
 
         return commandes
 
