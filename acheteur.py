@@ -34,7 +34,8 @@ def profil():
     if utilisateur is None:
         session.clear()
         return redirect("/")
-    commandes = db.obtenir_commandes_acheteur(id_utilisateur)
+    lignes = db.obtenir_commandes_acheteur(id_utilisateur)
+    commandes = historique_commandes(lignes)
     return render_template("profil/profil.jinja", utilisateur=utilisateur,commandes=commandes)
 
 @bp_acheteur.route('/inscription-acheteur', methods=["GET", "POST"])
@@ -370,3 +371,52 @@ def charger_carte():
     )
 
     return redirect(url_for("acheteur.profil"), 303)
+
+def historique_commandes(lignes):
+    """Historique commande dun acheteur"""
+    commandes = {}
+    restaurants = {}
+
+    for ligne in lignes:
+        id_commande = ligne["id_commande"]
+
+        if id_commande not in commandes:
+            commandes[id_commande] = {
+                "id_commande": id_commande,
+                "cout_total": ligne["cout_total"],
+                "statut_general": ligne["statut_general"],
+                "restaurants": []
+            }
+
+        if ligne["id_vendeur"] is not None:
+            id_vendeur = ligne["id_vendeur"]
+            cle = (id_commande, id_vendeur)
+
+            if cle not in restaurants:
+                statut = ligne["statut_restaurant"]
+
+                if statut is None:
+                    statut = ligne["statut_general"]
+
+                restaurant = {
+                    "id_vendeur": id_vendeur,
+                    "nom_restaurant": ligne["nom_restaurant"],
+                    "statut": statut,
+                    "repas": []
+                }
+
+                restaurants[cle] = restaurant
+                commandes[id_commande]["restaurants"].append(restaurant)
+
+            if ligne["id_repas"] is not None:
+                restaurants[cle]["repas"].append({
+                    "id_repas": ligne["id_repas"],
+                    "nom": ligne["nom"],
+                    "disponibilite": ligne["disponibilite"],
+                    "prix": ligne["prix_unitaire"],
+                    "quantite": ligne["quantite"]
+                })
+
+    for commande in commandes.values():
+        commande["plusieurs_restaurants"] = len(commande["restaurants"]) > 1
+    return list(commandes.values())
