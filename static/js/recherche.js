@@ -49,7 +49,14 @@ async function ajouterCarte(repas) {
         const rep = await fetch("/moyenne_note/" + repas.id_repas)
         const donnees = await rep.json()
         if(donnees.moyenne !== null){
-            critique.textContent = "Note : " + donnees.moyenne + "/5"
+            critique.textContent = "Note : ";
+            for (let i = 0; i< donnees.moyenne; i++){
+                critique.textContent += "★";
+            }
+            for (let i = 0; i< 5 - donnees.moyenne; i++){
+                critique.textContent += "✩";
+            }
+            critique.textContent += "/5"
         }
         else{
             critique.textContent = "Aucune critique"

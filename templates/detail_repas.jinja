@@ -20,7 +20,17 @@
                 <p class="fs-4 text-muted mb-3">{{ repas["nom_restaurant"] }}</p>
                 <p class="display-6 fw-bold mb-4">{{ repas["prix"] }}$ CA</p>
                 <p class="fs-5 mb-4">{{ repas["description"] }}</p>
-
+                {% if note %}
+                    <p class="fs-5 mb-4">Note : {% for i in range(note) %}
+                        &#9733;
+                        {% endfor%}
+                        {% for i in range(5 - note)%}
+                        &#10025;
+                        {% endfor%}
+                        /5</p>  
+                {% else %}
+                    <p class="fs-5 mb-4">Aucune critique</p>
+                {% endif %}
                 {% if session.get("statut") == "acheteur" %}
                 <a href="/ajout-panier/{{ repas['id_repas'] }}" class="btn btn-primary btn-lg align-self-start">
                     Ajouter au panier

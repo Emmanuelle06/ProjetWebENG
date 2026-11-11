@@ -1,4 +1,5 @@
 import hashlib
+import math
 from flask import Blueprint, render_template, request, redirect, flash,session,url_for,abort, jsonify
 from BD import db
 
@@ -375,11 +376,14 @@ def charger_carte():
 def faire_critique(id_repas):
     if request.method == "POST":
         critique = {
-        "note": request.form.get("note"),
+        "note": int(request.form.get("note")),
         "id_utilisateur": session["id_utilisateur"],
         "id_repas": id_repas
         }
-
+        
+        if critique["note"] < 0 or critique["note"] > 5:
+            classe_note = "is-invalid"
+            return render_template('/critique.jinja', id_repas=id_repas, classe_note=classe_note)
 
         rep = db.add_critique(critique)
         if(rep):
@@ -391,4 +395,5 @@ def faire_critique(id_repas):
 @bp_acheteur.route('/moyenne_note/<int:id_repas>')
 def moyenne_note(id_repas):
     moyenne = db.get_critique(id_repas)
+    moyenne = math.floor(moyenne)
     return jsonify(moyenne=moyenne)

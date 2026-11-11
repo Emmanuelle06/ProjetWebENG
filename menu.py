@@ -177,8 +177,9 @@ def detail_repas(id_repas):
         return redirect("/")
 
     repas = db.obtenir_repas_par_id(id_repas)
+    note = int(db.get_critique(id_repas))
 
     if repas is None:
         abort(404)
 
-    return render_template("detail_repas.jinja", repas=repas)
+    return render_template("detail_repas.jinja", repas=repas, note=note)
