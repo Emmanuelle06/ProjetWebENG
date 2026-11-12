@@ -72,9 +72,11 @@ create table IF NOT EXISTS critique
     id_critique INTEGER,
     id_repas INTEGER,
     id_utilisateur INTEGER,
+    id_commande INTEGER,
     note INTEGER,
 
     PRIMARY KEY(id_critique),
     FOREIGN KEY(id_utilisateur) REFERENCES acheteur(id)
     FOREIGN KEY(id_repas) REFERENCES repas(id_repas)
+    FOREIGN KEY(id_commande) REFERENCES commande(id_commande)
 );

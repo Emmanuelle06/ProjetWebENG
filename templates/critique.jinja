@@ -5,8 +5,8 @@
 <div class="d-flex justify-content-center py-5 ">
     <div class="form-au-dessus connexion mb-5">
         <h1 class="text-center fw-bold titre">Mettre une note</h1>
-{# METTRE GENRE EL REPAS QUE JE VEUX METTRE UEN NOTE #}
-        <form method="post" action="{{ url_for('acheteur.faire_critique', id_repas=id_repas) }}" novalidate>
+        <form method="post" action="{{ url_for('acheteur.faire_critique', id_repas=id_repas,
+         id_commande=id_commande) }}" novalidate>
             <div class="mb-3">
                 <label for="note" class="form-label">Note :</label>
                 <input type="number" name="note" id="note" class="form-control {{ classe_note}}">

@@ -36,6 +36,9 @@ def profil():
         session.clear()
         return redirect("/")
     commandes = db.obtenir_commandes_acheteur(id_utilisateur)
+    for c in commandes:
+        for repas in c["repas"]:
+            repas["critique_remise"] = db.verif_critique(repas["id_repas"], id_utilisateur, c["id_commande"])
     return render_template("profil/profil.jinja", utilisateur=utilisateur,commandes=commandes)
 
 @bp_acheteur.route('/inscription-acheteur', methods=["GET", "POST"])
@@ -372,13 +375,14 @@ def charger_carte():
 
     return redirect(url_for("acheteur.profil"), 303)
 
-@bp_acheteur.route('/critique/<int:id_repas>', methods=["GET", "POST"])
-def faire_critique(id_repas):
+@bp_acheteur.route('/critique/<int:id_repas>/<int:id_commande>', methods=["GET", "POST"])
+def faire_critique(id_repas, id_commande):
     if request.method == "POST":
         critique = {
         "note": int(request.form.get("note")),
         "id_utilisateur": session["id_utilisateur"],
-        "id_repas": id_repas
+        "id_repas": id_repas,
+        "id_commande": id_commande
         }
         
         if critique["note"] < 0 or critique["note"] > 5:
@@ -390,10 +394,13 @@ def faire_critique(id_repas):
             flash("Votre critique a été ajouté avec succès.",
                 "success")
             return render_template('/menu.jinja')
-    return render_template('/critique.jinja', id_repas=id_repas)
+    return render_template('/critique.jinja', id_repas=id_repas, id_commande=id_commande)
 
 @bp_acheteur.route('/moyenne_note/<int:id_repas>')
 def moyenne_note(id_repas):
     moyenne = db.get_critique(id_repas)
+    if moyenne is None:
+        return jsonify(moyenne=None)
+    moyenne = int(moyenne)
     moyenne = math.floor(moyenne)
     return jsonify(moyenne=moyenne)

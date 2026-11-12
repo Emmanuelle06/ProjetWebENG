@@ -159,7 +159,14 @@
                                         <div class="text-muted small">
                                             Quantité : {{ repas["quantite"] }}
                                         </div>
-                                        <a href="{{ url_for('acheteur.faire_critique', id_repas=repas['id_repas']) }}">Mettre une note</a>
+                                        {% if commande['statut'] == 'terminer'%} 
+                                        {% if repas["critique_remise"]%}
+                                        <span class="fw-semibold">Note déjà remise</span>
+                                        {% else%}
+                                        <a href="{{ url_for('acheteur.faire_critique', id_repas=repas['id_repas'], 
+                                        id_commande=commande['id_commande']) }}">Mettre une note</a>
+                                        {% endif %}
+                                        {%endif%}
                                     </div>
 
                                     <span class="fw-semibold text-nowrap">
