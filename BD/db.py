@@ -253,6 +253,7 @@ def obtenir_repas_par_id(id_repas):
 
 #fonction pour avoir les commandes dun acheteur- en seperant pour chaque restaurant
 def obtenir_commandes_acheteur(id_acheteur):
+    """Retourne les commandes reçues par un acheteur avec leurs repas."""
     db = get_db()
 
     try:
@@ -314,3 +315,49 @@ def marquer_notifications_lues(id_acheteur):
         WHERE id_acheteur = :id_acheteur AND statut = 'terminer'""",
         {"id_acheteur": id_acheteur})
     db.commit()
+
+
+def obtenir_commandes_vendeur(id_vendeur):
+    """Retourne les commandes reçues par un vendeur avec leurs repas."""
+    db = get_db()
+
+    try:
+        commandes = db.execute(
+             """
+            SELECT
+                commande.id_commande,
+                ROW_NUMBER() OVER (
+                    ORDER BY commande.id_commande ASC
+                ) AS numero_commande,
+                utilisateur.username AS nom_acheteur,
+                CASE
+                    WHEN commande_vendeur.statut IS NOT NULL
+                    THEN commande_vendeur.statut
+                    ELSE commande.statut
+                END AS statut,
+                repas.id_repas,
+                repas.nom,
+                commande_repas.quantite
+            FROM commande_repas
+            JOIN repas
+                ON commande_repas.id_repas = repas.id_repas
+            JOIN commande
+                ON commande_repas.id_commande = commande.id_commande
+            JOIN acheteur
+                ON commande.id_acheteur = acheteur.id
+            JOIN utilisateur
+                ON acheteur.id = utilisateur.id
+            LEFT JOIN commande_vendeur
+                ON commande.id_commande = commande_vendeur.id_commande
+                AND commande_vendeur.id_vendeur = repas.id_vendeur
+            WHERE repas.id_vendeur = ?
+            ORDER BY commande.id_commande DESC
+            """,
+            (id_vendeur,)
+        ).fetchall()
+
+        return commandes
+
+    except Exception as e:
+        print(e)
+        return []

@@ -206,14 +206,6 @@ def image_repas(id_repas):
     return Response(ligne["image"], mimetype="image/jpeg")
 
 
-@app.route("/vendeur")
-def vendeur():
-    if "id_utilisateur" not in session:
-        return redirect(url_for("index"))
-
-    return render_template("page_vendeur.jinja")
-
-
 @app.route('/inscription-acheteur', methods=["GET", "POST"])
 def inscription_acheteur():
     """Inscription acheteur"""
@@ -420,6 +412,5 @@ def passer_commande():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
 
 

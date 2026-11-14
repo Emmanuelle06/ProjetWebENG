@@ -432,3 +432,58 @@ def modifier_repas(id_repas):
         prix_repas=prix_repas,
         desc_repas=desc_repas,
         dispo=dispo)
+
+def preparer_commandes_vendeur(lignes):
+    """Methode qui regroupe les repas par commande pour chaque tableau."""
+    commandes = {}
+
+    for ligne in lignes:
+        id_commande = ligne["id_commande"]
+
+        if id_commande not in commandes:
+            commandes[id_commande] = {
+                "id_commande": id_commande,
+                "statut": ligne["statut"],
+                "repas": []
+            }
+
+        commandes[id_commande]["repas"].append({
+            "nom": ligne["nom"],
+            "quantite": ligne["quantite"]
+        })
+
+    return list(commandes.values())
+
+@bp_vendeur.route('', methods=["GET"])
+def afficher_commandes():
+    """Methode qui permets d'afficher les commandes sur la page du vendeur """
+    if "id_utilisateur" not in session:
+        abort(401)
+
+    if session.get("statut") != "vendeur":
+        abort(403)
+
+    lignes = db.obtenir_commandes_vendeur(session["id_utilisateur"])
+
+    commandes = preparer_commandes_vendeur(lignes)
+
+    commandes_attente = []
+    commandes_cours = []
+    commandes_terminees = []
+
+    for commande in commandes:
+        if commande["statut"] == "attente":
+            commandes_attente.append(commande)
+
+        elif commande["statut"] == "cours":
+            commandes_cours.append(commande)
+
+        elif commande["statut"] == "terminer":
+            commandes_terminees.append(commande)
+
+    return render_template(
+        "vendeur/page_vendeur.jinja",
+        commandes_attente=commandes_attente,
+        commandes_cours=commandes_cours,
+        commandes_terminees=commandes_terminees
+    )
