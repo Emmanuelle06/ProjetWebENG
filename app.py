@@ -29,7 +29,7 @@ with app.app_context():
 def index():
     """Fonction page accueil"""
     if session.get("statut") == "vendeur":
-        return render_template('page_vendeur.jinja')
+        return redirect(url_for("vendeur.afficher_commandes"))
     if session.get("statut") == "acheteur":
         return redirect('/menu')
 

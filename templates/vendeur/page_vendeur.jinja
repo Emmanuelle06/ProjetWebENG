@@ -31,13 +31,15 @@
 
                             <h5 class="mb-3">
                                 <i class="bi bi-receipt me-2"></i>
-                                Commande #{{ commande.id_commande }}
+                                Commande #{{ commande.numero_commande }}
                             </h5>
-
+                            <p class="text-muted small mb-3">
+                                Acheteur : {{ commande.nom_acheteur }}
+                            </p>
                             {% for repas in commande.repas %}
                             <div class="d-flex justify-content-between mb-2">
                                 <span>
-                                    <i class="bi bi-egg-fried me-2 text-muted"></i>
+                                    
                                     {{ repas.nom }}
                                 </span>
                                 <span class="text-muted">× {{ repas.quantite }}</span>

@@ -443,6 +443,8 @@ def preparer_commandes_vendeur(lignes):
         if id_commande not in commandes:
             commandes[id_commande] = {
                 "id_commande": id_commande,
+                "numero_commande": ligne["numero_commande"],
+                "nom_acheteur": ligne["nom_acheteur"],
                 "statut": ligne["statut"],
                 "repas": []
             }
