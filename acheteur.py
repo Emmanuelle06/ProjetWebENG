@@ -379,15 +379,19 @@ def charger_carte():
 def faire_critique(id_repas, id_commande):
     if request.method == "POST":
         critique = {
-        "note": int(request.form.get("note")),
+        "note": request.form.get("note"),
         "id_utilisateur": session["id_utilisateur"],
         "id_repas": id_repas,
         "id_commande": id_commande
         }
-        
+        if not critique["note"]:
+            classe_note = "is-invalid"
+            return render_template('/critique.jinja', id_repas=id_repas, id_commande=id_commande, classe_note=classe_note)
+
+        critique["note"] = int(float(critique["note"]))
         if critique["note"] < 0 or critique["note"] > 5:
             classe_note = "is-invalid"
-            return render_template('/critique.jinja', id_repas=id_repas, classe_note=classe_note)
+            return render_template('/critique.jinja', id_repas=id_repas, id_commande=id_commande, classe_note=classe_note)
 
         rep = db.add_critique(critique)
         if(rep):

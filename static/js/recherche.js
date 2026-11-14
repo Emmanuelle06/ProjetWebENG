@@ -56,7 +56,6 @@ async function ajouterCarte(repas) {
             for (let i = 0; i< 5 - donnees.moyenne; i++){
                 critique.textContent += "✩";
             }
-            critique.textContent += "/5"
         }
         else{
             critique.textContent = "Aucune critique"
