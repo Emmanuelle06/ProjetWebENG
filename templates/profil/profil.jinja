@@ -170,6 +170,21 @@
                                         <div class="text-muted small">
                                             Quantité : {{ repas["quantite"] }}
                                         </div>
+                                        {% if commande['statut'] == 'terminer'%} 
+                                        {% if repas["critique_remise"]%}
+                                        <span class="fw-semibold">Note déjà remise</span>
+                                        {% else%}
+                                        <a href="{{ url_for('acheteur.faire_critique', id_repas=repas['id_repas'], 
+                                        id_commande=commande['id_commande']) }}" class="btn btn-outline-warning btn-sm">    
+                                        <i class="bi bi-star"></i> Noter ce repas</a>
+                                        {% endif %}
+                                        {%endif%}
+                                    </div>
+
+                                    <span class="fw-semibold text-nowrap">
+                                        {{ (repas["prix"] * repas["quantite"])|round(2) }} $
+                                    </span>
+                                    
 
                                         {% if repas["disponibilite"] != 'on' and repas["disponibilite"] != 1 %}
                                         <span class="badge text-bg-secondary mt-1">

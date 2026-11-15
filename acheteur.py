@@ -1,5 +1,6 @@
 import hashlib
-from flask import Blueprint, render_template, request, redirect, flash,session,url_for,abort
+import math
+from flask import Blueprint, render_template, request, redirect, flash,session,url_for,abort, jsonify
 from BD import db
 
 bp_acheteur = Blueprint('acheteur', __name__)
@@ -34,8 +35,13 @@ def profil():
     if utilisateur is None:
         session.clear()
         return redirect("/")
-    lignes = db.obtenir_commandes_acheteur(id_utilisateur)
-    commandes = historique_commandes(lignes)
+    lignes_commandes = db.obtenir_commandes_acheteur(id_utilisateur)
+    commandes = historique_commandes(lignes_commandes)
+
+    for c in commandes:
+        for restaurant in c["restaurants"]:
+            for repas in restaurant["repas"]:
+                repas["critique_remise"] = db.verif_critique(repas["id_repas"], id_utilisateur, c["id_commande"])
     return render_template("profil/profil.jinja", utilisateur=utilisateur,commandes=commandes)
 
 @bp_acheteur.route('/inscription-acheteur', methods=["GET", "POST"])
@@ -372,11 +378,43 @@ def charger_carte():
 
     return redirect(url_for("acheteur.profil"), 303)
 
+@bp_acheteur.route('/critique/<int:id_repas>/<int:id_commande>', methods=["GET", "POST"])
+def faire_critique(id_repas, id_commande):
+    if request.method == "POST":
+        critique = {
+        "id_utilisateur": session["id_utilisateur"],
+        "id_repas": id_repas,
+        "id_commande": id_commande,
+        "note": request.form.get("note", "")
+        }
+        if not critique["note"]:
+            classe_note = "is-invalid"
+            return render_template('/critique.jinja', id_repas=id_repas, id_commande=id_commande, classe_note=classe_note)
+
+        critique["note"] = int(float(critique["note"]))
+        if critique["note"] < 0 or critique["note"] > 5:
+            classe_note = "is-invalid"
+            return render_template('/critique.jinja', id_repas=id_repas, id_commande=id_commande, classe_note=classe_note)
+
+        rep = db.add_critique(critique)
+        if(rep):
+            flash("Votre critique a été ajouté avec succès.",
+                "success")
+            return render_template('/menu.jinja')
+    return render_template('/critique.jinja', id_repas=id_repas, id_commande=id_commande)
+
+@bp_acheteur.route('/moyenne_note/<int:id_repas>')
+def moyenne_note(id_repas):
+    moyenne = db.get_critique(id_repas)
+    if moyenne is None:
+        return jsonify(moyenne=None)
+    moyenne = int(moyenne)
+    moyenne = math.floor(moyenne)
+    return jsonify(moyenne=moyenne)
 def historique_commandes(lignes):
     """Historique commande dun acheteur"""
     commandes = {}
     restaurants = {}
-
     for ligne in lignes:
         id_commande = ligne["id_commande"]
 
