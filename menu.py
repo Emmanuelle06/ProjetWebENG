@@ -2,6 +2,7 @@
 import unicodedata
 from flask import Blueprint, render_template, request, session, redirect, flash, abort, jsonify
 from BD import db
+import math
 
 bp_menu = Blueprint('menu', __name__)
 
@@ -177,8 +178,12 @@ def detail_repas(id_repas):
         return redirect("/")
 
     repas = db.obtenir_repas_par_id(id_repas)
+    note = db.get_critique(id_repas)
 
+
+    if note is not None:
+        note = int(note)
     if repas is None:
         abort(404)
 
-    return render_template("detail_repas.jinja", repas=repas)
+    return render_template("detail_repas.jinja", repas=repas, note=note)

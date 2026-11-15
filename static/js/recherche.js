@@ -14,7 +14,7 @@ const statut = document.getElementById("statut").value
 /**
  * Construit la carte d'un repas et l'ajoute à la grille.
  */
-function ajouterCarte(repas) {
+async function ajouterCarte(repas) {
     const col = document.createElement("div")
     col.className = "col-6 col-md-3"
 
@@ -42,6 +42,30 @@ function ajouterCarte(repas) {
     restaurant.className = "nom-resto-repas mb-2"
     restaurant.textContent = repas.nom_restaurant || "Restaurant inconnu"
 
+ 
+    
+    const critique = document.createElement("p")
+    try{
+        const rep = await fetch("/moyenne_note/" + repas.id_repas)
+        const donnees = await rep.json()
+        if(donnees.moyenne !== null){
+            critique.textContent = "Note : ";
+            for (let i = 0; i< donnees.moyenne; i++){
+                critique.textContent += "★";
+            }
+            for (let i = 0; i< 5 - donnees.moyenne; i++){
+                critique.textContent += "✩";
+            }
+        }
+        else{
+            critique.textContent = "Aucune critique"
+        }
+        
+    } catch (erreur){
+        console.log(erreur)
+        critique.textContent = "Note indisponible"
+    }
+
     const ligne = document.createElement("div")
     ligne.className = "d-flex justify-content-between align-items-center"
 
@@ -60,7 +84,7 @@ function ajouterCarte(repas) {
         ligne.append(prix)
 
     }
-    info.append(nom, restaurant, ligne)
+    info.append(nom, restaurant, critique, ligne)
     carte.append(info)
     col.append(carte)
     listeRepas.append(col)
@@ -82,7 +106,7 @@ async function chargerRepas() {
 
     listeRepas.replaceChildren()
     for (const repas of donnees.resultats) {
-        ajouterCarte(repas)
+        await ajouterCarte(repas)
     }
 
     messageAucun.classList.toggle("d-none", donnees.resultats.length > 0)
