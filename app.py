@@ -5,7 +5,7 @@ from BD import db
 from vendeur import bp_vendeur
 from acheteur import bp_acheteur
 from menu import bp_menu, calculer_quantite_panier
-
+from notifications import bp_notifications
 from BD.inserer_repas import inserer_donnees_test, inserer_acheteur_test
 
 app = Flask(__name__, static_url_path='', template_folder='templates')
@@ -14,6 +14,7 @@ app.config['DATABASE'] = 'BD/eatfast.sqlite'
 app.register_blueprint(bp_vendeur, url_prefix='/vendeur')
 app.register_blueprint(bp_acheteur)
 app.register_blueprint(bp_menu)
+app.register_blueprint(bp_notifications)
 app.secret_key = "b37bbe5bbd0b222206d7a811ad4c612cf5267966bb993cd250db389deaf7c279"
 
 
@@ -378,6 +379,8 @@ def passer_commande():
         })
 
         if id_commande:
+            vendeurs = []
+
             for repas in session["panier"]:
                 resultat = db.commande_repas({
                     "id_commande": id_commande,
@@ -387,6 +390,22 @@ def passer_commande():
                 })
                 if not resultat:
                     break
+                repas_bd = db.get_repas(repas["id"])
+                if not repas_bd:
+                    resultat = False
+                    break
+
+                id_vendeur = repas_bd["id_vendeur"]
+
+                if id_vendeur not in vendeurs:
+                    vendeurs.append(id_vendeur)
+            if resultat:
+                for id_vendeur in vendeurs:
+                    resultat = db.add_commande_vendeur(id_commande, id_vendeur)
+
+                    if not resultat:
+                        break
+
             if resultat:
                 nouv_credit = acheteur["credit"] - cout_total
                 db.modif_credit(

@@ -80,3 +80,23 @@ create table IF NOT EXISTS critique
     FOREIGN KEY(id_repas) REFERENCES repas(id_repas)
     FOREIGN KEY(id_commande) REFERENCES commande(id_commande)
 );
+
+CREATE TABLE IF NOT EXISTS notification_lue
+(
+    id_commande INTEGER PRIMARY KEY,
+    FOREIGN KEY (id_commande) REFERENCES commande(id_commande) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS commande_vendeur
+(
+    id_commande INTEGER,
+    id_vendeur INTEGER,
+    statut TEXT NOT NULL DEFAULT 'attente'
+        CHECK (statut IN ('attente', 'cours', 'terminer')),
+
+    PRIMARY KEY (id_commande, id_vendeur),
+    FOREIGN KEY (id_commande)
+        REFERENCES commande(id_commande) ON DELETE CASCADE,
+    FOREIGN KEY (id_vendeur)
+        REFERENCES vendeur(id) ON DELETE CASCADE
+);

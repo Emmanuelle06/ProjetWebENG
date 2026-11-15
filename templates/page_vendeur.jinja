@@ -1,8 +1,69 @@
-
 {% extends "modele.jinja" %}
 
 {% block contenu %}
 
-<h1>Page du vendeur</h1>
+<div class="container-fluid py-3">
+
+    <h2 class="mb-4">Gestion des commandes</h2>
+
+    <div class="row g-3">
+
+        <div class="col-md-4">
+            <div class="border rounded p-3 h-100 bg-light">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <i class="bi bi-inbox text-warning"></i>
+                        <span class="fw-semibold">À réaliser</span>
+                        <span class="badge bg-secondary rounded-pill">0</span>
+                    </div>
+                    <i class="bi bi-three-dots"></i>
+                </div>
+
+                <div id="repas-a-realiser">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="border rounded p-3 h-100 bg-light">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <i class="bi bi-fire text-danger"></i>
+                        <span class="fw-semibold">En cours</span>
+                        <span class="badge bg-secondary rounded-pill">0</span>
+                    </div>
+                    <i class="bi bi-three-dots"></i>
+                </div>
+
+                <div id="repas-en-cours">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="border rounded p-3 h-100 bg-light">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <i class="bi bi-check-circle text-success"></i>
+                        <span class="fw-semibold">Prêts à être livrés</span>
+                        <span class="badge bg-secondary rounded-pill">0</span>
+                    </div>
+                    <i class="bi bi-three-dots"></i>
+                </div>
+
+                <div id="repas-prets">
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

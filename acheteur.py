@@ -35,10 +35,13 @@ def profil():
     if utilisateur is None:
         session.clear()
         return redirect("/")
-    commandes = db.obtenir_commandes_acheteur(id_utilisateur)
+    lignes_commandes = db.obtenir_commandes_acheteur(id_utilisateur)
+    commandes = historique_commandes(lignes_commandes)
+
     for c in commandes:
-        for repas in c["repas"]:
-            repas["critique_remise"] = db.verif_critique(repas["id_repas"], id_utilisateur, c["id_commande"])
+        for restaurant in c["restaurants"]:
+            for repas in restaurant["repas"]:
+                repas["critique_remise"] = db.verif_critique(repas["id_repas"], id_utilisateur, c["id_commande"])
     return render_template("profil/profil.jinja", utilisateur=utilisateur,commandes=commandes)
 
 @bp_acheteur.route('/inscription-acheteur', methods=["GET", "POST"])
@@ -379,10 +382,10 @@ def charger_carte():
 def faire_critique(id_repas, id_commande):
     if request.method == "POST":
         critique = {
-        "note": request.form.get("note"),
         "id_utilisateur": session["id_utilisateur"],
         "id_repas": id_repas,
-        "id_commande": id_commande
+        "id_commande": id_commande,
+        "note": request.form.get("note", "")
         }
         if not critique["note"]:
             classe_note = "is-invalid"
@@ -408,3 +411,50 @@ def moyenne_note(id_repas):
     moyenne = int(moyenne)
     moyenne = math.floor(moyenne)
     return jsonify(moyenne=moyenne)
+def historique_commandes(lignes):
+    """Historique commande dun acheteur"""
+    commandes = {}
+    restaurants = {}
+    for ligne in lignes:
+        id_commande = ligne["id_commande"]
+
+        if id_commande not in commandes:
+            commandes[id_commande] = {
+                "id_commande": id_commande,
+                "cout_total": ligne["cout_total"],
+                "statut_general": ligne["statut_general"],
+                "restaurants": []
+            }
+
+        if ligne["id_vendeur"] is not None:
+            id_vendeur = ligne["id_vendeur"]
+            cle = (id_commande, id_vendeur)
+
+            if cle not in restaurants:
+                statut = ligne["statut_restaurant"]
+
+                if statut is None:
+                    statut = ligne["statut_general"]
+
+                restaurant = {
+                    "id_vendeur": id_vendeur,
+                    "nom_restaurant": ligne["nom_restaurant"],
+                    "statut": statut,
+                    "repas": []
+                }
+
+                restaurants[cle] = restaurant
+                commandes[id_commande]["restaurants"].append(restaurant)
+
+            if ligne["id_repas"] is not None:
+                restaurants[cle]["repas"].append({
+                    "id_repas": ligne["id_repas"],
+                    "nom": ligne["nom"],
+                    "disponibilite": ligne["disponibilite"],
+                    "prix": ligne["prix_unitaire"],
+                    "quantite": ligne["quantite"]
+                })
+
+    for commande in commandes.values():
+        commande["plusieurs_restaurants"] = len(commande["restaurants"]) > 1
+    return list(commandes.values())
