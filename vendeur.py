@@ -1,5 +1,5 @@
 """Gère les routes et l'affichage du vendeur."""
-from flask import Blueprint, render_template, request, session, redirect,flash, abort,url_for,Response
+from flask import Blueprint, render_template, request, session, redirect,flash, abort,url_for,Response,jsonify
 from BD import db
 
 bp_vendeur = Blueprint('vendeur', __name__)
@@ -489,3 +489,31 @@ def afficher_commandes():
         commandes_cours=commandes_cours,
         commandes_terminees=commandes_terminees
     )
+
+@bp_vendeur.route('/commande/statut', methods=["POST"])
+def modifier_statut_commande():
+    """Modifie le statut d'une commande déplacée dans le Kanban."""
+    if "id_utilisateur" not in session or session.get("statut") != "vendeur":
+        return jsonify({"succes": False, "message": "Accès refusé"}), 401
+
+    id_commande = request.form.get("id_commande")
+    statut = request.form.get("statut")
+
+    if not id_commande or statut not in ["attente", "cours", "terminer"]:
+        return jsonify({"succes": False, "message": "Informations invalides"}), 400
+
+    try:
+        id_commande = int(id_commande)
+    except ValueError:
+        return jsonify({"succes": False, "message": "Commande invalide"}), 400
+
+    resultat = db.modifier_statut_commande(
+        id_commande,
+        session["id_utilisateur"],
+        statut
+    )
+
+    if not resultat:
+        return jsonify({"succes": False, "message": "Modification impossible"}), 400
+
+    return jsonify({"succes": True})

@@ -319,7 +319,7 @@ def get_critique(id_repas):
         return resultat[0]
     except Exception as e:
             print(e)
-            return False 
+            return False
 
 def verif_critique(id_repas, id_utilisateur, id_commande):
     db = get_db()
@@ -404,3 +404,64 @@ def obtenir_commandes_vendeur(id_vendeur):
     except Exception as e:
         print(e)
         return []
+
+def modifier_statut_commande(id_commande, id_vendeur, statut):
+    """Modifie le statut d'une commande pour un vendeur."""
+
+    db = get_db()
+    try:
+        commande = db.execute(
+            """
+            SELECT 1
+            FROM commande_repas
+            JOIN repas
+                ON commande_repas.id_repas = repas.id_repas
+            WHERE commande_repas.id_commande = ?
+            AND repas.id_vendeur = ?
+            LIMIT 1
+            """,
+            (id_commande, id_vendeur)
+        ).fetchone()
+
+        if commande is None:
+            return False
+
+        association = db.execute(
+            """
+            SELECT id_commande
+            FROM commande_vendeur
+            WHERE id_commande = ?
+            AND id_vendeur = ?
+            """,
+            (id_commande, id_vendeur)
+        ).fetchone()
+
+        if association is not None:
+            db.execute(
+                """
+                UPDATE commande_vendeur
+                SET statut = ?
+                WHERE id_commande = ?
+                AND id_vendeur = ?
+                """,
+                (statut, id_commande, id_vendeur)
+            )
+        else:
+            db.execute(
+                """
+                INSERT INTO commande_vendeur
+                    (id_commande, id_vendeur, statut)
+                VALUES (?, ?, ?)
+                """,
+                (id_commande, id_vendeur, statut)
+            )
+
+        
+
+        db.commit()
+        return True
+
+    except Exception as e:
+        print(e)
+        db.rollback()
+        return False
