@@ -46,7 +46,7 @@ def index():
     base_de_donnees = db.get_db()
     utilisateur = base_de_donnees.execute(
         """SELECT id, statut FROM utilisateur
-           WHERE username = ? AND mot_de_passe = ?""",
+           WHERE username = ? AND mot_de_passe = ? AND actif = True""",
         (nom_utilisateur, mot_de_passe_hache)
     ).fetchone()
 
@@ -408,6 +408,19 @@ def passer_commande():
                 calculer_quantite_panier()
                 flash("Commande passée avec succès.", "success" )
     return redirect("/menu")
+
+@app.route('/supprimer', methods=["POST"])
+def supprimer_profil():
+    if "id_utilisateur" not in session:
+        return redirect("/")
+
+    id_utilisateur = session["id_utilisateur"]
+    db.desactiver_compte(id_utilisateur)
+
+    session.clear()
+    flash("Votre compte a été supprimé.", "success")
+
+    return redirect("/", 303)
 
 
 if __name__ == "__main__":
