@@ -29,7 +29,7 @@ with app.app_context():
 def index():
     """Fonction page accueil"""
     if session.get("statut") == "vendeur":
-        return render_template('page_vendeur.jinja')
+        return redirect(url_for("vendeur.afficher_commandes"))
     if session.get("statut") == "acheteur":
         return redirect('/menu')
 
@@ -204,14 +204,6 @@ def image_repas(id_repas):
         abort(404)
 
     return Response(ligne["image"], mimetype="image/jpeg")
-
-
-@app.route("/vendeur")
-def vendeur():
-    if "id_utilisateur" not in session:
-        return redirect(url_for("index"))
-
-    return render_template("page_vendeur.jinja")
 
 
 @app.route('/inscription-acheteur', methods=["GET", "POST"])
@@ -420,6 +412,5 @@ def passer_commande():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
 
 

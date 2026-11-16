@@ -1,5 +1,5 @@
 """Gère les routes et l'affichage du vendeur."""
-from flask import Blueprint, render_template, request, session, redirect,flash, abort,url_for,Response
+from flask import Blueprint, render_template, request, session, redirect,flash, abort,url_for,Response,jsonify
 from BD import db
 
 bp_vendeur = Blueprint('vendeur', __name__)
@@ -432,3 +432,88 @@ def modifier_repas(id_repas):
         prix_repas=prix_repas,
         desc_repas=desc_repas,
         dispo=dispo)
+
+def preparer_commandes_vendeur(lignes):
+    """Methode qui regroupe les repas par commande pour chaque tableau."""
+    commandes = {}
+
+    for ligne in lignes:
+        id_commande = ligne["id_commande"]
+
+        if id_commande not in commandes:
+            commandes[id_commande] = {
+                "id_commande": id_commande,
+                "numero_commande": ligne["numero_commande"],
+                "nom_acheteur": ligne["nom_acheteur"],
+                "statut": ligne["statut"],
+                "repas": []
+            }
+
+        commandes[id_commande]["repas"].append({
+            "nom": ligne["nom"],
+            "quantite": ligne["quantite"]
+        })
+
+    return list(commandes.values())
+
+@bp_vendeur.route('', methods=["GET"])
+def afficher_commandes():
+    """Methode qui permets d'afficher les commandes sur la page du vendeur """
+    if "id_utilisateur" not in session:
+        abort(401)
+
+    if session.get("statut") != "vendeur":
+        abort(403)
+
+    lignes = db.obtenir_commandes_vendeur(session["id_utilisateur"])
+
+    commandes = preparer_commandes_vendeur(lignes)
+
+    commandes_attente = []
+    commandes_cours = []
+    commandes_terminees = []
+
+    for commande in commandes:
+        if commande["statut"] == "attente":
+            commandes_attente.append(commande)
+
+        elif commande["statut"] == "cours":
+            commandes_cours.append(commande)
+
+        elif commande["statut"] == "terminer":
+            commandes_terminees.append(commande)
+
+    return render_template(
+        "vendeur/page_vendeur.jinja",
+        commandes_attente=commandes_attente,
+        commandes_cours=commandes_cours,
+        commandes_terminees=commandes_terminees
+    )
+
+@bp_vendeur.route('/commande/statut', methods=["POST"])
+def modifier_statut_commande():
+    """Modifie le statut d'une commande déplacée dans le Kanban."""
+    if "id_utilisateur" not in session or session.get("statut") != "vendeur":
+        return jsonify({"succes": False, "message": "Accès refusé"}), 401
+
+    id_commande = request.form.get("id_commande")
+    statut = request.form.get("statut")
+
+    if not id_commande or statut not in ["attente", "cours", "terminer"]:
+        return jsonify({"succes": False, "message": "Informations invalides"}), 400
+
+    try:
+        id_commande = int(id_commande)
+    except ValueError:
+        return jsonify({"succes": False, "message": "Commande invalide"}), 400
+
+    resultat = db.modifier_statut_commande(
+        id_commande,
+        session["id_utilisateur"],
+        statut
+    )
+
+    if not resultat:
+        return jsonify({"succes": False, "message": "Modification impossible"}), 400
+
+    return jsonify({"succes": True})

@@ -411,6 +411,7 @@ def moyenne_note(id_repas):
     moyenne = int(moyenne)
     moyenne = math.floor(moyenne)
     return jsonify(moyenne=moyenne)
+
 def historique_commandes(lignes):
     """Historique commande dun acheteur"""
     commandes = {}

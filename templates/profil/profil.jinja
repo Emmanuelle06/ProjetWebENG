@@ -68,7 +68,6 @@
                         </div>
                     </div>
 
-
                 </div>
             </div>
         </div>
@@ -116,38 +115,67 @@
 
             {% if commandes %}
             {% for commande in commandes %}
+
             <div class="card shadow-sm border-0 rounded-3 mb-3">
                 <div class="card-body p-3">
 
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <h5 class="mb-0">Commande #{{ loop.index }}</h5>
+                        <h5 class="mb-0">Commande #{{ loop.revindex }}</h5>
 
                         <span class="badge
-                                {% if commande['statut_general'] == 'attente' %}
-                                    text-bg-warning
-                                {% elif commande['statut_general'] == 'cours' %}
-                                    text-bg-primary
-                                {% elif commande['statut_general'] == 'terminer' %}
-                                    text-bg-success
-                                {% else %}
-                                    text-bg-secondary
-                                {% endif %}">
+                            {% if commande['statut_general'] == 'attente' %}
+                                text-bg-warning
+                            {% elif commande['statut_general'] == 'cours' %}
+                                text-bg-primary
+                            {% elif commande['statut_general'] == 'terminer' %}
+                                text-bg-success
+                            {% else %}
+                                text-bg-secondary
+                            {% endif %}">
+
                             {% if commande['statut_general'] == 'attente' %}
                             Commande en attente
                             {% elif commande['statut_general'] == 'cours' %}
-                            Commande en Cours
+                            Commande en cours
                             {% elif commande['statut_general'] == 'terminer' %}
-                            Commande Terminée
+                            Commande terminée
                             {% endif %}
                         </span>
                     </div>
+
                     {% for restaurant in commande["restaurants"] %}
 
                     <div class="mb-3">
+
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="mb-0">
                                 {{ restaurant["nom_restaurant"] }}
                             </h6>
+
+                            {% if commande["plusieurs_restaurants"] %}
+                            <span class="badge
+                                    {% if restaurant['statut'] == 'attente' %}
+                                        text-bg-warning
+                                    {% elif restaurant['statut'] == 'cours' %}
+                                        text-bg-primary
+                                    {% elif restaurant['statut'] == 'terminer' %}
+                                        text-bg-success
+                                    {% else %}
+                                        text-bg-secondary
+                                    {% endif %}">
+
+                                {% if restaurant['statut'] == 'attente' %}
+                                En attente
+                                {% elif restaurant['statut'] == 'cours' %}
+                                En cours
+                                {% elif restaurant['statut'] == 'terminer' %}
+                                Terminée
+                                {% else %}
+                                Statut inconnu
+                                {% endif %}
+
+                            </span>
+                            {% endif %}
                         </div>
 
                         {% for repas in restaurant["repas"] %}
@@ -160,6 +188,7 @@
                                 {% endif %}
 
                                 <div class="d-flex align-items-center gap-3 mb-3">
+
                                     <img src="{{ url_for('vendeur.image_repas', id_repas=repas['id_repas']) }}"
                                         alt="{{ repas['nom'] }}" width="75" height="75" class="rounded-3"
                                         style="object-fit: cover; flex-shrink: 0;">
@@ -170,21 +199,19 @@
                                         <div class="text-muted small">
                                             Quantité : {{ repas["quantite"] }}
                                         </div>
-                                        {% if commande['statut'] == 'terminer'%} 
-                                        {% if repas["critique_remise"]%}
-                                        <span class="fw-semibold">Note déjà remise</span>
-                                        {% else%}
-                                        <a href="{{ url_for('acheteur.faire_critique', id_repas=repas['id_repas'], 
-                                        id_commande=commande['id_commande']) }}" class="btn btn-outline-warning btn-sm">    
-                                        <i class="bi bi-star"></i> Noter ce repas</a>
-                                        {% endif %}
-                                        {%endif%}
-                                    </div>
 
-                                    <span class="fw-semibold text-nowrap">
-                                        {{ (repas["prix"] * repas["quantite"])|round(2) }} $
-                                    </span>
-                                    
+                                        {% if commande['statut_general'] == 'terminer' %}
+                                        {% if repas["critique_remise"] %}
+                                        <span class="fw-semibold">Note déjà remise</span>
+                                        {% else %}
+                                        <a href="{{ url_for('acheteur.faire_critique',
+                                                id_repas=repas['id_repas'],
+                                                id_commande=commande['id_commande']) }}"
+                                            class="btn btn-outline-warning btn-sm mt-1">
+                                            <i class="bi bi-star"></i> Noter ce repas
+                                        </a>
+                                        {% endif %}
+                                        {% endif %}
 
                                         {% if repas["disponibilite"] != 'on' and repas["disponibilite"] != 1 %}
                                         <span class="badge text-bg-secondary mt-1">
@@ -193,34 +220,10 @@
                                         {% endif %}
                                     </div>
 
-                                    <div class="text-end">
-                                        <div class="fw-semibold text-nowrap">
-                                            {{ (repas["prix"] * repas["quantite"])|round(2) }} $
-                                        </div>
+                                    <span class="fw-semibold text-nowrap">
+                                        {{ (repas["prix"] * repas["quantite"])|round(2) }} $
+                                    </span>
 
-                                        {% if commande["plusieurs_restaurants"] %}
-                                        <span class="badge
-            {% if restaurant['statut'] == 'attente' %}
-                text-bg-warning
-            {% elif restaurant['statut'] == 'cours' %}
-                text-bg-primary
-            {% elif restaurant['statut'] == 'terminer' %}
-                text-bg-success
-            {% else %}
-                text-bg-secondary
-            {% endif %} mt-1">
-                                            {% if restaurant['statut'] == 'attente' %}
-                                            En attente
-                                            {% elif restaurant['statut'] == 'cours' %}
-                                            En cours
-                                            {% elif restaurant['statut'] == 'terminer' %}
-                                            Terminée
-                                            {% else %}
-                                            Statut inconnu
-                                            {% endif %}
-                                        </span>
-                                        {% endif %}
-                                    </div>
                                 </div>
 
                                 {% if repas["disponibilite"] == 'on' or repas["disponibilite"] == 1 %}
@@ -230,6 +233,7 @@
                     {% endif %}
 
                     {% endfor %}
+
                 </div>
 
                 {% endfor %}
@@ -245,9 +249,11 @@
 
             </div>
         </div>
+
         {% endfor %}
 
         {% else %}
+
         <div class="text-center py-4">
             <i class="bi bi-basket display-4 text-muted"></i>
             <p class="text-muted mt-3 mb-3">
@@ -257,8 +263,10 @@
                 Découvrir le menu
             </a>
         </div>
+
         {% endif %}
     </div>
+</div>
 </div>
 
 {% endblock %}
