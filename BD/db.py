@@ -531,3 +531,35 @@ def modifier_statut_commande(id_commande, id_vendeur, statut):
         print(e)
         db.rollback()
         return False
+
+
+def annuler_commande(id_commande, id_acheteur):
+    """Annule une commande en attente et rembourse le crédit"""
+    db = get_db()
+    try:
+        commande = db.execute("""
+            SELECT cout_total FROM commande
+            WHERE id_commande = :id_commande
+            AND id_acheteur = :id_acheteur
+            AND statut = 'attente'
+            AND id_commande NOT IN (
+                SELECT id_commande FROM commande_vendeur
+                WHERE statut != 'attente')""",
+            {"id_commande": id_commande, "id_acheteur": id_acheteur}).fetchone()
+
+        if commande is None:
+            return False
+
+        db.execute("DELETE FROM commande_repas WHERE id_commande = :id_commande",
+                   {"id_commande": id_commande})
+        db.execute("DELETE FROM commande WHERE id_commande = :id_commande",
+                   {"id_commande": id_commande})
+        db.execute("""UPDATE acheteur SET credit = credit + :montant
+                   WHERE id = :id_acheteur""",
+                   {"montant": commande["cout_total"], "id_acheteur": id_acheteur})
+        db.commit()
+        return True
+    except Exception as e:
+        print(e)
+        db.rollback()
+        return False

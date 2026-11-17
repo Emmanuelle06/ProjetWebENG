@@ -459,3 +459,6 @@ def historique_commandes(lignes):
     for commande in commandes.values():
         commande["plusieurs_restaurants"] = len(commande["restaurants"]) > 1
     return list(commandes.values())
+
+
+
