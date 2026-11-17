@@ -141,6 +141,8 @@
                             Commande terminée
                             {% endif %}
                         </span>
+
+
                     </div>
 
                     {% for restaurant in commande["restaurants"] %}
@@ -265,6 +267,45 @@
                 </div>
 
                 {% endif %}
+                {% if commande['statut_general'] == 'attente' %}
+                <div class="text-end mt-3">
+                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalAnnuler{{ commande['id_commande'] }}">
+                        <i class="bi bi-x-circle"></i> Annuler la commande
+                    </button>
+                </div>
+
+                <div class="modal fade" id="modalAnnuler{{ commande['id_commande'] }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4 border-2 border-dark">
+
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title fw-bold">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>Annuler la commande
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Fermer"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p class="mb-1">Voulez-vous vraiment annuler cette commande ?</p>
+                                <p class="text-secondary mb-0">Votre crédit sera remboursé.</p>
+                            </div>
+
+                            <div class="modal-footer border-0 pt-0">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non,
+                                    garder</button>
+                                <form method="post"
+                                    action="{{ url_for('acheteur.annuler_commande', id_commande=commande['id_commande']) }}">
+                                    <button type="submit" class="btn btn-danger">Oui, annuler</button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
             </div>
         </div>
     </div>
