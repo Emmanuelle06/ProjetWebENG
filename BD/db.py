@@ -247,7 +247,9 @@ def obtenir_repas_disponibles(prix_min, prix_max):
         SELECT repas.id_repas, repas.nom, repas.prix, vendeur.nom_restaurant
         FROM repas
         LEFT JOIN vendeur ON repas.id_vendeur = vendeur.id
+        LEFT JOIN utilisateur ON vendeur.id = utilisateur.id
         WHERE repas.disponibilite IN ('on', 1)
+        AND utilisateur.actif = True
         AND repas.prix >= :prix_min
         AND repas.prix <= :prix_max""",
                             {"prix_min": prix_min, "prix_max": prix_max}).fetchall()
@@ -531,3 +533,15 @@ def modifier_statut_commande(id_commande, id_vendeur, statut):
         print(e)
         db.rollback()
         return False
+
+def desactiver_compte(id_utilisateur):
+    db = get_db()
+    try:
+        db.execute(
+            "Update utilisateur set actif = False "
+            "Where id = ?", (id_utilisateur,))
+        db.commit()
+        return True
+    except Exception as e:
+            print(e)
+            return False 
