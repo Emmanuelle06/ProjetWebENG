@@ -444,3 +444,16 @@ def historique_commandes(lignes):
     for commande in commandes.values():
         commande["plusieurs_restaurants"] = len(commande["restaurants"]) > 1
     return list(commandes.values())
+
+
+@bp_acheteur.route('/commande/annuler/<int:id_commande>', methods=["POST"])
+def annuler_commande(id_commande):
+    if session.get("statut") != "acheteur":
+        abort(403)
+
+    if db.annuler_commande(id_commande, session["id_utilisateur"]):
+        flash("Commande annulée, votre crédit a été remboursé.", "success")
+    else:
+        flash("Cette commande ne peut plus être annulée.", "danger")
+
+    return redirect(url_for("acheteur.profil"), 303)
