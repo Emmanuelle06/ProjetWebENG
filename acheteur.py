@@ -306,22 +306,7 @@ def modifier_profil():
     return redirect(url_for("acheteur.profil"), 303)
 
 
-@bp_acheteur.route('/profil/supprimer', methods=["POST"])
-def supprimer_profil():
-    if "id_utilisateur" not in session:
-        return redirect("/")
 
-    id_utilisateur = session["id_utilisateur"]
-    base_de_donnees = db.get_db()
-    base_de_donnees.execute(
-        "DELETE FROM utilisateur WHERE id = ?",
-        (id_utilisateur,)
-    )
-    base_de_donnees.commit()
-    session.clear()
-    flash("Votre compte a été supprimé.", "success")
-
-    return redirect("/", 303)
 
 
 @bp_acheteur.route('/profil/charger-carte', methods=["POST"])

@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS utilisateur
     username TEXT UNIQUE NOT NULL,
     mot_de_passe TEXT NOT NULL,
     statut TEXT NOT NULL CHECK (statut IN ('acheteur', 'vendeur')),
+    actif BOOLEAN DEFAULT TRUE,
     date_creation DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -20,6 +21,7 @@ CREATE TABLE IF NOT EXISTS acheteur
     adresse_postal TEXT,
     condition BOOLEAN,
     credit REAL NOT NULL DEFAULT 0,
+    
     FOREIGN KEY (id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
