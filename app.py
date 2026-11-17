@@ -418,7 +418,7 @@ def supprimer_profil():
     db.desactiver_compte(id_utilisateur)
 
     session.clear()
-    flash("Votre compte a été supprimé.", "success")
+    flash("Votre compte a été désactivé.", "success")
 
     return redirect("/", 303)
 
