@@ -1,3 +1,4 @@
+
 {% extends "modele.jinja" %}
 
 {% block contenu %}
@@ -141,8 +142,6 @@
                             Commande terminée
                             {% endif %}
                         </span>
-
-
                     </div>
 
                     {% for restaurant in commande["restaurants"] %}
@@ -180,7 +179,6 @@
                             {% endif %}
                         </div>
 
-
                         {% for repas in restaurant["repas"] %}
 
                         <div class="d-flex align-items-center gap-3 mb-3">
@@ -195,16 +193,16 @@
                                     class="text-decoration-none text-dark fw-semibold">
                                     {{ repas["nom"] }}
                                 </a>
-                                {% else %}
-                                <div class="flex-grow-1 opacity-50">
-                                    <span class="fw-semibold">{{ repas["nom"] }}</span>
-                                    {% endif %}
+                            {% else %}
+                            <div class="flex-grow-1 opacity-50">
+                                <span class="fw-semibold">{{ repas["nom"] }}</span>
+                            {% endif %}
 
-                                    <div class="text-muted small">
-                                        Quantité : {{ repas["quantite"] }}
-                                    </div>
+                                <div class="text-muted small">
+                                    Quantité : {{ repas["quantite"] }}
+                                </div>
 
-                                    {% if commande['statut_general'] == 'terminer' %}
+                                {% if commande['statut_general'] == 'terminer' %}
                                     {% if repas["critique_remise"] %}
                                     <span class="fw-semibold">Note déjà remise</span>
                                     {% else %}
@@ -214,100 +212,101 @@
                                         <i class="bi bi-star"></i> Noter ce repas
                                     </a>
                                     {% endif %}
-                                    {% endif %}
+                                {% endif %}
 
-                                    {% if repas["disponibilite"] != 'on' and repas["disponibilite"] != 1 %}
-                                    <span class="badge text-bg-secondary mt-1">
-                                        Indisponible
-                                    </span>
-                                    {% endif %}
-
-                                </div>
-
-                                <span class="fw-semibold text-nowrap
-                                    {% if repas['disponibilite'] != 'on' and repas['disponibilite'] != 1 %}
-                                        opacity-50
-                                    {% endif %}">
-                                    {{ (repas["prix"] * repas["quantite"])|round(2) }} $
+                                {% if repas["disponibilite"] != 'on' and repas["disponibilite"] != 1 %}
+                                <span class="badge text-bg-secondary mt-1">
+                                    Indisponible
                                 </span>
+                                {% endif %}
 
                             </div>
 
-                            {% endfor %}
-
+                            <span class="fw-semibold text-nowrap
+                                {% if repas['disponibilite'] != 'on' and repas['disponibilite'] != 1 %}
+                                    opacity-50
+                                {% endif %}">
+                                {{ (repas["prix"] * repas["quantite"])|round(2) }} $
+                            </span>
 
                         </div>
 
                         {% endfor %}
 
-                        <hr>
-
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">Total</span>
-                            <h5 class="mb-0">
-                                {{ commande["cout_total"]|round(2) }} $
-                            </h5>
-                        </div>
-
                     </div>
-                </div>
 
-                {% endfor %}
+                    {% endfor %}
 
-                {% else %}
+                    <hr>
 
-                <div class="text-center py-4">
-                    <i class="bi bi-basket display-4 text-muted"></i>
-                    <p class="text-muted mt-3 mb-3">
-                        Aucune commande à afficher pour le moment.
-                    </p>
-                    <a href="{{ url_for('menu.menu') }}" class="btn btn-primary">
-                        Découvrir le menu
-                    </a>
-                </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Total</span>
+                        <h5 class="mb-0">
+                            {{ commande["cout_total"]|round(2) }} $
+                        </h5>
+                    </div>
 
-                {% endif %}
-                {% if commande['statut_general'] == 'attente' %}
-                <div class="text-end mt-3">
-                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#modalAnnuler{{ commande['id_commande'] }}">
-                        <i class="bi bi-x-circle"></i> Annuler la commande
-                    </button>
-                </div>
+                    {% if commande['statut_general'] == 'attente' %}
+                    <div class="text-end mt-3">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#modalAnnuler{{ commande['id_commande'] }}">
+                            <i class="bi bi-x-circle"></i> Annuler la commande
+                        </button>
+                    </div>
 
-                <div class="modal fade" id="modalAnnuler{{ commande['id_commande'] }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content rounded-4 border-2 border-dark">
+                    <div class="modal fade" id="modalAnnuler{{ commande['id_commande'] }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-4 border-2 border-dark">
 
-                            <div class="modal-header border-0 pb-0">
-                                <h5 class="modal-title fw-bold">
-                                    <i class="bi bi-exclamation-triangle me-2"></i>Annuler la commande
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Fermer"></button>
+                                <div class="modal-header border-0 pb-0">
+                                    <h5 class="modal-title fw-bold">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>Annuler la commande
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Fermer"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <p class="mb-1">Voulez-vous vraiment annuler cette commande ?</p>
+                                    <p class="text-secondary mb-0">Votre crédit sera remboursé.</p>
+                                </div>
+
+                                <div class="modal-footer border-0 pt-0">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non,
+                                        garder</button>
+                                    <form method="post"
+                                        action="{{ url_for('acheteur.annuler_commande', id_commande=commande['id_commande']) }}">
+                                        <button type="submit" class="btn btn-danger">Oui, annuler</button>
+                                    </form>
+                                </div>
+
                             </div>
-
-                            <div class="modal-body">
-                                <p class="mb-1">Voulez-vous vraiment annuler cette commande ?</p>
-                                <p class="text-secondary mb-0">Votre crédit sera remboursé.</p>
-                            </div>
-
-                            <div class="modal-footer border-0 pt-0">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non,
-                                    garder</button>
-                                <form method="post"
-                                    action="{{ url_for('acheteur.annuler_commande', id_commande=commande['id_commande']) }}">
-                                    <button type="submit" class="btn btn-danger">Oui, annuler</button>
-                                </form>
-                            </div>
-
                         </div>
                     </div>
-                </div>
-                {% endif %}
+                    {% endif %}
 
+                </div>
             </div>
+
+            {% endfor %}
+
+            {% else %}
+
+            <div class="text-center py-4">
+                <i class="bi bi-basket display-4 text-muted"></i>
+                <p class="text-muted mt-3 mb-3">
+                    Aucune commande à afficher pour le moment.
+                </p>
+                <a href="{{ url_for('menu.menu') }}" class="btn btn-primary">
+                    Découvrir le menu
+                </a>
+            </div>
+
+            {% endif %}
+
         </div>
     </div>
 
-    {% endblock %}
+</div>
+
+{% endblock %}
