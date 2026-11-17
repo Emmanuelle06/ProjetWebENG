@@ -429,6 +429,9 @@ def modifier_statut_commande(id_commande, id_vendeur, statut):
 
     db = get_db()
     try:
+        if statut not in ["attente", "cours", "terminer"]:
+            return False
+
         commande = db.execute(
             """
             SELECT 1
@@ -447,13 +450,27 @@ def modifier_statut_commande(id_commande, id_vendeur, statut):
 
         association = db.execute(
             """
-            SELECT id_commande
+            SELECT statut
             FROM commande_vendeur
             WHERE id_commande = ?
             AND id_vendeur = ?
             """,
             (id_commande, id_vendeur)
         ).fetchone()
+
+        if association is not None:
+            statut_actuel = association["statut"]
+        else:
+            statut_actuel = "attente"
+
+        if statut_actuel == "attente" and statut != "cours":
+            return False
+
+        if statut_actuel == "cours" and statut != "terminer":
+            return False
+
+        if statut_actuel == "terminer":
+            return False
 
         if association is not None:
             db.execute(
@@ -565,6 +582,7 @@ def annuler_commande(id_commande, id_acheteur):
         print(e)
         db.rollback()
         return False
+
 def desactiver_compte(id_utilisateur):
     db = get_db()
     try:
