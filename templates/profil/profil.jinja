@@ -178,95 +178,95 @@
                             {% endif %}
                         </div>
 
+
                         {% for repas in restaurant["repas"] %}
 
-                        {% if repas["disponibilite"] == 'on' or repas["disponibilite"] == 1 %}
-                        <a href="{{ url_for('menu.detail_repas', id_repas=repas['id_repas']) }}"
-                            class="text-decoration-none text-dark">
-                            {% else %}
-                            <div class="opacity-50">
-                                {% endif %}
+                        <div class="d-flex align-items-center gap-3 mb-3">
 
-                                <div class="d-flex align-items-center gap-3 mb-3">
+                            <img src="{{ url_for('image_repas', id_repas=repas['id_repas']) }}"
+                                alt="{{ repas['nom'] }}" width="75" height="75" class="rounded-3"
+                                style="object-fit: cover; flex-shrink: 0;">
 
-                                    <img src="{{ url_for('vendeur.image_repas', id_repas=repas['id_repas']) }}"
-                                        alt="{{ repas['nom'] }}" width="75" height="75" class="rounded-3"
-                                        style="object-fit: cover; flex-shrink: 0;">
+                            {% if repas["disponibilite"] == 'on' or repas["disponibilite"] == 1 %}
+                            <div class="flex-grow-1">
+                                <a href="{{ url_for('menu.detail_repas', id_repas=repas['id_repas']) }}"
+                                    class="text-decoration-none text-dark fw-semibold">
+                                    {{ repas["nom"] }}
+                                </a>
+                                {% else %}
+                                <div class="flex-grow-1 opacity-50">
+                                    <span class="fw-semibold">{{ repas["nom"] }}</span>
+                                    {% endif %}
 
-                                    <div class="flex-grow-1">
-                                        <span class="fw-semibold">{{ repas["nom"] }}</span>
-
-                                        <div class="text-muted small">
-                                            Quantité : {{ repas["quantite"] }}
-                                        </div>
-
-                                        {% if commande['statut_general'] == 'terminer' %}
-                                        {% if repas["critique_remise"] %}
-                                        <span class="fw-semibold">Note déjà remise</span>
-                                        {% else %}
-                                        <a href="{{ url_for('acheteur.faire_critique',
-                                                id_repas=repas['id_repas'],
-                                                id_commande=commande['id_commande']) }}"
-                                            class="btn btn-outline-warning btn-sm mt-1">
-                                            <i class="bi bi-star"></i> Noter ce repas
-                                        </a>
-                                        {% endif %}
-                                        {% endif %}
-
-                                        {% if repas["disponibilite"] != 'on' and repas["disponibilite"] != 1 %}
-                                        <span class="badge text-bg-secondary mt-1">
-                                            Indisponible
-                                        </span>
-                                        {% endif %}
+                                    <div class="text-muted small">
+                                        Quantité : {{ repas["quantite"] }}
                                     </div>
 
-                                    <span class="fw-semibold text-nowrap">
-                                        {{ (repas["prix"] * repas["quantite"])|round(2) }} $
+                                    {% if commande['statut_general'] == 'terminer' %}
+                                    {% if repas["critique_remise"] %}
+                                    <span class="fw-semibold">Note déjà remise</span>
+                                    {% else %}
+                                    <a href="{{ url_for('acheteur.faire_critique',
+                                    id_repas=repas['id_repas'], id_commande=commande['id_commande']) }}"
+                                     class="btn btn-outline-warning btn-sm mt-1">
+                                        <i class="bi bi-star"></i> Noter ce repas
+                                    </a>
+                                    {% endif %}
+                                    {% endif %}
+
+                                    {% if repas["disponibilite"] != 'on' and repas["disponibilite"] != 1 %}
+                                    <span class="badge text-bg-secondary mt-1">
+                                        Indisponible
                                     </span>
+                                    {% endif %}
 
                                 </div>
 
-                                {% if repas["disponibilite"] == 'on' or repas["disponibilite"] == 1 %}
-                        </a>
-                        {% else %}
+                                <span class="fw-semibold text-nowrap
+                                    {% if repas['disponibilite'] != 'on' and repas['disponibilite'] != 1 %}
+                                        opacity-50
+                                    {% endif %}">
+                                    {{ (repas["prix"] * repas["quantite"])|round(2) }} $
+                                </span>
+
+                            </div>
+
+                            {% endfor %}
+
+
+                        </div>
+
+                        {% endfor %}
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Total</span>
+                            <h5 class="mb-0">
+                                {{ commande["cout_total"]|round(2) }} $
+                            </h5>
+                        </div>
+
                     </div>
-                    {% endif %}
-
-                    {% endfor %}
-
                 </div>
 
                 {% endfor %}
 
-                <hr>
+                {% else %}
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-muted">Total</span>
-                    <h5 class="mb-0">
-                        {{ commande["cout_total"]|round(2) }} $
-                    </h5>
+                <div class="text-center py-4">
+                    <i class="bi bi-basket display-4 text-muted"></i>
+                    <p class="text-muted mt-3 mb-3">
+                        Aucune commande à afficher pour le moment.
+                    </p>
+                    <a href="{{ url_for('menu.menu') }}" class="btn btn-primary">
+                        Découvrir le menu
+                    </a>
                 </div>
 
+                {% endif %}
             </div>
         </div>
-
-        {% endfor %}
-
-        {% else %}
-
-        <div class="text-center py-4">
-            <i class="bi bi-basket display-4 text-muted"></i>
-            <p class="text-muted mt-3 mb-3">
-                Aucune commande à afficher pour le moment.
-            </p>
-            <a href="{{ url_for('menu.menu') }}" class="btn btn-primary">
-                Découvrir le menu
-            </a>
-        </div>
-
-        {% endif %}
     </div>
-</div>
-</div>
 
-{% endblock %}
+    {% endblock %}

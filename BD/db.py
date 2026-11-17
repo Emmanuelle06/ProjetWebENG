@@ -544,4 +544,4 @@ def desactiver_compte(id_utilisateur):
         return True
     except Exception as e:
             print(e)
-            return False 
+            return False
