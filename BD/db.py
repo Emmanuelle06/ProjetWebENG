@@ -356,16 +356,18 @@ def verif_critique(id_repas, id_utilisateur, id_commande):
 
 
 def obtenir_notifications(id_acheteur):
-    """Commandes terminées dont la notification n'a pas encore été vue"""
+    """Commandes terminées non vues, avec leur numéro dans l'historique de l'acheteur"""
     return get_db().execute("""
-        SELECT id_commande
+        SELECT commande.id_commande,
+            (SELECT COUNT(*) FROM commande AS autre
+             WHERE autre.id_acheteur = commande.id_acheteur
+             AND autre.id_commande <= commande.id_commande) AS numero
         FROM commande
-        WHERE id_acheteur = :id_acheteur
-        AND statut = 'terminer'
-        AND id_commande NOT IN (SELECT id_commande FROM notification_lue)
-        ORDER BY id_commande DESC""",
-                            {"id_acheteur": id_acheteur}).fetchall()
-
+        WHERE commande.id_acheteur = :id_acheteur
+        AND commande.statut = 'terminer'
+        AND commande.id_commande NOT IN (SELECT id_commande FROM notification_lue)
+        ORDER BY commande.id_commande DESC""",
+        {"id_acheteur": id_acheteur}).fetchall()
 
 def marquer_notifications_lues(id_acheteur):
     """Marque comme vues les commandes terminées de l'acheteur"""

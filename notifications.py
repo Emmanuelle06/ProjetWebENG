@@ -11,7 +11,7 @@ def api_notifications():
         abort(403)
 
     notifications = db.obtenir_notifications(session["id_utilisateur"])
-    ids = [n["id_commande"] for n in notifications]
+    ids = [n["numero"] for n in notifications]
     return jsonify({"commandes": ids})
 
 
