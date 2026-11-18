@@ -37,6 +37,7 @@ colonnes.forEach(function (colonne) {
                 );
             } catch (erreur) {
                 console.log("Erreur lors de la modification du statut :", erreur);
+                location.reload();
             }
 
         }
